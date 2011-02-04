@@ -3,7 +3,7 @@ RstWiki - simple wiki/rst interface
 
 **note**: this doesn't actually do anything just yet. 
 
-**bummer**: "toc" support would be rad:
+**bummer**: proper "toc" support would be rad:
 
 .. contents ::
     :depth: 2
@@ -81,4 +81,4 @@ Process
 License
 -------
 
-AFL/New BSD. See `Dojo's <http://dojotoolkit.org/license>` LICENSE for details                       
+AFL/New BSD. See `Dojo's <http://dojotoolkit.org/license>`_ LICENSE for details                       
