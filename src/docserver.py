@@ -128,7 +128,7 @@ class DocHandler (BaseHTTPRequestHandler):
                 data = urllib.unquote_plus(self.rfile.read(size)[8:])
 
                 if not os.path.exists(file):
-                    os.makedirs(file)
+                    os.makedirs(os.path.dirname(file))
                     
                 print >>open(file, 'w'), data
 
