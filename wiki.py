@@ -1,21 +1,25 @@
+#!/usr/bin/env python
+# encoding: utf-8
+"""
+    teh root wiki logic
+"""
+
 import conf, os
+from docserver import DocHandler
+from BaseHTTPServer import HTTPServer
 
 class RstWiki(object):
-    
-    def process_path(self, path):
-        """
-            assume we've been giving a path like /foo/bar/baz 
-            return the rendered output so our server can do it's thing
-        """
-        return self.config['template']
     
     def setup_server(self):
         """ 
             Setup the server. I guess this is here to easily subclass or change so you can
             serve directly from app, via ProxyPass, or include a wsgi shim? Who knows.
         """
-        print "Binding to port", self.config["LISTEN_PORT"]
-        # start the server. 
+        try:
+            server = HTTPServer(('', self.config["LISTEN_PORT"]), DocHandler)
+            server.serve_forever()
+        except KeyboardInterrupt:
+            server.socket.close()
         
     def init_data(self):
         """
@@ -31,19 +35,11 @@ class RstWiki(object):
         else:
             print "cool: data tree is there"
             # should we clear all locks on startup?
-        
-    def load_files(self):
-        """
-            Read in templates and other things that need to be cached
-            We can just cram shit into self.config dict I guess
-        """
-        self.config['template'] = open("templates/master.html", "r").read()
-    
+            
     def __init__(self, config):
         self.config = config
         self.init_data()
-        self.load_files()
         self.setup_server()
         
 if __name__ == "__main__":
-    wiki = RstWiki(conf.wiki)
+    thewiki = RstWiki(conf.wiki)

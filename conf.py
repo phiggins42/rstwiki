@@ -6,7 +6,7 @@ rst_root = "./data"
 src_vcs = "local"
 
 wiki = {
-    "RST_ROOT": "./sample_data/",           # where the .rst tree will live. /sample_data/ has some test .rst. Suggest changing this to your own
+    "RST_ROOT": "../rstwiki-git/",           # where the .rst tree will live. /sample_data/ has some test .rst. Suggest changing this to your own
     "SRC_VCS": "local",                     # enum(git, svn, local)
     "SRC_REPO": "{some github url}",        # ignored if SRC_VCS is local
     "USE_LDAP": False,                      # set to `True` if wanting to do simple auth against an LDAP server
