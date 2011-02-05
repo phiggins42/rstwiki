@@ -2,18 +2,20 @@
     Dojo specific rst/sphinx directives
 """
 
-import types, re
+import types, re, json
 
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name, TextLexer
 
-from docutils import nodes, utils
+from docutils import nodes, utils, statemachine
 from docutils.nodes import literal_block, TextElement, FixedTextElement, Element, General
 from docutils.parsers import rst
 from docutils.parsers.rst import directives, Directive
 from docutils.parsers.rst.roles import register_canonical_role
 from docutils.writers.html4css1 import HTMLTranslator, Writer
+
+import urllib
 
 class DojoApi(Directive):
     """ Dojo API Documentation inlining
@@ -32,6 +34,101 @@ class DojoApi(Directive):
         # as part of the api doc generation.
         markup = "<p class='apiref'>API Rerence: <a target='_api' href='http://dojotoolkit.org/api/" + apislashed + "'>" + apidotted + "</a></p>"
         return [nodes.raw('', markup, format='html')]
+
+
+class DojoApiInline(Directive):
+    """ Put a root API block in this place
+    """
+    required_arguments = 1
+    option_arguments = 0
+    has_content = False
+
+    base_url = "http://dojotoolkit.org/api/rpc/"
+    #base_url = "http://staging.dojotoolkit.org/api/lib/html.php?p="
+
+    def run(self):
+
+        api = self.arguments[0];
+        apislashed = api.replace(".", "/")
+        apidotted = api.replace("/", ".")
+        
+        target_url = self.base_url + apislashed
+        # maybe add a local caching mechaism here
+        data = urllib.urlopen(target_url).read()
+        info = json.loads(data)
+        #print info
+        
+        out = ""
+        
+        out += "API Information\n---------------\n\n"
+        #out = "<pre>"
+        
+        if "summary" in info:
+            out += ":summary:\t" + info["summary"] + "\n"
+        
+        if "returns" in info:
+            out += ":returns:\t" + info["returns"] + "\n"
+                
+        out += "\n"
+        
+        if "parameters" in info:
+            out += "Parameters\n~~~~~~~~~~\n\nSignature\n\n"
+            
+            # determine if ClassLike and add a `new `
+            sig = apidotted + "("
+            tab = ""
+            
+            for param in info["parameters"]:
+                
+                type = param.get("type")
+                name = param.get("name")
+                desc = param.get("description", "").strip()
+                tab += "* **" + name + "** `" + type + "`\n\t\t" + "".join(desc.split("\n")) + "\n"
+                
+                sig += name + " /* " + type + " */, "
+            
+            sig = sig[:-2] + ")"
+            
+            out += ".. code :: javascript\n\n\t" + sig + "\n\n"
+        
+            out += "Overview\n\n" + tab + "\n"
+            
+        
+        if "examples" in info:
+            
+            out += "Examples\n~~~~~~~~~~\n\n"
+            for example in info['examples']:
+                parts = example.split("\n")
+                intabs = False
+                for part in parts:
+                    part = part.rstrip()
+                    if part.startswith("\t\t"):
+                        if not intabs:
+                            # make a new tab block
+                            intabs = True
+                            out += "\n\n.. code :: javascript\n\n" + part + "\n"
+                        else:
+                            # keep just pumping
+                            # if part.endswith("\n"): part = part[:-1]
+                            out +=  part + "\n"
+
+                    # make a new text block
+                    else:
+                        if intabs: out += "\n\n"
+                        out += part.strip() + "\n"
+                        intabs = False
+                        
+                out += "\n"
+
+        #out += "</pre>"
+        
+        lines = statemachine.string2lines(out)
+        self.state_machine.insert_input(lines, "/")      
+
+        return []
+        
+        #markup = "<div><div class='api-title'>" + apidotted + " API</div><div class='api-body'>" + out + "</div>"
+        #return [nodes.raw('', markup, format='html')]
 
 
 # define a `ref:` role for reST, so Sphinx links turn back to wiki links:
@@ -186,7 +283,8 @@ add_directive('codeviewer-compound', _codeviewer_compound, 1, (0, 0, 0)) # depre
 add_directive('cv-compound', _codeviewer_compound, 1, (0, 0, 0)) # deprecated
 
 # Simple dojoisms
-directives.register_directive('api-ref', DojoApi)    
+directives.register_directive('api-link', DojoApi)    
+directives.register_directive('api-inline', DojoApiInline)
 register_canonical_role('ref', ref_role);
 
 # TODO: DO WE STILL NEED THIS CODE?

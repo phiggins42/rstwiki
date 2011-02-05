@@ -5,17 +5,39 @@ docserver.py - the core of the rst processing nonsense.
 
 """
 import subprocess, codecs, re, sys, os, urllib
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+import SimpleHTTPServer
 from docutils import core, io
 from dojo import DojoHTMLWriter
 from conf import wiki as conf
 from Crumbs import Crumbs as crumbs
 from locks import Locker
+import Cookie, random, string
+
+chars = string.ascii_letters + string.digits
+all_sessions = {}
+class SessionElement(object): pass
+def makesessionid(length):
+    return ''.join([random.choice(chars) for i in range(length)])
 
 template = open("templates/master.html", "r").read()
 
-class DocHandler (BaseHTTPRequestHandler):
+class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
     
+    user = "anonymous"
+
+    def Session(self):
+        if self.cookie.has_key("sessionid"):
+            sessionid = self.cookie['sessionid'].value
+        else:
+            sessionid = makesessionid(8)
+            self.cookie['sessionid'] = sessionid
+        try:
+            sessionObject = all_sessions[sessionid]
+        except KeyError:
+            sessionObject = SessionElement()
+            all_sessions[sessionid] = sessionObject
+        return sessionObject
+        
     def userisauthorized(self):
         """
             a fast return for authorization status for this user/request. actual auth lookup should
@@ -26,7 +48,24 @@ class DocHandler (BaseHTTPRequestHandler):
     def wraptemplate(self, **kwargs):
         return re.sub("{{(.*)}}", lambda m: kwargs.get(m.group(1), ""), template)
 
+    def checkuser(self):
+        """
+            update self.user if this request indicates this user is not a user
+        """
+        self.cookie = Cookie.SimpleCookie()
+        if self.headers.has_key("cookie"):
+            self.cookie = Cookie.SimpleCookie(self.headers.getheader("cookie"))
+
+        self.info = self.Session()
+        if self.cookie.has_key("sessionid"):
+            self.user = self.cookie['sessionid'].value
+        
     def do_GET(self):
+        
+        self.checkuser()
+        self.do_process()
+
+    def do_process(self):
 
         try:
             
@@ -52,27 +91,32 @@ class DocHandler (BaseHTTPRequestHandler):
             passthru = False
             action = ""
             
-            if path.startswith("/do"):
+            if path.startswith("/do/"):
                 # return quickly for adm paths
                 self.do_serv(**self.specialhandler(path))
                 return
 
-            if path.startswith("/search"):
+            if path.startswith("/search/"):
                 self.do_serv(**self.runSearch(path))
+                return
+            
+            if path.startswith("/login"):
+                self.do_serv(**self.loginform(path))
                 return
                             
             # else, fix up the url a tad    
 
-            if path.startswith("/edit"):
+            if path.startswith("/edit/"):
                 # we're editing a file. strip "/edit" from the path and flag it
                 path = path[5:] 
                 editing = True
                 action = "Editing"
 
             # local static files included in this app folder
-            if path.startswith("/_static"):
+            if path.startswith("/_static/"):
                 passthru = True;
                 file = "./_static" + path[8:]
+                # unset the cookie values? they're tiny tho
 
             # if we're the root, always add `index`
             if path == "/" or path.endswith("/"): path += "index" #actually should check path[:-1].rst before adding index if non rooted item
@@ -96,7 +140,7 @@ class DocHandler (BaseHTTPRequestHandler):
                 if not os.path.exists(file):
                     self.do_serv(response=404)
                 else:    
-                    self.do_serv(response=200, body=open(file).read())
+                    self.do_serv(response=200, body=open(file).read(), raw=True)
                 return
             
             if(not os.path.exists(file)):
@@ -112,11 +156,10 @@ class DocHandler (BaseHTTPRequestHandler):
             else:
                 filelock = Locker(file)
                 locked = filelock.islocked()
-                me = "figgins"
-                if locked and not filelock.ownedby(me):
-                    stuff = self.wraptemplate(title="File Locked", body = crumbs + "<h3>Can't edit for another " + str(filelock.expiresin()) + " seconds</h3>", nav = rawlink(path))
+                if locked and not filelock.ownedby(self.user):
+                    stuff = self.wraptemplate(title="File Locked", body = crumbs + "<h3>Locked</h3><p>Can't edit for another " + str(filelock.expiresin()) + " seconds</p><p><em>owner:</em> " + filelock.owner(), nav = rawlink(path))
                 else:
-                    filelock.lock(me)
+                    filelock.lock(self.user)
                     stuff = self.wraptemplate(title = action + " " + path, body = crumbs + textarea(path, out), nav = rawlink(path)) 
                         
             self.do_serv( body = stuff );
@@ -130,12 +173,23 @@ class DocHandler (BaseHTTPRequestHandler):
         """
         try:
             
+            self.checkuser()
+            
             # determine auth, and path.
             #  incoming post data is allegedly replacement for existing .rst of that name
+            
+            size = int(self.headers['Content-length'])
+            incoming = self.rfile.read(size)
+            
             path = self.path
             if path.startswith("/upload"):
                 path = path[7:]
                 # this means files in multipart upload need to be put in `path`
+
+            elif path.startswith("/login"):
+                path = path[6:]
+                # we posted to /login, so maybe set the cookie if we can ldap auth them
+                print "POST DATA:", incoming 
                 
             else:
                 
@@ -143,21 +197,18 @@ class DocHandler (BaseHTTPRequestHandler):
                 # ugh. check lock. and owner of the lock.
                 filelock = Locker(file)
                 locked = filelock.islocked() 
-                me = "figgins"
-                if not locked or locked and filelock.ownedby(me):
+                if not locked or locked and filelock.ownedby(self.user):
                 
-                    size = int(self.headers['Content-length'])
                     if(size > 0 and self.userisauthorized()):
-
-                        data = urllib.unquote_plus(self.rfile.read(size)[8:])
-
-                        if not os.path.exists(file):
-                            os.makedirs(os.path.dirname(file))
+                        data = urllib.unquote_plus(incoming[8:])
+                        dir = os.path.dirname(file)
+                        if not os.path.exists(dir):
+                            os.makedirs(dir)
                     
                         print >>open(file, 'w'), data
                         filelock.unlock()
 
-            self.do_GET();
+            self.do_process();
             
         except IOError, e:
             print e
@@ -211,12 +262,21 @@ class DocHandler (BaseHTTPRequestHandler):
                 title = "Execution output"
             )
         }
+    
+    def loginform(self, path):
+        
+        return {
+            'body': self.wraptemplate(
+                body = "<form method='POST' action='/login/" + path[1:] +">"
+            )
+        }
         
     def do_serv(self, **kwargs):
         """
             Sets all headers and serves whatever content it is told to.
         """
 
+        raw = kwargs.get("raw", False)
         response = kwargs.get("response", 200)
         self.send_response(response)
 
@@ -224,10 +284,15 @@ class DocHandler (BaseHTTPRequestHandler):
             for header in kwargs["headers"]:
                 self.send_header(header, headers[header])
 
+        for morsel in self.cookie.values():
+            self.send_header('Set-Cookie', morsel.output(header='').lstrip())
+
         self.end_headers();
 
         body = kwargs.get("body", "")
-        self.wfile.write(body.encode("utf-8"));
+        if not raw: body = body.encode("utf-8")
+        
+        self.wfile.write(body);
 
 # these are all random helpers, and should be moved somewhere they are most appropriate
 

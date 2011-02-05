@@ -47,10 +47,13 @@ class Locker(object):
         else:
             return False
 
+    def owner(self):
+        if self._lockfile_exists():
+            return open(self.lockfile, 'r').read().strip()
+        
     def ownedby(self, name):
         if self._lockfile_exists():
-            content = open(self.lockfile, 'r').read()
-            return content.strip() == name.strip()
+            return self.owner() == name.strip()
         else:
             return False
 
