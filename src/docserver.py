@@ -12,8 +12,16 @@ from conf import wiki as conf
 from Crumbs import Crumbs as crumbs
 
 template = open("templates/master.html", "r").read()
+
 class DocHandler (BaseHTTPRequestHandler):
     
+    def userisauthorized(self):
+        """
+            a fast return for authorization status for this user/request. actual auth lookup should
+            only be done once
+        """
+        return True
+        
     def wraptemplate(self, **kwargs):
         return re.sub("{{(.*)}}", lambda m: kwargs.get(m.group(1), ""), template)
 
@@ -26,6 +34,7 @@ class DocHandler (BaseHTTPRequestHandler):
             #
             # /                 becomes /index
             # /dojo             becomes /dojo/index
+            # /dojo/foo-bar     becomes /dojo/foo-bar but parented by /dojo/foo 
             # /dojo/index       becomes /dojo/index
             # /edit/dojo/       becomes /edit/dojo/index
             # /edit/dojo/index  becomes /edit/dojo/index
@@ -33,10 +42,9 @@ class DocHandler (BaseHTTPRequestHandler):
             # /edit/            becomes /edit/index
             # /dojo/byId        becomes /dojo/byId
             # /dijit/form/Form  becomes /dijit/form/Form
-            # /adm/*            becomes /adm/*
-            # /_static/         should be served by proxy, shared with ref-guide _static
+            # /do/*            becomes /adm/*
+            # /_static/*         should be served by proxy, shared with ref-guide _static
             # /*.jpg            images attached to wiki
-            # /my/              becomes ./site/ (pseudo local files for dev at this time)
             
             path = self.path
             editing = False
@@ -115,7 +123,7 @@ class DocHandler (BaseHTTPRequestHandler):
             #  incoming post data is allegedly replacement for existing .rst of that name
             file = rstfile(self.path)
             size = int(self.headers['Content-length'])
-            if(size > 0 and userisauthorized(self)):
+            if(size > 0 and self.userisauthorized()):
 
                 data = urllib.unquote_plus(self.rfile.read(size)[8:])
 
@@ -126,7 +134,8 @@ class DocHandler (BaseHTTPRequestHandler):
 
             self.do_GET();
             
-        except IOError:
+        except IOError, e:
+            print e
             self.do_serv(response=500)
 
     def runSearch(self, path):
@@ -239,6 +248,3 @@ def textarea(path, body):
             <div class='resp'><h1>Editing " + path + "</h1><textarea resizeable='true' name='content' style='width:100%; height:400px;'>" + body + "</textarea></div>\
             <button type='submit'>Save</button>\
         </form>"
-
-def userisauthorized(proc):
-    return True
