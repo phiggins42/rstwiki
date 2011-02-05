@@ -109,8 +109,8 @@ class DocHandler (BaseHTTPRequestHandler):
                         
             self.do_serv( body = stuff );
                 
-        except IOError, e :
-            self.do_serv(response=500, body="Something bad happened.")
+        except IOError:
+            self.do_serv(response=500, body="oops.")
     
     def do_POST(self):
         """
@@ -124,12 +124,12 @@ class DocHandler (BaseHTTPRequestHandler):
             size = int(self.headers['Content-length'])
             if(size > 0 and userisauthorized(self)):
 
-                if(os.path.exists(file)):
-                    data = urllib.unquote_plus(self.rfile.read(size)[8:])
-                    print >>open(file, 'w'), data
-                else:
-                    print "Wanted to save " + file + "but not found."
-                    # else we need to create it too? (svn add ...)
+                data = urllib.unquote_plus(self.rfile.read(size)[8:])
+
+                if not os.path.exists(file):
+                    os.makedirs(file)
+                    
+                print >>open(file, 'w'), data
 
             self.do_GET();
             

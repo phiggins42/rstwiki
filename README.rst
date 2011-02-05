@@ -1,8 +1,6 @@
 RstWiki - simple wiki/rst interface
 ===================================
 
-**note**: this doesn't actually do anything just yet. 
-
 **bummer**: proper "toc" support would be rad:
 
 .. contents ::
