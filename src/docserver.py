@@ -10,6 +10,7 @@ from docutils import core, io
 from dojo import DojoHTMLWriter
 from conf import wiki as conf
 from Crumbs import Crumbs as crumbs
+from locks import Locker
 
 template = open("templates/master.html", "r").read()
 
@@ -92,7 +93,10 @@ class DocHandler (BaseHTTPRequestHandler):
                         
             if(passthru):
                 # direct LINK. always 200 sadly?
-                self.do_serv(response=200, body=open(file).read())
+                if not os.path.exists(file):
+                    self.do_serv(response=404)
+                else:    
+                    self.do_serv(response=200, body=open(file).read())
                 return
             
             if(not os.path.exists(file)):
@@ -106,12 +110,19 @@ class DocHandler (BaseHTTPRequestHandler):
             if(not editing):
                 stuff = self.wraptemplate(title = action + " " + path, body = crumbs + parse_data(out), nav = editlink(path))
             else:
-                stuff = self.wraptemplate(title = action + " " + path, body = crumbs + textarea(path, out), nav = rawlink(path)) 
+                filelock = Locker(file)
+                locked = filelock.islocked()
+                me = "figgins"
+                if locked and not filelock.ownedby(me):
+                    stuff = self.wraptemplate(title="File Locked", body = crumbs + "<h3>Can't edit for another " + str(filelock.expiresin()) + " seconds</h3>", nav = rawlink(path))
+                else:
+                    filelock.lock(me)
+                    stuff = self.wraptemplate(title = action + " " + path, body = crumbs + textarea(path, out), nav = rawlink(path)) 
                         
             self.do_serv( body = stuff );
                 
         except IOError:
-            self.do_serv(response=500, body="oops.")
+            self.do_serv(response=500, body="oops. internal error.")
     
     def do_POST(self):
         """
@@ -121,16 +132,30 @@ class DocHandler (BaseHTTPRequestHandler):
             
             # determine auth, and path.
             #  incoming post data is allegedly replacement for existing .rst of that name
-            file = rstfile(self.path)
-            size = int(self.headers['Content-length'])
-            if(size > 0 and self.userisauthorized()):
+            path = self.path
+            if path.startswith("/upload"):
+                path = path[7:]
+                # this means files in multipart upload need to be put in `path`
+                
+            else:
+                
+                file = rstfile(path)
+                # ugh. check lock. and owner of the lock.
+                filelock = Locker(file)
+                locked = filelock.islocked() 
+                me = "figgins"
+                if not locked or locked and filelock.ownedby(me):
+                
+                    size = int(self.headers['Content-length'])
+                    if(size > 0 and self.userisauthorized()):
 
-                data = urllib.unquote_plus(self.rfile.read(size)[8:])
+                        data = urllib.unquote_plus(self.rfile.read(size)[8:])
 
-                if not os.path.exists(file):
-                    os.makedirs(os.path.dirname(file))
+                        if not os.path.exists(file):
+                            os.makedirs(os.path.dirname(file))
                     
-                print >>open(file, 'w'), data
+                        print >>open(file, 'w'), data
+                        filelock.unlock()
 
             self.do_GET();
             
