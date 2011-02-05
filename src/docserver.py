@@ -16,14 +16,7 @@ class DocHandler (BaseHTTPRequestHandler):
     
     def wraptemplate(self, **kwargs):
         return re.sub("{{(.*)}}", lambda m: kwargs.get(m.group(1), ""), template)
-#        
-#        def repl(matchobj):
-#            if kwargs.has_key(matchobj.group(1)):
-#                return str(kwargs[matchobj.group(1)])
-#            return ""
-#        # replace quoted words with value from fillings dictionary
-#        return re.sub("{{(.+?)}}", repl, template)
-#    
+
     def do_GET(self):
 
         try:
