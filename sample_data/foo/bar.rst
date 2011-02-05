@@ -1,13 +1,10 @@
 .. _foo/bar:
 
-Title
-=====
+dojo.forEach
+============
 
 .. contents :: 
 
-.. api-inline :: dojo.date
+.. api-inline :: dojo.forEach
 
-.. api-inline :: dojo.byId
-
-.. api-inline :: dojo.declare
 

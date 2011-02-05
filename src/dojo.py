@@ -40,7 +40,7 @@ class DojoApiInline(Directive):
     """ Put a root API block in this place
     """
     required_arguments = 1
-    option_arguments = 0
+    optional_arguments = 5
     has_content = False
 
     base_url = "http://dojotoolkit.org/api/rpc/"
@@ -48,6 +48,8 @@ class DojoApiInline(Directive):
 
     def run(self):
 
+        arguments = self.arguments
+            
         api = self.arguments[0];
         apislashed = api.replace(".", "/")
         apidotted = api.replace("/", ".")
@@ -60,10 +62,10 @@ class DojoApiInline(Directive):
         
         out = ""
         
-        out += "API Information\n---------------\n\n"
-        #out = "<pre>"
+        if not ":no-title:" in arguments:
+            out += "API Information\n---------------\n\n"
         
-        if "summary" in info:
+        if "summary" in info and not ":no-summary:" in arguments:
             out += ":summary:\t" + info["summary"] + "\n"
         
         if "returns" in info:
@@ -71,7 +73,7 @@ class DojoApiInline(Directive):
                 
         out += "\n"
         
-        if "parameters" in info:
+        if "parameters" in info and not ":no-params:" in arguments:
             out += "Parameters\n~~~~~~~~~~\n\nSignature\n\n"
             
             # determine if ClassLike and add a `new `
@@ -94,7 +96,7 @@ class DojoApiInline(Directive):
             out += "Overview\n\n" + tab + "\n"
             
         
-        if "examples" in info:
+        if "examples" in info and not ":no-examples:" in arguments:
             
             out += "Examples\n~~~~~~~~~~\n\n"
             for example in info['examples']:
