@@ -14,7 +14,12 @@ class Crumbs(object):
     """
     
     def __init__(self, url):
-        self.crumbs = url.split('/')
+        self.crumbs = []
+        for crumb in url.split('/'):
+            if crumb.find("-") > -1:
+                parts = crumb.split("-")
+                self.crumbs.append(parts[0])
+            self.crumbs.append(crumb)
     
     def links(self):
         self.list = []
