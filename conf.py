@@ -2,9 +2,6 @@
 #   rstwiki config stuffs
 #
 
-rst_root = "./data"
-src_vcs = "local"
-
 wiki = {
     "RST_ROOT": "./sample_data/",           # where the .rst tree will live. /sample_data/ has some test .rst. Suggest changing this to your own
     "SRC_VCS": "local",                     # enum(git, svn, local)
