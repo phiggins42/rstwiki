@@ -1,16 +1,19 @@
 [submodule "_static/dojo"]
-    path = "_static/dojo"
-    url = git://github.com/dojo/dojo.git
+	path = _static/dojo
+	url = git://github.com/dojo/dojo.git
 
 [submodule "_static/dijit"]
-    path = "_static/dijit"
-    url = git://github.com/dojo/dijit.git
+	path = _static/dijit
+	url = git://github.com/dojo/dijit.git
 
 [submodule "_static/dojox"]
     path = "_static/dojox"
     url = git://github.com/dojo/dojox.git
 
 [submodule "_static/CodeGlass"]
-    path = "_static/CodeGlass"
-    url = git://github.com/nonken/CodeGlass.git
+	path = _static/CodeGlass
+	url = git://github.com/nonken/CodeGlass.git
     
+[submodule "_static/util"]
+	path = _static/util
+	url = git://github.com/dojo/util.git
