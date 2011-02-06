@@ -17,6 +17,17 @@ from docutils.writers.html4css1 import HTMLTranslator, Writer
 
 import urllib
 
+class LiveCode(Directive):
+    
+    required_arguments = 0
+    optional_arguments = 3
+    has_content = True
+    
+    def run(self):
+        markup = "<div class='live-example'>" + u"\n".join(self.content) + "</div>"
+        return [nodes.raw('', markup, format='html')]
+        
+
 class DojoApi(Directive):
     """ Dojo API Documentation inlining
     """
@@ -37,14 +48,14 @@ class DojoApi(Directive):
 
 
 class DojoApiInline(Directive):
-    """ Put a root API block in this place
+    """ Put a root API block in this place in RST format. Tie into the parser stream and dump this back for processing.
     """
     required_arguments = 1
     optional_arguments = 5
     has_content = False
 
-    base_url = "http://dojotoolkit.org/api/rpc/"
-    #base_url = "http://staging.dojotoolkit.org/api/lib/html.php?p="
+    base_url = "http://dojotoolkit.org/api/rpc/" # json api
+    #base_url = "http://staging.dojotoolkit.org/api/lib/html.php?p=" # raw html dumper. 
 
     def run(self):
 
@@ -55,11 +66,19 @@ class DojoApiInline(Directive):
         apidotted = api.replace("/", ".")
         
         target_url = self.base_url + apislashed
-        # maybe add a local caching mechaism here
-        data = urllib.urlopen(target_url).read()
-        info = json.loads(data)
-        #print info
-        
+
+        try:
+            
+            # maybe add a local caching mechaism here
+            data = urllib.urlopen(target_url).read()
+            info = json.loads(data)
+
+        except ValueError:
+            error = self.state_machine.reporter.error(
+                'The API Could not be fetched for %s' % api,
+                literal_block(self.content, self.content))
+            return [error]
+
         out = ""
         
         if not ":no-title:" in arguments:
@@ -285,6 +304,7 @@ add_directive('codeviewer-compound', _codeviewer_compound, 1, (0, 0, 0)) # depre
 add_directive('cv-compound', _codeviewer_compound, 1, (0, 0, 0)) # deprecated
 
 # Simple dojoisms
+directives.register_directive('live-code', LiveCode)
 directives.register_directive('api-link', DojoApi)    
 directives.register_directive('api-inline', DojoApiInline)
 register_canonical_role('ref', ref_role);
