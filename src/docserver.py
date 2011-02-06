@@ -23,6 +23,7 @@ template = open("templates/master.html", "r").read()
 
 class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
     
+    server_version = "rstWiki/0.1a"
     user = "anonymous"
 
     def Session(self):
@@ -267,7 +268,7 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
         
         return {
             'body': self.wraptemplate(
-                body = "<form method='POST' action='/login/" + path[1:] +">"
+                body = "<form method='POST' action='/login/" + path[1:] +"></form>"
             )
         }
         
