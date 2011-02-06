@@ -160,3 +160,15 @@ How about inlining simple JS?
      
 
 :ref:`go here for more tests <foo/inline>`
+
+One more API Inline
+-------------------
+
+For dojo.html.set ...
+
+.. api-inline :: dojo.html.set
+
+That's all, folks.
+
+
+
