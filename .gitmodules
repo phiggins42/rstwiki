@@ -7,8 +7,8 @@
 	url = git://github.com/dojo/dijit.git
 
 [submodule "_static/dojox"]
-    path = "_static/dojox"
-    url = git://github.com/dojo/dojox.git
+	path = _static/dojox
+	url = git://github.com/dojo/dojox.git
 
 [submodule "_static/CodeGlass"]
 	path = _static/CodeGlass
