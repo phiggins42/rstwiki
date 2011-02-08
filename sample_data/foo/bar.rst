@@ -1,10 +1,10 @@
 .. _foo/bar:
 
-dojo.forEach
-============
+foo bar
+=======
 
 .. contents :: 
 
-.. api-inline :: dojo.forEach
+Thanks for visiting. Go back to the :ref:`homepage <index>` if you want. 
 
 
