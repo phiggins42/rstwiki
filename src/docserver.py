@@ -163,7 +163,7 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                     filelock.lock(self.user)
                     stuff = self.wraptemplate(title = action + " " + path, body = crumbs + textarea(path, out), nav = rawlink(path)) 
                         
-            self.do_serv( body = stuff );
+            self.do_serv( body = stuff, headers = { "Content-type":"text/html" } );
                 
         except IOError:
             self.do_serv(response=500, body="oops. internal error.")
@@ -283,7 +283,7 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
 
         if "headers" in kwargs:
             for header in kwargs["headers"]:
-                self.send_header(header, headers[header])
+                self.send_header(header, kwargs["headers"][header])
 
         for morsel in self.cookie.values():
             self.send_header('Set-Cookie', morsel.output(header='').lstrip())
