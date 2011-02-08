@@ -106,7 +106,7 @@ class DojoApiInline(Directive):
                 desc = param.get("description", "").strip()
                 tab += "* **" + name + "** `" + type + "`\n\t\t" + "".join(desc.split("\n")) + "\n"
                 
-                sig += name + " /* " + type + " */, "
+                sig += " /* " + type + " */ " + name + ", "
             
             sig = sig[:-2] + ")"
             
