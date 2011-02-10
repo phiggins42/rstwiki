@@ -153,7 +153,7 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
 
             crumbs = makenavcrumbs(path);
             if(not editing):
-                stuff = self.wraptemplate(title = action + " " + path, body = crumbs + parse_data(out), nav = editlink(path))
+                stuff = self.wraptemplate(title = action + " " + path, body = crumbs + parse_data(path, out), nav = editlink(path))
             else:
                 filelock = Locker(file)
                 locked = filelock.islocked()
@@ -201,12 +201,13 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                 if not locked or locked and filelock.ownedby(self.user):
                 
                     if(size > 0 and self.userisauthorized()):
-                        data = urllib.unquote_plus(incoming[8:])
+                        data = urllib.unquote_plus(incoming[8:]).rstrip()
                         dir = os.path.dirname(file)
                         if not os.path.exists(dir):
                             os.makedirs(dir)
                     
                         print >>open(file, 'w'), data
+                        invalidate_key(path)
                         filelock.unlock()
 
             self.do_process();
@@ -319,15 +320,32 @@ def makenavcrumbs(path):
     parts = crumbs(path);
     return "<div class='crumbs'><a href='/'>home</a> / " + " / ".join(parts.links()) + "</div>"
 
-def parse_data(data):
-    overrides = {}
-    stuff = core.publish_parts(
-        source=data, source_path="/",
-        destination_path="/", writer=DojoHTMLWriter(), settings_overrides=overrides)
-    return stuff['html_body'];
+data_cache = {}
+
+def invalidate_key(key):
+    """
+        Unset the memory data for the identifier (path)
+    """
+    if key in data_cache:
+        del data_cache[key]
+
+def _clearall():
+    """
+        Clear if repo changes? Clear if dojo.py changes? 
+    """
+    for key in data_cache:
+        invalidate_key(key)
+
+def parse_data(key, data):
+    if not key in data_cache:
+        data_cache[key] = core.publish_parts(
+            source=data, source_path="/",
+            destination_path="/", writer=DojoHTMLWriter(), settings_overrides={})
+            
+    return data_cache[key]['html_body'];
 
 def editlink(path):
-    return "<a href='/edit" + path + "'>edit raw</a> [ <a rel='st' href='#'>status</a> | <a rel='diff' href='#'>diff</a> | <a rel='up' href='#'>update</a> ] "
+    return "<a href='/edit" + path + "'>edit raw</a> [ <a rel='st' href='/do/status'>status</a> | <a rel='/do/diff' href='#'>diff</a> | <a rel='/do/update' href='#'>update</a> ] "
 
 def rawlink(path):
     # this is kind of useless? add a [cancel] button to the editing form

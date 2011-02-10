@@ -1,7 +1,7 @@
 .. _foo/inline:
 
 Inline API and Code
-===================
+====================
 
 live-code blocks simply render raw. Try to pick a unique id if using DomNodes with id's:
 
@@ -29,11 +29,3 @@ And a few more:
 .. api-inline :: dojo.byId
 .. api-inline :: dojo.replace
 .. api-inline :: dojo.NodeList
-
-
-
-
-
-
-
-

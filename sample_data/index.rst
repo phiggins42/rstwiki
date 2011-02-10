@@ -7,7 +7,7 @@ rstWiki
 .. contents ::
 
 Yet another wiki?
------------------
+-------------------
 
 This one is simple. It serves a very specific purpose, though can be mangled very easily into something to suit your needs. 
 
@@ -73,6 +73,14 @@ Setup
 
 The wiki will run standalone, serving html-rendered-reST data from a configured root path and static files from a defined folder.
 
+Rename the ``conf.sample.py`` to ``conf.py`` and edit as needed. Then run the server:
+
+.. code :: shell
+
+   mv conf.sample.py conf.py && vi conf.py
+   chmod +x wiki.py
+   ./wiki.py
+
 The static files should be processed by Apache or similar. Using Apache/ProxyPass is easy. Run the wiki server on a specified local port, and 
 proxy the requests to the application, intercepting requests to ``_static``
 
@@ -101,8 +109,3 @@ Related Items
 
 * Sphinx
 * docutils
-* 
-
-
-
-

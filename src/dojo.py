@@ -47,6 +47,8 @@ class DojoApi(Directive):
         return [nodes.raw('', markup, format='html')]
 
 
+dojo_api_inline_cache = {}
+
 class DojoApiInline(Directive):
     """ Put a root API block in this place in RST format. Tie into the parser stream and dump this back for processing.
     """
@@ -69,9 +71,13 @@ class DojoApiInline(Directive):
 
         try:
             
-            # maybe add a local caching mechaism here
-            data = urllib.urlopen(target_url).read()
-            info = json.loads(data)
+            if not target_url in dojo_api_inline_cache:
+                # maybe add a local caching mechaism here too. eg, save the read() stream to a local fs
+                print "not found. caching", target_url
+                data = urllib.urlopen(target_url).read()
+                dojo_api_inline_cache[target_url] = json.loads(data)
+            
+            info = dojo_api_inline_cache[target_url]
 
         except ValueError:
             error = self.state_machine.reporter.error(
@@ -161,6 +167,12 @@ def ref_role(role, rawtext, text, lineno, inliner, options={}, content=[]):
     else:
         return [], []
     # also, this could be safer:
+
+def sample_role(role, rawtext, text, lineno, inliner, options={}, content=[]):
+    """
+        simple role matching :sample:`shit`, converting it to an inline <span> with a class
+    """
+    
 
 class DojoHTMLWriter(Writer):
     """
