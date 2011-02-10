@@ -97,7 +97,7 @@ body {
 }
 
 .highlight .hll { background-color: #ffffcc }
-.highlight { border:1px dashed #666; padding:15px 25px; background: #f8f8f8; }
+.highlight { border:1px dashed #666; padding:5px 15px; background: #f8f8f8; }
 .highlight pre { width:100%; overflow:auto; }
 .highlight .c { color: #408080; font-style: italic } /* Comment */
 .highlight .err { /* border: 1px solid #FF0000 */ } /* Error */
