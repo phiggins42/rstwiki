@@ -92,6 +92,18 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
             passthru = False
             action = ""
             
+            if path.startswith("/unlock/"):
+
+                path = path[7:]
+                file = rstfile(path)
+                lock = Locker(file)
+                if lock.islocked() and lock.ownedby(self.user):
+                    lock.unlock()
+                    self.do_serv(response=200, body="unlocked")
+                else:
+                    self.do_serv(response=500, body="failed")
+                return;
+            
             if path.startswith("/do/"):
                 # return quickly for adm paths
                 self.do_serv(**self.specialhandler(path))
@@ -116,7 +128,7 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
             # local static files included in this app folder
             if path.startswith("/_static/"):
                 passthru = True;
-                file = "./_static" + path[8:]
+                file = conf['STATIC_ROOT'] + path[8:]
                 # unset the cookie values? they're tiny tho
 
             # if we're the root, always add `index`
@@ -266,7 +278,7 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
         }
     
     def loginform(self, path):
-        
+        # FIXME: handle auth somehow
         return {
             'body': self.wraptemplate(
                 body = "<form method='POST' action='/login/" + path[1:] +"></form>"
@@ -320,6 +332,7 @@ def makenavcrumbs(path):
     parts = crumbs(path);
     return "<div class='crumbs'><a href='/'>home</a> / " + " / ".join(parts.links()) + "</div>"
 
+# FIXME: move to a simple generic memory/disk/cache mech?
 data_cache = {}
 
 def invalidate_key(key):
@@ -344,6 +357,8 @@ def parse_data(key, data):
             
     return data_cache[key]['html_body'];
 
+# FIXME:  oldschool. move to template logic.
+
 def editlink(path):
     return "<a href='/edit" + path + "'>edit raw</a> [ <a rel='st' href='/do/status'>status</a> | <a rel='/do/diff' href='#'>diff</a> | <a rel='/do/update' href='#'>update</a> ] "
 
@@ -354,6 +369,11 @@ def rawlink(path):
 def textarea(path, body):
     return "\
         <form method='POST' action='" + path + "'>\
-            <div class='resp'><h1>Editing " + path + "</h1><textarea resizeable='true' name='content' style='width:100%; height:400px;'>" + body + "</textarea></div>\
-            <button type='submit'>Save</button>\
-        </form>"
+            <div class='resp'><h1>Editing " + path + "</h1>\
+            <button type='submit'>Save</button> <button type='reset' id='canceler'>Cancel</button>\
+            <textarea id='editor' resizeable='true' name='content' style='width:100%; height:400px;'>" + body + "</textarea></div>\
+        </form>\
+        <script src='/_static/CodeMirror/js/codemirror.js'></script>\
+        <script src='/_static/docs/editor.js'></script>\
+        <p style='margin-bottom:70px; visibility:hidden'>this is just filler so the fixed footer clears</p>\
+        "
