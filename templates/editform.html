@@ -1,0 +1,15 @@
+<form method='POST' action="{{path}}">
+    <div class='resp'>
+        <h1>Editing {{path}}</h1>
+        <textarea id='editor' resizeable='true' name='content' style='width:100%; height:420px;'>{{body}}</textarea>
+
+        <button type='submit'>Save</button> 
+        <button type='reset' id='canceler'>Cancel</button>
+    
+    </div>
+</form>
+
+<script src='{{root}}/CodeMirror/js/codemirror.js'></script>
+<script src='{{root}}/docs/editor.js'></script>
+
+<p style='margin-bottom:5em; visibility:hidden'>this is just filler so the fixed footer clears</p>

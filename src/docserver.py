@@ -4,7 +4,7 @@
 docserver.py - the core of the rst processing nonsense.
 
 """
-import subprocess, codecs, re, sys, os, urllib
+import subprocess, codecs, re, sys, os, urllib, cgi
 import SimpleHTTPServer
 from docutils import core, io
 from dojo import DojoHTMLWriter
@@ -19,7 +19,10 @@ class SessionElement(object): pass
 def makesessionid(length):
     return ''.join([random.choice(chars) for i in range(length)])
 
-template = open("templates/master.html", "r").read()
+# make this scan *.html in templates/ and map to some convention?
+# also maybe poll them for changes and invalidate stuff. 
+master_template = open("templates/master.html", "r").read()
+edit_template = open("templates/editform.html", "r").read()
 
 class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
     
@@ -47,6 +50,9 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
         return True
         
     def wraptemplate(self, **kwargs):
+        return self.filltemplate(master_template, **kwargs)
+        
+    def filltemplate(self, template, **kwargs):
         return re.sub("{{(.*)}}", lambda m: kwargs.get(m.group(1), ""), template)
 
     def checkuser(self):
@@ -126,9 +132,9 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                 action = "Editing"
 
             # local static files included in this app folder
-            if path.startswith("/_static/"):
+            if path.startswith(conf['STATIC_ALIAS']):
                 passthru = True;
-                file = conf['STATIC_ROOT'] + path[8:]
+                file = conf['STATIC_ROOT'] + path[len(conf['STATIC_ALIAS']):]
                 # unset the cookie values? they're tiny tho
 
             # if we're the root, always add `index`
@@ -165,15 +171,22 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
 
             crumbs = makenavcrumbs(path);
             if(not editing):
-                stuff = self.wraptemplate(title = action + " " + path, body = crumbs + parse_data(path, out), nav = editlink(path))
+                stuff = self.wraptemplate(root = conf['STATIC_ALIAS'], title = action + " " + path, crumbs = crumbs, body = parse_data(path, out), nav = editlink(path))
             else:
                 filelock = Locker(file)
                 locked = filelock.islocked()
                 if locked and not filelock.ownedby(self.user):
-                    stuff = self.wraptemplate(title="File Locked", body = crumbs + "<h3>Locked</h3><p>Can't edit for another " + str(filelock.expiresin()) + " seconds</p><p><em>owner:</em> " + filelock.owner(), nav = rawlink(path))
+                    stuff = self.wraptemplate(
+                        title="File Locked", 
+                        crumbs = crumbs, 
+                        body = "<h3>Locked</h3><p>Can't edit for another " + str(filelock.expiresin()) + " seconds</p><p><em>owner:</em> " + filelock.owner(), 
+                        nav = rawlink(path), 
+                        root=conf['STATIC_ALIAS']
+                    )
                 else:
                     filelock.lock(self.user)
-                    stuff = self.wraptemplate(title = action + " " + path, body = crumbs + textarea(path, out), nav = rawlink(path)) 
+                    editcontent = self.filltemplate(edit_template, path=path, body=out, root=conf['STATIC_ALIAS'])
+                    stuff = self.wraptemplate(title = action + " " + path, crumbs = crumbs, body = editcontent, nav = rawlink(path), root=conf['STATIC_ALIAS']) 
                         
             self.do_serv( body = stuff, headers = { "Content-type":"text/html" } );
                 
@@ -266,15 +279,23 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
 
         """
         cmd = path[1:].split("/")[1]
-        args = ["git", cmd, conf['RST_ROOT']];
+        args = ["git", cmd];
         #if(cmd == "commit"):
-        proc = subprocess.Popen(args, 4096, stdout=subprocess.PIPE);
+        
+        proc = subprocess.Popen(args, 4096, stdout=subprocess.PIPE, cwd=conf['RST_ROOT']);
+
+        response = proc.communicate()[0]
+        
 
         return {
             'body': self.wraptemplate(
-                body = "<pre>" + proc.communicate()[0] + "</pre>",
-                title = "Execution output"
-            )
+                body = "<pre>" + cgi.escape(response) + "</pre>",
+                title = "Execution output",
+                root = conf["STATIC_ALIAS"]
+            ),
+            'headers':{
+                "Content-type":"text/html"
+            }
         }
     
     def loginform(self, path):
@@ -365,15 +386,3 @@ def editlink(path):
 def rawlink(path):
     # this is kind of useless? add a [cancel] button to the editing form
     return "<a href='" + path + "'>rendered</a>"
-
-def textarea(path, body):
-    return "\
-        <form method='POST' action='" + path + "'>\
-            <div class='resp'><h1>Editing " + path + "</h1>\
-            <button type='submit'>Save</button> <button type='reset' id='canceler'>Cancel</button>\
-            <textarea id='editor' resizeable='true' name='content' style='width:100%; height:400px;'>" + body + "</textarea></div>\
-        </form>\
-        <script src='/_static/CodeMirror/js/codemirror.js'></script>\
-        <script src='/_static/docs/editor.js'></script>\
-        <p style='margin-bottom:70px; visibility:hidden'>this is just filler so the fixed footer clears</p>\
-        "

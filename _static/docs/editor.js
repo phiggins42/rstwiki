@@ -15,18 +15,18 @@ dojo.ready(function(){
     // always attempt to unlock the edited file when they leave
     dojo.addOnUnload(unlock);
 
-    CodeMirror.fromTextArea('editor', {
-        height: '520px',
-        parserfile: 'parsedummy.js',
-        stylesheet: '/_static/CodeMirror/css/rstcolors.css',
-        path: '/_static/CodeMirror/js/',
-        lineNumbers:true,
-        minHeight:400,
-        textWrapping:false,
-        iframeClass:'docmirrorframe',
-        indentUnit:4,
-        tabMode:"spaces",
-        enterMode:"keep"
-    }); 
+//    CodeMirror.fromTextArea('editor', {
+//        height: '520px',
+//        parserfile: 'parsedummy.js',
+//        stylesheet: '/_static/CodeMirror/css/rstcolors.css',
+//        path: '/_static/CodeMirror/js/',
+//        lineNumbers:true,
+//        minHeight:400,
+//        textWrapping:false,
+//        iframeClass:'docmirrorframe',
+//        indentUnit:4,
+//        tabMode:"spaces",
+//        enterMode:"keep"
+//    }); 
     
 });
