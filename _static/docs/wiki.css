@@ -159,3 +159,31 @@ body {
 .highlight .vg { color: #19177C } /* Name.Variable.Global */
 .highlight .vi { color: #19177C } /* Name.Variable.Instance */
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
+
+.CodeMirror-line-numbers {
+    color:#666;
+    font-family: monospace;
+    font-size: 10pt;
+    text-align:right;
+    padding-top:0.4em;
+    background-color:#ccc;
+}
+
+.CodeMirror-line-numbers div {
+    margin:0; padding:0 3px 0 0;
+    color:#666;
+    line-height:1.3em;
+    border-right:1px solid #666;
+}
+
+.CodeMirror-wrapping {
+    border:1px solid #666;
+}
+
+.codemirror-frame body {
+    margin:0; padding:0;
+}
+
+.resp button {
+    margin:0.6em 0;
+}
