@@ -7,13 +7,14 @@ rstWiki
 .. contents ::
 
 Yet another wiki?
--------------------
+----------------------------
 
-This one is simple. It serves a very specific purpose, though can be mangled very easily into something to suit your needs. 
+This one is simple. It serves a very specific purpose, though can be mangled very easily into something to suit 
+your needs. 
 
-rstWiki isn't a `real` wiki, it only pretends to be one. The content for the wiki is, very simply, decoded directly from reST files on disk. 
-Ideally, these reST files are stored in some form of VCS. rstWiki [will eventually] support both git and subversion. VC can be turned off 
-to work directly, locally, or whatever. 
+rstWiki isn't a `real` wiki, it only pretends to be one. The content for the wiki is, very simply, decoded directly
+from reST files on disk. Ideally, these reST files are stored in some form of VCS. rstWiki [will eventually] 
+support both git and subversion. VC can be turned off to work directly, locally, or whatever. 
 
 reST is a powerful yet simple markdown syntax. 
 
@@ -40,9 +41,10 @@ A handy reference guide is available: http://docutils.sourceforge.net/docs/user/
 Custom Directives
 -----------------
 
-reST is easily extensible. rstWiki ships a custom ``dojo.py`` module defining several custom directives. One custom directive included in the ability
-for reST to understand relative links similar to the way a wiki behaves. Sphinx uses these relative references to index content and generate the table of 
-contents. eg: :ref:`this links to some internal wiki page "foo/bar" <foo/bar>`
+reST is easily extensible. rstWiki ships a custom ``dojo.py`` module defining several custom directives. One 
+custom directive included in the ability for reST to understand relative links similar to the way a wiki behaves. 
+Sphinx uses these relative references to index content and generate the table of contents. 
+eg: :ref:`this links to some internal wiki page "foo/bar" <foo/bar>`
 
 The code for the custom directive is simple:
 
@@ -62,16 +64,17 @@ The code for the custom directive is simple:
 
     register_canonical_role('ref', ref_role);
 
-Other more complex directives can be generated as well, returning either the rendered HTML to include in the output, or simply injecting formatted
-reST into the parser stream when encountering a directive. 
+Other more complex directives can be generated as well, returning either the rendered HTML to include in the 
+output, or simply injecting formatted reST into the parser stream when encountering a directive. 
 
-For example, the ``.. api-inline ::`` directive will fetch JSON data from the Dojo Toolkit API documentation export and attempt to inject it into the
-parser stream. See :ref:`more api-inline examples <foo/inline>` for tests.
+For example, the ``.. api-inline ::`` directive will fetch JSON data from the Dojo Toolkit API documentation 
+export and attempt to inject it into the parser stream. See :ref:`more api-inline examples <foo/inline>` for tests.
 
 Setup
 -----
 
-The wiki will run standalone, serving html-rendered-reST data from a configured root path and static files from a defined folder.
+The wiki will run standalone, serving html-rendered-reST data from a configured root path and static files from a 
+defined folder.
 
 Rename the ``conf.sample.py`` to ``conf.py`` and edit as needed. Then run the server:
 
@@ -81,8 +84,8 @@ Rename the ``conf.sample.py`` to ``conf.py`` and edit as needed. Then run the se
    chmod +x wiki.py
    ./wiki.py
 
-The static files should be processed by Apache or similar. Using Apache/ProxyPass is easy. Run the wiki server on a specified local port, and 
-proxy the requests to the application, intercepting requests to ``_static``
+The static files should be processed by Apache or similar. Using Apache/ProxyPass is easy. Run the wiki 
+server on a specified local port, and proxy the requests to the application, intercepting requests to ``_static``
 
 .. code :: xml
 
@@ -102,10 +105,19 @@ proxy the requests to the application, intercepting requests to ``_static``
     
     </VirtualHost>
 
-Restart Apache and hit http://local.servername ... If the server is public, you may also want to include an Alias directive pointing to a robots.txt
+Restart Apache and hit http://local.servername ... If the server is public, you may also want to include an 
+Alias directive pointing to a robots.txt
+
+If it doesn't start right up, you'll likely need to install some dependencies. 
 
 Related Items
 -------------
 
 * Sphinx
 * docutils
+* Pygments
+* python-ldap
+* git, svn
+* CodeMirror
+* CodeGlass
+* Dojo, Dijit, Dojox
