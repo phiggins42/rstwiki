@@ -3,6 +3,8 @@
 Inline API and Code
 ====================
 
+.. contents ::
+
 live-code blocks simply render raw. Try to pick a unique id if using DomNodes with id's:
 
 .. live-code ::
@@ -14,18 +16,26 @@ live-code blocks simply render raw. Try to pick a unique id if using DomNodes wi
        });
    </script>
 
-The above "foo" will alert when clicked.
 
-This is an "api-link" directive:
 
-.. api-link :: dojo.forEach
+Checkout :ref:`CodeGlass style examples <foo/codeglass>` too
 
-This is an api-inline directive:
 
-.. api-inline :: dojo.query
+
 
 And a few more:
 
+dojo.byId
+=========
+
 .. api-inline :: dojo.byId
+
+dojo.replace
+============
+
 .. api-inline :: dojo.replace
+
+dojo.NodeList
+=============
+
 .. api-inline :: dojo.NodeList
