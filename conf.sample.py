@@ -27,6 +27,8 @@ wiki = {
     
     # where files served from /_static/ root live
     # note: it's probably better to proxypass this or the like
+    # note: also, change this to ./_static/release/ after a default build.sh
+    # if serving from the app directly. Else adjust your ProxyPass path, etc.
     "STATIC_ROOT": "./_static/"
     
 }
