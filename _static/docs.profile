@@ -1,4 +1,4 @@
-{
+dependencies = {
     
     action:"release",
     releaseName:"trunk",
@@ -17,11 +17,11 @@
     ],
     
     prefixes:[
-        ["../dojo", "dojo"],
-        ["../dijit", "dijit"],
-        ["../dojox", "dojox"],
-        ["../CodeGlass", "CodeGlass"],
-        ["../docs", "docs"]
+        ["dijit", "../dijit"],
+        ["dojox", "../dojox"],
+        ["CodeGlass", "../CodeGlass"],
+        ["CodeMirror", "../CodeMirror"],
+        ["docs", "../docs"]
     ]
     
 }

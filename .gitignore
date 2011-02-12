@@ -1,3 +1,5 @@
 conf.py
 *.pyc
 *_lock
+_static/release
+_cache/*
