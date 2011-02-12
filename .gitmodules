@@ -20,3 +20,6 @@
 [submodule "_static/docs/CodeMirror"]
 	path = _static/docs/CodeMirror
 	url = https://github.com/marijnh/CodeMirror.git
+[submodule "_static/CodeMirror"]
+	path = _static/CodeMirror
+	url = https://github.com/marijnh/CodeMirror.git
