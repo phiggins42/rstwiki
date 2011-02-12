@@ -4,6 +4,8 @@
 rstWiki
 ===========
 
+A simple reStructuredText based Wiki application. Get the code from: http://github.com/phiggins42/rstwiki 
+
 .. contents ::
 
 Yet another wiki?
@@ -49,6 +51,7 @@ eg: :ref:`this links to some internal wiki page "foo/bar" <foo/bar>`
 The code for the custom directive is simple:
 
 .. code :: python
+    :linenos:
     
     import re
     from docutils import nodes
@@ -75,6 +78,13 @@ Setup
 
 The wiki will run standalone, serving html-rendered-reST data from a configured root path and static files from a 
 defined folder.
+
+First clone and init the submodules for the wiki:
+
+.. code :: shell
+
+    git clone git://github.com/phiggins42/rstwiki.git rstwiki
+    cd rstwiki && git submodule init && git submodule update
 
 Rename the ``conf.sample.py`` to ``conf.py`` and edit as needed. Then run the server:
 
@@ -113,6 +123,7 @@ If it doesn't start right up, you'll likely need to install some dependencies.
 Related Items
 -------------
 
+* python >= 2.6
 * Sphinx
 * docutils
 * Pygments
