@@ -17,3 +17,6 @@
 [submodule "_static/util"]
 	path = _static/util
 	url = git://github.com/dojo/util.git
+[submodule "_static/docs/CodeMirror"]
+	path = _static/docs/CodeMirror
+	url = https://github.com/marijnh/CodeMirror.git
