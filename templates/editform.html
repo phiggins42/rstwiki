@@ -1,8 +1,11 @@
 <form method='POST' action="{{path}}">
     <div class='resp'>
         <h1>Editing {{path}}</h1>
-        <textarea id='editor' resizeable='true' name='content' style='width:100%; height:420px;'>{{body}}</textarea>
 
+        <div class="editor">
+        <textarea id='editor' resizeable='true' name='content' style='width:100%; height:420px;'>{{body}}</textarea>
+        <div id='editorhandle'><a href="#">-</a></div>
+        </div>
         <button type='submit'>Save</button> 
         <button type='reset' id='canceler'>Cancel</button>
     

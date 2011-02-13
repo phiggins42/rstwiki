@@ -5,6 +5,7 @@ docserver.py - the core of the rst processing nonsense.
 
 """
 import subprocess, codecs, re, sys, os, urllib, cgi
+import cgitb; 
 import SimpleHTTPServer
 from docutils import core, io
 from dojo import DojoHTMLWriter
@@ -23,6 +24,8 @@ def makesessionid(length):
 # also maybe poll them for changes and invalidate stuff. 
 master_template = open("templates/master.html", "r").read()
 edit_template = open("templates/editform.html", "r").read()
+login_template = open("templates/login.html", "r").read()
+upload_template = open("templates/upload.html", "r").read()
 
 class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
     
@@ -47,7 +50,11 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
             a fast return for authorization status for this user/request. actual auth lookup should
             only be done once
         """
-        return True
+        if not conf['USE_LDAP']:
+            return True
+        else:
+            # auth the cookie id against our internal isauthorized list? something
+            return True
         
     def wraptemplate(self, **kwargs):
         return self.filltemplate(master_template, **kwargs)
@@ -122,7 +129,11 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
             if path.startswith("/login"):
                 self.do_serv(**self.loginform(path))
                 return
-                            
+            
+            if path.startswith("/upload"):
+                self.do_serv(**self.uploadform(path))
+                return
+                
             # else, fix up the url a tad    
 
             if path.startswith("/edit/"):
@@ -171,7 +182,13 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
 
             crumbs = makenavcrumbs(path);
             if(not editing):
-                stuff = self.wraptemplate(root = conf['STATIC_ALIAS'], title = action + " " + path, crumbs = crumbs, body = parse_data(path, out), nav = editlink(path))
+                stuff = self.wraptemplate(
+                    root = conf['STATIC_ALIAS'], 
+                    title = action + " " + path, 
+                    crumbs = crumbs, 
+                    body = parse_data(path, out), 
+                    nav = self.editlink(path)
+                )
             else:
                 filelock = Locker(file)
                 locked = filelock.islocked()
@@ -180,13 +197,17 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                         title="File Locked", 
                         crumbs = crumbs, 
                         body = "<h3>Locked</h3><p>Can't edit for another " + str(filelock.expiresin()) + " seconds</p><p><em>owner:</em> " + filelock.owner(), 
-                        nav = rawlink(path), 
-                        root=conf['STATIC_ALIAS']
+                        root = conf['STATIC_ALIAS']
                     )
                 else:
                     filelock.lock(self.user)
                     editcontent = self.filltemplate(edit_template, path=path, body=out, root=conf['STATIC_ALIAS'])
-                    stuff = self.wraptemplate(title = action + " " + path, crumbs = crumbs, body = editcontent, nav = rawlink(path), root=conf['STATIC_ALIAS']) 
+                    stuff = self.wraptemplate(
+                        title = action + " " + path, 
+                        crumbs = crumbs, 
+                        body = editcontent, 
+                        root = conf['STATIC_ALIAS']
+                    ) 
                         
             self.do_serv( body = stuff, headers = { "Content-type":"text/html" } );
                 
@@ -199,26 +220,37 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
         """
         try:
             
-            self.checkuser()
             
             # determine auth, and path.
             #  incoming post data is allegedly replacement for existing .rst of that name
-            
-            size = int(self.headers['Content-length'])
-            incoming = self.rfile.read(size)
-            
-            path = self.path
-            if path.startswith("/upload"):
-                path = path[7:]
-                # this means files in multipart upload need to be put in `path`
 
-            elif path.startswith("/login"):
-                path = path[6:]
-                # we posted to /login, so maybe set the cookie if we can ldap auth them
-                print "POST DATA:", incoming 
-                
+            ctype, pdict = cgi.parse_header(self.headers.getheader("Content-type"))
+            if ctype == "multipart/form-data":
+                params = cgi.parse_multipart(self.rfile, pdict)
             else:
+                print ctype
+                size = int(self.headers['Content-length'])
+                if size > 0:
+                    incoming = self.rfile.read(size)
+                    params = parse_post(incoming)
+                else:
+                    params = {}
+
+            path = self.path
                 
+            if "login" in params:
+                print "user wants to login at", path, params['uname'], params['pw']
+
+            self.checkuser()
+            
+            if "upload" in params:
+                # we need to explode off the last part of the path and put files in that folder
+                print "sending files to", path
+                for item in params:
+                    print "key:", item
+
+            if "content" in params:
+                                
                 file = rstfile(path)
                 # ugh. check lock. and owner of the lock.
                 filelock = Locker(file)
@@ -226,7 +258,7 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                 if not locked or locked and filelock.ownedby(self.user):
                 
                     if(size > 0 and self.userisauthorized()):
-                        data = urllib.unquote_plus(incoming[8:]).rstrip()
+                        data = params['content'].rstrip()
                         dir = os.path.dirname(file)
                         if not os.path.exists(dir):
                             os.makedirs(dir)
@@ -335,13 +367,38 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
             }
         }
     
+    def uploadform(self, path):
+        return {
+            'body': self.wraptemplate(
+                body = self.filltemplate(upload_template, path = path[8:]),
+                title = "Upload",
+                root = conf["STATIC_ALIAS"]
+            ),
+            'headers':{
+                'Content-type':'text/html'
+            }
+        }
+    
     def loginform(self, path):
         # FIXME: handle auth somehow
         return {
             'body': self.wraptemplate(
-                body = "<form method='POST' action='/login/" + path[1:] +"></form>"
-            )
+                body = self.filltemplate(login_template, path = path[7:]),
+                title = "Login",
+                root = conf["STATIC_ALIAS"]
+            ),
+            'headers':{
+                "Content-type":"text/html"
+            }
         }
+    
+    def editlink(self, path):
+        if self.userisauthorized():
+            return "<a href='/edit" + path + "'>edit</a>\
+                <a href='/upload" + path + "'>upload</a>\
+                "
+        else:    
+            return "<a id='loginanchor' href='/login" + path + "'>login</a>"
         
     def do_serv(self, **kwargs):
         """
@@ -417,9 +474,18 @@ def parse_data(key, data):
 
 # FIXME:  oldschool. move to template logic.
 
-def editlink(path):
-    return "<a href='/edit" + path + "'>edit raw</a> [ <a rel='st' href='/do/status'>status</a> | <a rel='/do/diff' href='#'>diff</a> | <a rel='/do/update' href='#'>update</a> ] "
 
 def rawlink(path):
     # this is kind of useless? add a [cancel] button to the editing form
     return "<a href='" + path + "'>rendered</a>"
+
+def parse_post(data):
+    """ Probably a better postdata-to-dict function somewhere...
+    """
+    parts = {}
+    raw = data.split("&")
+    for part in raw:
+        k,v = part.split("=")
+        parts[k] = urllib.unquote_plus(v)
+
+    return parts

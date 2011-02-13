@@ -6,6 +6,10 @@ dojo.ready(function(){
 
 	var d = dojo;
 
+    dojo.query("#loginanchor").onclick(function(e){
+        
+    })
+
 	var dlg = new dijit.Dialog({ title:"Action:" });
 	d.query("#nav a[rel]").forEach(function(n){
 		var rel = d.attr(n, "href");

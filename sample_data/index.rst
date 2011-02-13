@@ -18,7 +18,7 @@ rstWiki isn't a `real` wiki, it only pretends to be one. The content for the wik
 from reST files on disk. Ideally, these reST files are stored in some form of VCS. rstWiki [will eventually] 
 support both git and subversion. VC can be turned off to work directly, locally, or whatever. 
 
-reST is a powerful yet simple markdown syntax. 
+reST is a super powerful yet simple markdown syntax. 
 
 But why not use [...]?
 ----------------------

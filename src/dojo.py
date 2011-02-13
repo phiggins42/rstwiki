@@ -51,27 +51,27 @@ dojo_api_inline_cache = {}
 
 class DojoApiInline(Directive):
     """ Put a root API block in this place in RST format. Tie into the parser stream and dump this back for processing.
-    
-    TODO: change this API. 
-    
-    Currently it's omission based. eg:
-    .. api-inline :: foo.bar # shows Everything
-    .. api-inline :: foo.bar # shows Everything but examples
-      :no-examples:
-    
-    This should be rejiggered to be inclusive, except "Evertyhing" eg:
-    .. api-inline :: foo.bar # shows Everything
-    .. api-inline :: foo.bar # shows only Examples--- and Signature--- subheadings
-      :examples:
-      :signature:
 
-    # with one global ommission rule, :no-titles:
-    .. api-inline :: foo.bar # shows only signature text, no headings or TOC entries for signature inline
-      :no-titles:
-      :signature:
-        
-    Also should maybe allow configurable heading depth? eg using =, -, ~ as heading markers?
-    """"
+        TODO: change this API. 
+
+        Currently it's omission based. eg:
+            .. api-inline :: foo.bar # shows Everything
+            .. api-inline :: foo.bar # shows Everything but examples
+                :no-examples:
+
+        This should be rejiggered to be inclusive, except "Evertyhing" eg:
+            .. api-inline :: foo.bar # shows Everything
+            .. api-inline :: foo.bar # shows only Examples--- and Signature--- subheadings
+                :examples:
+                :signature:
+
+        # with one global ommission rule, :no-titles:
+            .. api-inline :: foo.bar # shows only signature text, no headings or TOC entries for signature inline
+                :no-titles:
+                :signature:
+
+        Also should maybe allow configurable heading depth? eg using =, -, ~ as heading markers?
+    """
     
     required_arguments = 1
     optional_arguments = 5

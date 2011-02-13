@@ -164,8 +164,9 @@ textarea {
     font-family: monospace;
     font-size: 10pt;
     color:#101010;
-    padding:0.4em;
+    border:0;
 }
+
 .CodeMirror-line-numbers {
     color:#666;
     font-family: monospace;
@@ -192,3 +193,25 @@ textarea {
 .resp button {
     margin:0.6em 0;
 }
+
+.editor {
+    border:1px solid #666;
+}
+
+#editorhandle {
+    padding:0.4em;
+    width:100%;
+    margin:0; padding:0;
+    border-top:1px solid #666;
+    background:#ededed;
+    height:8px;
+}
+
+#editorhandle a { display:none; }
+
+#rstwiki_nav {
+    margin-top:15px;
+    float:right;
+}
+
+#files label { display:block; }

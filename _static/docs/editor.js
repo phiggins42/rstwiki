@@ -12,6 +12,45 @@ dojo.ready(function(){
         window.location.href = path
     });
     
+    dojo.query("#editorhandle")
+        .forEach(function(n){
+            
+            var target = dojo.byId("editor");
+            var cury = 0;
+            function mover(e){
+                var nowy = e.pageY,
+                    diff = nowy - cury,
+                    curheight = dojo.style(target, "height")
+                ;
+
+                cury = e.pageY;    
+                dojo.style(target, "height", (curheight + diff) + "px");
+            
+
+            }
+            
+            var connects = [], listener;
+            function startdrag(){
+                if(!listener){
+                    listener = dojo.connect(window, "onmousemove", mover)
+                }
+            }
+            
+            function stopdrag(){
+                listener && dojo.disconnect(listener)
+                listener = null;
+            }
+            
+            dojo.connect(n, "onmousedown", function(e){
+                cury = e.pageY;
+                startdrag()
+            });
+            
+            dojo.connect(window, "onmouseup", stopdrag)
+            
+            
+        })
+        
     // always attempt to unlock the edited file when they leave
     dojo.addOnUnload(unlock);
 
