@@ -239,12 +239,15 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
             path = self.path
                 
             if "login" in params:
+                # if they are senging uname/pw pairs lets try to log them in now
+                # before we process the upload/update/etc
                 print "user wants to login at", path, params['uname'], params['pw']
 
             self.checkuser()
             
             if "upload" in params:
                 # we need to explode off the last part of the path and put files in that folder
+                # also it appears I can't find the content-disposition:filename="" part of the multipart? ugh.
                 print "sending files to", path
                 for item in params:
                     print "key:", item
@@ -265,6 +268,10 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                     
                         print >>open(file, 'w'), data
                         message = '"updates via wiki from [' + self.user + ']"'
+                        
+                        # break this into a vcs-adaptor API with local,git,and svn default adaptors
+                        # eg: api = VcAdapter(conf['src_vcs'])
+                        # api.addFile(file); api.commit(file, message); api.moveFile(file, newfile);
                         
                         vcs = conf["SRC_VCS"]
                         if vcs == "git":
