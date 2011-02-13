@@ -13,6 +13,8 @@ from conf import wiki as conf
 from Crumbs import Crumbs as crumbs
 from locks import Locker
 import Cookie, random, string
+from admin import getChanges
+
 
 chars = string.ascii_letters + string.digits
 all_sessions = {}
@@ -26,6 +28,7 @@ master_template = open("templates/master.html", "r").read()
 edit_template = open("templates/editform.html", "r").read()
 login_template = open("templates/login.html", "r").read()
 upload_template = open("templates/upload.html", "r").read()
+admin_template= open("templates/admin.html", "r").read()
 
 class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
     
@@ -116,6 +119,10 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                 else:
                     self.do_serv(response=500, body="failed")
                 return;
+
+            if path.startswith("/admin/"):
+                self.do_serv(**self.runAdmin(path))
+                return
             
             if path.startswith("/do/"):
                 # return quickly for adm paths
@@ -275,25 +282,19 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                         
                         vcs = conf["SRC_VCS"]
                         if vcs == "git":
+                            from git import * 
                             """
                                 git add {file}
                                 git commit {file} -m "updates from [{user}] via wiki"
                             """
                             
                             file = file[len(conf["RST_ROOT"])+1:]
-                            print file
                             
-                            args = ["git","add", file]
-                            proc = subprocess.Popen(args,4096, cwd=conf["RST_ROOT"])
-                            added = proc.communicate()[0]
-                            print added
-                            
-                            # check success?
-                            cargs = ["git", "commit", "-m", message]
-                            cproc = subprocess.Popen(args,4096, cwd=conf["RST_ROOT"])
-                            committed = proc.communicate()[0]
-                            
-                            print committed
+                            git = Repo(conf["RST_ROOT"]).git
+                            git.add(file)
+                            git.commit(message=message)
+
+                            print "Committed changes to local master branch: " + message
                             
                         elif vcs == "svn":
                             """
@@ -378,6 +379,18 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
         return {
             'body': self.wraptemplate(
                 body = self.filltemplate(upload_template, path = path[8:]),
+                title = "Upload",
+                root = conf["STATIC_ALIAS"]
+            ),
+            'headers':{
+                'Content-type':'text/html'
+            }
+        }
+
+    def runAdmin(self, path):
+        return {
+            'body': self.wraptemplate(
+                body = self.filltemplate(admin_template, path = path[8:], changes=getChanges()),
                 title = "Upload",
                 root = conf["STATIC_ALIAS"]
             ),
