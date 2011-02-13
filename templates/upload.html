@@ -2,19 +2,25 @@
     <form action="/{{path}}" enctype="multipart/form-data" method="POST">
         <h2>Upload File(s)</h2>
         
+        <p>Destination is: {{path}}</p>
+
         <input type="hidden" name="upload" value="1">
         
         <div id="files">
 
+            <div>
             <label for="uploadfile">Select file:</label>
             <input type="file" name="uploadfile" id="uploadfile">
+            </div>
 
         </div>
-    
-        <a href="#morefiles">Add another file</a>
-        
-        Destination will be rooted in {{path}}
-    
+
         <button type="submit">Upload</button>
+
     </form>
+    
+    <a id="morefiles" href="#morefiles">Add another file</a>
+    
+    <script src="/_static/docs/upload.js"></script>
+        
 </div>
