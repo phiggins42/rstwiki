@@ -3,9 +3,15 @@
         <h1>Editing {{path}}</h1>
 
         <div class="editor">
-        <textarea id='editor' resizeable='true' name='content' style='width:100%; height:420px;'>{{body}}</textarea>
-        <div id='editorhandle'><a href="#">-</a></div>
+            <textarea id='editor' resizeable='true' name='content' style='width:100%; height:420px;'>{{body}}</textarea>
+            <div id='editorhandle'><a href="#">-</a></div>
         </div>
+        
+        <div class="bloc">
+            <label for="message">Description of Changes:</label>
+            <input type="text" name="message" id="message" style="width:75%">
+        </div>
+        
         <button type='submit'>Save</button> 
         <button type='reset' id='canceler'>Cancel</button>
     
@@ -14,5 +20,3 @@
 
 <script src='{{root}}/CodeMirror/js/codemirror.js'></script>
 <script src='{{root}}/docs/editor.js'></script>
-
-<p style='margin-bottom:5em; visibility:hidden'>this is just filler so the fixed footer clears</p>

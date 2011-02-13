@@ -257,7 +257,7 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                 # also it appears I can't find the content-disposition:filename="" part of the multipart? ugh.
                 print "sending files to", path
                 for item in params:
-                    print "key:", item
+                    print "key:", item, "size:", len(params[item][0])
 
             if "content" in params:
                                 
