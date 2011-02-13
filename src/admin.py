@@ -1,4 +1,4 @@
-from git import Repo
+from git import Repo, GitDB
 from conf import wiki as conf
 
 def getChanges():
