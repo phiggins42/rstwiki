@@ -4,11 +4,13 @@
     teh root wiki logic
 """
 
-import conf, os
+import conf, os, subprocess
 from docserver import DocHandler
 from BaseHTTPServer import HTTPServer
 
 class RstWiki(object):
+    
+    init_tries = 0
     
     def setup_server(self):
         """ 
@@ -25,13 +27,27 @@ class RstWiki(object):
         """
             determine what the hell we need to do with the source folder
         """
+        if self.init_tries > 1:
+            raise BaseException("unable to even begin to serve a filesystem")
+            
+        vcs = self.config['SRC_VCS']
         
         if not os.path.exists(self.config["RST_ROOT"]):
-            print "error: data path doesn't exist"
-            # local? fail. complain. die.
-            # git: create a branch of the .git url
-            # svn: svn co the url
-            # self.init_data() check again? prevent looping.
+            print "init: No data found. Running init."
+            if vcs == "local":
+                args = []
+                os.makedirs(self.config['RST_ROOT'])
+            elif vcs == "git":
+                args = ["git", "clone", self.config["SRC_REPO"], self.config["RST_ROOT"]];
+            elif vcs == "svn":
+                args = ["svn","co", self.config["SRC_REPO"], self.config['RST_ROOT']];
+            
+            co = subprocess.Popen(args, 4096)
+            print co.communicate()[0]
+            print "Done."
+            self.init_tries += 1            
+            self.init_data();
+
         else:
             print "cool: data tree is there"
             # should we clear all locks on startup?

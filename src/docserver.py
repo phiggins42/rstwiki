@@ -232,6 +232,40 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                             os.makedirs(dir)
                     
                         print >>open(file, 'w'), data
+                        message = '"updates via wiki from [' + self.user + ']"'
+                        
+                        vcs = conf["SRC_VCS"]
+                        if vcs == "git":
+                            """
+                                git add {file}
+                                git commit {file} -m "updates from [{user}] via wiki"
+                            """
+                            
+                            file = file[len(conf["RST_ROOT"])+1:]
+                            print file
+                            
+                            args = ["git","add", file]
+                            proc = subprocess.Popen(args,4096, cwd=conf["RST_ROOT"])
+                            added = proc.communicate()[0]
+                            print added
+                            
+                            # check success?
+                            cargs = ["git", "commit", "-m", message]
+                            cproc = subprocess.Popen(args,4096, cwd=conf["RST_ROOT"])
+                            committed = proc.communicate()[0]
+                            
+                            print committed
+                            
+                        elif vcs == "svn":
+                            """
+                                svn commit {file} -m "updates from [{user}] via wiki"
+                            """
+                            args = ["svn","commit", file, "-m", message]
+                            print " ".join(args)
+                            proc = subprocess.Popen(args, 4096);
+                            data = proc.communicate()[0];
+                            print data
+                        
                         invalidate_key(path)
                         filelock.unlock()
 
@@ -279,14 +313,17 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
 
         """
         cmd = path[1:].split("/")[1]
-        args = ["git", cmd];
-        #if(cmd == "commit"):
+        args = [conf["SRC_VCS"], cmd];
+        if(cmd == "push"):
+            """
+                double check auth here. don't allow this command unless project-committer
+                oh also we only care if using vcs and auth. otherwise why the hell would
+                they even be hitting this rpc
+            """
         
         proc = subprocess.Popen(args, 4096, stdout=subprocess.PIPE, cwd=conf['RST_ROOT']);
-
         response = proc.communicate()[0]
         
-
         return {
             'body': self.wraptemplate(
                 body = "<pre>" + cgi.escape(response) + "</pre>",
