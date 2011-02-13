@@ -5,8 +5,8 @@ wiki = {
     
     # sample svn repo
     #"SRC_VCS": "svn",
-    #"SRC_REPO": "1https://svn.dojotoolkit.org/dojo_doc_wiki/_source-moin/",
-    #"RST_ROOT":"./1svn_sample_repo/",
+    #"SRC_REPO": "https://svn.dojotoolkit.org/dojo_doc_wiki/_source-moin/",
+    #"RST_ROOT":"./svn_sample_repo/",
 
     # sample git repo
     #"SRC_VCS":"git",

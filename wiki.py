@@ -28,7 +28,7 @@ class RstWiki(object):
             determine what the hell we need to do with the source folder
         """
         if self.init_tries > 1:
-            raise BaseException("unable to even begin to serve a filesystem")
+            raise BaseException("unable to even begin to serve a filesystem.")
             
         vcs = self.config['SRC_VCS']
         
@@ -45,12 +45,10 @@ class RstWiki(object):
             co = subprocess.Popen(args, 4096)
             print co.communicate()[0]
             print "Done."
-            self.init_tries += 1            
+            self.init_tries += 1
             self.init_data();
-
         else:
-            print "cool: data tree is there"
-            # should we clear all locks on startup?
+            print "cool: data tree [" + self.config['RST_ROOT'] + "] is there. running with it."
             
     def __init__(self, config):
         self.config = config
