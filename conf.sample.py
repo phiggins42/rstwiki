@@ -2,19 +2,21 @@
 #   rstwiki config stuffs
 #
 wiki = {
+    
+    # sample svn repo
+    #"SRC_VCS": "svn",
+    #"SRC_REPO": "1https://svn.dojotoolkit.org/dojo_doc_wiki/_source-moin/",
+    #"RST_ROOT":"./1svn_sample_repo/",
 
-    # where the .rst tree will live. /sample_data/ has some test .rst. 
-    # Suggest changing this to your own empty path to start editing 
-    # "homepage" (/index.rst) 
-    "RST_ROOT":"./sample_data/",
+    # sample git repo
+    #"SRC_VCS":"git",
+    #"SRC_REPO": "git://github.com/phiggins42/rstwiki-git.git",
+    #"RST_ROOT":"./git_sample_repo/",
     
-    # enum(git, svn, local)
+    # sample local repo
     "SRC_VCS": "local",
-    
-    # ignored if SRC_VCS is local
-    # if svn, commit happens directly on tree
-    # if git, commit happens direclly tree (?)
-    "SRC_REPO": "{some github|svn repo}",
+    "SRC_REPO":"",
+    "RST_ROOT":"./sample_data/",
     
     # set to `True` if wanting to do simple auth against an LDAP server
     "USE_LDAP": False,
@@ -27,11 +29,8 @@ wiki = {
     
     # where files served from /_static/ root live
     # note: it's probably better to proxypass this or the like
-    # note: also, change this to ./_static/release/ after a default build.sh
-    # if serving from the app directly. Else adjust your ProxyPass path, etc.
     "STATIC_ROOT": "./_static/",
     "STATIC_ALIAS": "/_static"
-    
 }
 
 # add our src/ tree to the import path
