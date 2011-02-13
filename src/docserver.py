@@ -282,7 +282,7 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                         
                         vcs = conf["SRC_VCS"]
                         if vcs == "git":
-                            from git import * 
+                            from git import Repo 
                             """
                                 git add {file}
                                 git commit {file} -m "updates from [{user}] via wiki"
