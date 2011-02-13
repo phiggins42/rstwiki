@@ -32,23 +32,6 @@ body {
     padding-right:5px;
 }
 
-.wrap form div.resp { height:100%; }
-#nav {
-    background:#666;
-    color:#fff;
-    position:fixed;
-    width:100%;
-    bottom:0;
-    left:0;
-    padding:5px;
-    z-index:999;
-    border-top:1px solid #101010;
-}
-
-.dj_ie6 #nav {
-    position:absolute;
-}
-
 .section h2, 
 .section h1 {
     border-bottom:1px solid #666;
@@ -87,12 +70,18 @@ body {
 #nav a:visited { color:#fff; text-decoration:none; }
 #nav a:hover { color:#fff; text-decoration:underline; }
 
+.head {
+    background:#ededed;
+    border-bottom:1px solid #666;
+}
+
 .crumbs {
-    padding-top:15px;
+    padding-top:10px;
+    padding-bottom:10px;
 }
 
 .document { 
-    padding:5px 0 50px 0; 
+    padding:5px 0 25px 0; 
     position:relative; 
 }
 
@@ -210,8 +199,21 @@ textarea {
 #editorhandle a { display:none; }
 
 #rstwiki_nav {
-    margin-top:15px;
+    margin-top:10px;
     float:right;
 }
 
+.resp h1 {
+    margin-top:15px;
+}
+
+.resp label,
 #files label { display:block; }
+
+.bloc { margin:0.7em 0; }
+
+input {
+    padding:0.4em;
+    border:1px solid #666;
+    color:#101010;
+}

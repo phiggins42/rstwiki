@@ -5,10 +5,14 @@
         <p>Destination is: {{path}}</p>
 
         <input type="hidden" name="upload" value="1">
-        
+
+        <div class="bloc">
+           <a id="morefiles" href="#morefiles">Add another file</a>
+        </div>
+                   
         <div id="files">
 
-            <div>
+            <div class="bloc">
             <label for="uploadfile">Select file:</label>
             <input type="file" name="uploadfile" id="uploadfile">
             </div>
@@ -18,8 +22,6 @@
         <button type="submit">Upload</button>
 
     </form>
-    
-    <a id="morefiles" href="#morefiles">Add another file</a>
     
     <script src="/_static/docs/upload.js"></script>
         
