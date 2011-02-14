@@ -71,31 +71,8 @@ Rename the ``conf.sample.py`` to ``conf.py`` and edit as needed. Then run the se
    chmod +x wiki.py
    ./wiki.py
 
-The static files should be processed by Apache or similar. Using Apache/ProxyPass is easy. Run the wiki 
-server on a specified local port, and proxy the requests to the application, intercepting requests to ``_static``
+If this doesn't work out of the box or you need advanced setup options checkout the :ref:`advanced setup guide <rstwiki/setup>`
 
-.. code :: xml
-
-    <VirtualHost *:80>
-
-        ServerName local.servername
-        ProxyPass /_static !
-        Alias /_static {pathTo}/rstwiki/_static
-        ProxyPass / http://localhost:4200/
-        ProxyPassReverse / http://localhost:4200/
-        ProxyPreserveHost On
-        
-        <Directory {pathTo}/rstwiki/_static>
-            Order allow,deny
-            Allow from all
-        </Directory>
-    
-    </VirtualHost>
-
-Restart Apache and hit http://local.servername ... If the server is public, you may also want to include an 
-Alias directive pointing to a robots.txt
-
-If it doesn't start right up, you'll likely need to install some dependencies. 
 
 Related Items
 -------------

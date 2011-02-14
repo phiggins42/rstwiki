@@ -63,10 +63,9 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
             if self.cookie.has_key("sessionid"):
                 id = self.cookie['sessionid'].value
                 if id in authed_users:
-                    ret = True
+                    ret = self.user == authed_users[id]
             else:
                 ret = False
-
 
         return ret
         
@@ -324,26 +323,25 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                             res = git.commit(file,message=message, author="\"" + self.user + " <" + self.user + "@wiki.dojotoolkit.org>\"");
 
                             def push():
-                                 print "Pushing commits to remote write branch."
-                                 pushScheduled.clear()
+                                print "Pushing commits to remote write branch."
+                                pushScheduled.clear()
 
-                                 git.push(repo.remotes.origin)
-                                 msg = urllib.urlencode({
+                                git.push(repo.remotes.origin)
+                                msg = urllib.urlencode({
                                      "pull[base]": "master",
                                      "pull[head]": "dmachi:master",
                                      "pull[title]": "Pull request for updated wiki docs",
                                      "pull[body]": "Pull request for updated wiki docs"
-                                 })
-                                 urllib.urlopen("https://github.com/api/v2/json/pulls/phiggins42/rstwiki-git",msg)
-                                 pushScheduled.clear()
-                      
-                           
+                                })
+                                urllib.urlopen("https://github.com/api/v2/json/pulls/phiggins42/rstwiki-git", msg)
+                                pushScheduled.clear()
+                                
                             if not pushScheduled.isSet():
-                                 print "Starting Timer to trigger push" 
-                                 pushScheduled.set() 
-                                 pushGit = Timer(conf["SRC_PUSH_DELAY"], push)
-                                 pushGit.start()					
-                            
+                                print "Starting Timer to trigger push" 
+                                pushScheduled.set() 
+                                pushGit = Timer(conf["SRC_PUSH_DELAY"], push)
+                                pushGit.start()
+                                
                         elif vcs == "svn":
                             """
                                 svn commit {file} -m "updates from [{user}] via wiki"
@@ -440,7 +438,7 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
         return {
             'body': self.wraptemplate(
                 body = self.filltemplate(admin_template, path = path[8:], changes=getChanges()),
-                title = "Upload",
+                title = "Administration",
                 root = conf["STATIC_ALIAS"],
                 crumbs = makenavcrumbs(path)
             ),
