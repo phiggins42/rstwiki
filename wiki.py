@@ -42,11 +42,11 @@ class RstWiki(object):
                 print self.config["RST_ROOT"] + " does not exist.  Cloning " + self.config["SRC_REPO"] + " to " + self.config["RST_ROOT"]
                 Repo.clone_from(self.config["SRC_REPO"],self.config["RST_ROOT"])
             elif vcs == "svn":
-		print "SVN Checkout"
+                print "SVN Checkout"
                 args = ["svn","co", self.config["SRC_REPO"], self.config['RST_ROOT']];
                 co = subprocess.Popen(args, 4096)
                 print co.communicate()[0]
-		print "SVN Checkout Done"
+                print "SVN Checkout Done"
 
             self.init_tries += 1
             self.init_data();
@@ -55,9 +55,9 @@ class RstWiki(object):
             if vcs=="git":
                 from git import Repo
 
-		#pull in upstream data from the Origin (remote) repo
+                #pull in upstream data from the Origin (remote) repo
                 repo = Repo(self.config["RST_ROOT"])
-		if not repo.is_dirty():
+                if not repo.is_dirty():
                     print "Updating local git repository from " + self.config["SRC_REPO"]
                     origin = repo.remotes.origin
                     origin.fetch()
