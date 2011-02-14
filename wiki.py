@@ -43,17 +43,16 @@ class RstWiki(object):
                 Repo.clone_from(self.config["SRC_REPO"],self.config["RST_ROOT"])
 		
             elif vcs == "svn":
-		print "SVN Checkout"
+                print "SVN Checkout"
                 args = ["svn","co", self.config["SRC_REPO"], self.config['RST_ROOT']];
                 co = subprocess.Popen(args, 4096)
                 print co.communicate()[0]
-		print "SVN Checkout Done"
+                print "SVN Checkout Done"
 
             self.init_tries += 1
             self.init_data();
         else:
             print "Found Data at [" + self.config['RST_ROOT'] + "]"
-           
     def __init__(self, config):
         self.config = config
         self.init_data()

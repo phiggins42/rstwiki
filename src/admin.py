@@ -1,4 +1,4 @@
-from git import *
+from git import Repo, GitDB
 from conf import wiki as conf
 
 def getChanges():
@@ -10,7 +10,8 @@ def getChanges():
 	for commit in commits:
 	    msg += "Commit: <a href=\"/admin/commit/" + commit.name_rev	+ "\">" + commit.name_rev + "</a><br>"
             msg += "Author: " + commit.author.name + "<br>"
-            msg += "Message: " + commit.message + "<br>"	
-	    msg += "<br>"
+            msg += "Message: " + commit.message + "<br>"
+            #msg += "Diff:<br><pre>" + diff + "</pre><br>"
+            msg += "<br>"
         return msg
     return "No Changes"	

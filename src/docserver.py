@@ -33,6 +33,7 @@ login_template = open("templates/login.html", "r").read()
 upload_template = open("templates/upload.html", "r").read()
 admin_template= open("templates/admin.html", "r").read()
 pushScheduled = threading.Event();
+authed_users = {}
 
 class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
     
@@ -56,11 +57,18 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
             a fast return for authorization status for this user/request. actual auth lookup should
             only be done once
         """
-        if not conf['USE_LDAP']:
-            return True
-        else:
-            # auth the cookie id against our internal isauthorized list? something
-            return True
+        ret = True
+        if conf['USE_LDAP']:
+            ret = False
+            if self.cookie.has_key("sessionid"):
+                id = self.cookie['sessionid'].value
+                if id in authed_users:
+                    ret = True
+            else:
+                ret = False
+
+
+        return ret
         
     def wraptemplate(self, **kwargs):
         return self.filltemplate(master_template, **kwargs)
@@ -78,7 +86,12 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
 
         self.info = self.Session()
         if self.cookie.has_key("sessionid"):
-            self.user = self.cookie['sessionid'].value
+            sessionid = self.cookie['sessionid'].value
+            if sessionid in authed_users:
+                self.user = authed_users[sessionid]
+            else:
+                # sessionid == cookie.sessionid means they aren't a valid user
+                self.user = self.cookie['sessionid'].value
         
     def do_GET(self):
         
@@ -230,6 +243,7 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
         """
         try:
             
+            self.checkuser()
             
             # determine auth, and path.
             #  incoming post data is allegedly replacement for existing .rst of that name
@@ -252,8 +266,12 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                 # if they are senging uname/pw pairs lets try to log them in now
                 # before we process the upload/update/etc
                 print "user wants to login at", path, params['uname'], params['pw']
-
-            self.checkuser()
+                if(conf['USE_LDAP']):
+                    from ldapauth import isuser
+                    sessionid = self.cookie['sessionid'].value
+                    if isuser(params['uname'], params['pw']):
+                        authed_users[sessionid] = params['uname']
+                        self.checkuser()
             
             if "upload" in params:
                 # we need to explode off the last part of the path and put files in that folder
@@ -281,7 +299,12 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                             message =  params["message"]
                         else:
                             message = '"updates via wiki from [' + self.user + ']"'
-                        
+
+                        message = 'updates via wiki from [' + self.user + '] - '                        
+                        if 'message' in params:
+                            # should we shell escape message here? seems like it's going through raw? test that.
+                            message += params['message']
+                       
                         # break this into a vcs-adaptor API with local,git,and svn default adaptors
                         # eg: api = VcAdapter(conf['src_vcs'])
                         # api.addFile(file); api.commit(file, message); api.moveFile(file, newfile);
@@ -289,6 +312,10 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                         vcs = conf["SRC_VCS"]
                         if vcs == "git":
                             from git import Repo,GitCmdObjectDB
+                            """
+                                git add {file}
+                                git commit {file} -m "updates from [{user}] via wiki"
+                            """
                             
                             file = file[len(conf["RST_ROOT"])+1:]
                             repo = Repo(conf["RST_ROOT"],odbt=GitCmdObjectDB) 
@@ -401,7 +428,8 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
             'body': self.wraptemplate(
                 body = self.filltemplate(upload_template, path = path[8:]),
                 title = "Upload",
-                root = conf["STATIC_ALIAS"]
+                root = conf["STATIC_ALIAS"],
+                crumbs = makenavcrumbs(path)
             ),
             'headers':{
                 'Content-type':'text/html'
@@ -413,7 +441,8 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
             'body': self.wraptemplate(
                 body = self.filltemplate(admin_template, path = path[8:], changes=getChanges()),
                 title = "Upload",
-                root = conf["STATIC_ALIAS"]
+                root = conf["STATIC_ALIAS"],
+                crumbs = makenavcrumbs(path)
             ),
             'headers':{
                 'Content-type':'text/html'
@@ -426,7 +455,8 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
             'body': self.wraptemplate(
                 body = self.filltemplate(login_template, path = path[7:]),
                 title = "Login",
-                root = conf["STATIC_ALIAS"]
+                root = conf["STATIC_ALIAS"],
+                crumbs = makenavcrumbs(path)
             ),
             'headers':{
                 "Content-type":"text/html"
