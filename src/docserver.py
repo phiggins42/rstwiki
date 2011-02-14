@@ -14,7 +14,9 @@ from Crumbs import Crumbs as crumbs
 from locks import Locker
 import Cookie, random, string
 from admin import getChanges
-
+import time
+from threading import Timer
+import threading
 
 chars = string.ascii_letters + string.digits
 all_sessions = {}
@@ -29,12 +31,13 @@ edit_template = open("templates/editform.html", "r").read()
 login_template = open("templates/login.html", "r").read()
 upload_template = open("templates/upload.html", "r").read()
 admin_template= open("templates/admin.html", "r").read()
+pushScheduled = threading.Event();
+pullRequests = [];
 
 class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
     
     server_version = "rstWiki/0.1a"
     user = "anonymous"
-
     def Session(self):
         if self.cookie.has_key("sessionid"):
             sessionid = self.cookie['sessionid'].value
@@ -274,7 +277,10 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                             os.makedirs(dir)
                     
                         print >>open(file, 'w'), data
-                        message = '"updates via wiki from [' + self.user + ']"'
+                        if "message" in params and params["message"]!="":
+                            message =  params["message"]
+                        else:
+                            message = '"updates via wiki from [' + self.user + ']"'
                         
                         # break this into a vcs-adaptor API with local,git,and svn default adaptors
                         # eg: api = VcAdapter(conf['src_vcs'])
@@ -282,19 +288,25 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                         
                         vcs = conf["SRC_VCS"]
                         if vcs == "git":
-                            from git import * 
-                            """
-                                git add {file}
-                                git commit {file} -m "updates from [{user}] via wiki"
-                            """
+                            from git import Repo,GitCmdObjectDB
                             
                             file = file[len(conf["RST_ROOT"])+1:]
-                            
-                            git = Repo(conf["RST_ROOT"]).git
-                            git.add(file)
-                            git.commit(message=message)
+                            repo = Repo(conf["RST_ROOT"],odbt=GitCmdObjectDB) 
+                            git=repo.git
+                           
+                            res = git.commit(file,message=message, author="\"" + self.user + " <" + self.user + "@wiki.dojotoolkit.org>\"");
 
-                            print "Committed changes to local master branch: " + message
+                            def push():
+                                 print "Pushing commits to remote write branch."
+                                 git.push(repo.remotes.origin)
+                                 pushScheduled.clear()
+
+                           
+                            if not pushScheduled.isSet():
+                                 print "Starting Timer to trigger push" 
+                                 pushScheduled.set() 
+                                 pushGit = Timer(conf["SRC_PUSH_DELAY"], push)
+                                 pushGit.start()					
                             
                         elif vcs == "svn":
                             """

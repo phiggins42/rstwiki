@@ -8,7 +8,7 @@ def getChanges():
 	commits = repo.iter_commits("master",None,max_count=10)
         msg=""
 	for commit in commits:
-	    msg += "Commit: " + commit.name_rev	+ "<br>"
+	    msg += "Commit: <a href=\"/admin/commit/" + commit.name_rev	+ "\">" + commit.name_rev + "</a><br>"
             msg += "Author: " + commit.author.name + "<br>"
             msg += "Message: " + commit.message + "<br>"	
 	    msg += "<br>"

@@ -10,8 +10,9 @@ wiki = {
 
     # sample git repo
     #"SRC_VCS":"git",
-    #"SRC_REPO": "git://github.com/phiggins42/rstwiki-git.git",
-    #"RST_ROOT":"./git_sample_repo/",
+    #"SRC_REPO": "git@github.com:phiggins42/rstwiki-git.git",
+    #"RST_ROOT":"./rstwiki-get/",
+    #"SRC_PUSH_DELAY": 60.0,    
     
     # sample local repo
     "SRC_VCS": "local",
