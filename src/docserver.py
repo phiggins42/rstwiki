@@ -264,7 +264,6 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
             if "login" in params:
                 # if they are senging uname/pw pairs lets try to log them in now
                 # before we process the upload/update/etc
-                print "user wants to login at", path, params['uname'], params['pw']
                 if(conf['USE_LDAP']):
                     from ldapauth import isuser
                     sessionid = self.cookie['sessionid'].value
@@ -275,9 +274,9 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
             if "upload" in params:
                 # we need to explode off the last part of the path and put files in that folder
                 # also it appears I can't find the content-disposition:filename="" part of the multipart? ugh.
-                print "sending files to", path
+                print "incoming files for", path 
                 for item in params:
-                    print "key:", item, "size:", len(params[item][0])
+                    print "key:", item, "size:", len(params[item][0]), "bytes"
 
             if "content" in params:
                                 
@@ -298,11 +297,6 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                             message =  params["message"]
                         else:
                             message = '"updates via wiki from [' + self.user + ']"'
-
-                        message = 'updates via wiki from [' + self.user + '] - '                        
-                        if 'message' in params:
-                            # should we shell escape message here? seems like it's going through raw? test that.
-                            message += params['message']
                        
                         # break this into a vcs-adaptor API with local,git,and svn default adaptors
                         # eg: api = VcAdapter(conf['src_vcs'])
