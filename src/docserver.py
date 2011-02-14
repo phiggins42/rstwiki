@@ -314,10 +314,15 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                             repo = Repo(conf["RST_ROOT"],odbt=GitCmdObjectDB) 
                             git=repo.git
                            
-                            res = git.commit(file,message=message, author="\"" + self.user + " <" + self.user + "@wiki.dojotoolkit.org>\"");
+                            res = git.commit(file,
+                                message = message, 
+                                author="\"" + self.user + " <" + self.user + "@wiki.dojotoolkit.org>\""
+                            );
 
                             def push():
                                 print "Pushing commits to remote write branch."
+                                # i think this would be the intent of COMMIT_ONSAVE when VCS==git, eg:
+                                # we may want to avoid pushing at all with a switch. or do it from cron
                                 pushScheduled.clear()
 
                                 git.push(repo.remotes.origin)
