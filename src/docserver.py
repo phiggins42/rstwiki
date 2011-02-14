@@ -17,6 +17,7 @@ from admin import getChanges
 import time
 from threading import Timer
 import threading
+import urllib
 
 chars = string.ascii_letters + string.digits
 all_sessions = {}
@@ -32,7 +33,6 @@ login_template = open("templates/login.html", "r").read()
 upload_template = open("templates/upload.html", "r").read()
 admin_template= open("templates/admin.html", "r").read()
 pushScheduled = threading.Event();
-pullRequests = [];
 
 class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
     
@@ -298,9 +298,18 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
 
                             def push():
                                  print "Pushing commits to remote write branch."
-                                 git.push(repo.remotes.origin)
                                  pushScheduled.clear()
 
+                                 git.push(repo.remotes.origin)
+                                 msg = urllib.urlencode({
+                                     "pull[base]": "master",
+                                     "pull[head]": "dmachi:master",
+                                     "pull[title]": "Pull request for updated wiki docs",
+                                     "pull[body]": "Pull request for updated wiki docs"
+                                 })
+                                 urllib.urlopen("https://github.com/api/v2/json/pulls/phiggins42/rstwiki-git",msg)
+                                 pushScheduled.clear()
+                      
                            
                             if not pushScheduled.isSet():
                                  print "Starting Timer to trigger push" 
