@@ -287,16 +287,27 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                 if not locked or locked and filelock.ownedby(self.user):
                 
                     if(size > 0 and self.userisauthorized()):
+                        isNewFile = False
                         data = params['content'].rstrip()
                         dir = os.path.dirname(file)
                         if not os.path.exists(dir):
                             os.makedirs(dir)
-                    
+                  
+                        if not os.path.exists(file): 
+                            isNewFile=True
+
+
                         print >>open(file, 'w'), data
+                        file = file[len(conf["RST_ROOT"])+1:]
                         if "message" in params and params["message"]!="":
                             message =  params["message"]
                         else:
-                            message = '"updates via wiki from [' + self.user + ']"'
+                            if isNewFile:
+                                 message = 'Added ' 
+                            else:
+                                 message = 'Updated ' 
+
+                            message = message + path + ' via wiki from [' + self.user + ']'
                        
                         # break this into a vcs-adaptor API with local,git,and svn default adaptors
                         # eg: api = VcAdapter(conf['src_vcs'])
@@ -310,10 +321,12 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                                 git commit {file} -m "updates from [{user}] via wiki"
                             """
                             
-                            file = file[len(conf["RST_ROOT"])+1:]
                             repo = Repo(conf["RST_ROOT"],odbt=GitCmdObjectDB) 
                             git=repo.git
-                           
+    
+             
+                            if isNewFile:
+                                git.add(file)          
                             res = git.commit(file,
                                 message = message, 
                                 author="\"" + self.user + " <" + self.user + "@wiki.dojotoolkit.org>\""
@@ -326,6 +339,8 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                                 pushScheduled.clear()
 
                                 git.push(repo.remotes.origin)
+
+                                """
                                 msg = urllib.urlencode({
                                      "pull[base]": "master",
                                      "pull[head]": "dmachi:master",
@@ -333,13 +348,15 @@ class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
                                      "pull[body]": "Pull request for updated wiki docs"
                                 })
                                 urllib.urlopen("https://github.com/api/v2/json/pulls/phiggins42/rstwiki-git", msg)
+                                """
+
                                 pushScheduled.clear()
                                 
                             if not pushScheduled.isSet():
-                                print "Starting Timer to trigger push" 
-                                pushScheduled.set() 
-                                pushGit = Timer(conf["SRC_PUSH_DELAY"], push)
-                                pushGit.start()
+                                if "SRC_PUSH_DELAY" in conf and conf["SRC_PUSH_DELAY"]>0:
+                                    pushScheduled.set() 
+                                    pushGit = Timer(conf["SRC_PUSH_DELAY"], push)
+                                    pushGit.start()
                                 
                         elif vcs == "svn":
                             """
