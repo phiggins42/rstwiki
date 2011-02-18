@@ -217,3 +217,11 @@ input {
     border:1px solid #666;
     color:#101010;
 }
+
+/* raw css to hide the content of the codeglass before instantiation. 
+   class is removed in postCreate */
+   
+.codeglassfouc { 
+    visibility:hidden;
+    height:3.1em;
+}

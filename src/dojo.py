@@ -215,7 +215,7 @@ class DojoHTMLTranslator(HTMLTranslator):
         self.body.append('</pre></div>')
         
     def visit_codeviewer_compound(self, node):
-        self.body.append('<div dojoType="CodeGlass.base" type="%s" pluginArgs="{djConfig:\'%s\', version:\'%s\'}" width="%s" height="%s" toolbar="%s">' % (
+        self.body.append('<div dojoType="CodeGlass.base" class="codeglassfouc" type="%s" pluginArgs="{djConfig:\'%s\', version:\'%s\'}" width="%s" height="%s" toolbar="%s">' % (
             node['type'].lower(),
             node['djconfig'],
             node['version'],

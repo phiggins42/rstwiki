@@ -19,6 +19,7 @@ from threading import Timer
 import threading
 import urllib
 
+# session id generator
 chars = string.ascii_letters + string.digits
 all_sessions = {}
 class SessionElement(object): pass
@@ -31,8 +32,12 @@ master_template = open("templates/master.html", "r").read()
 edit_template = open("templates/editform.html", "r").read()
 login_template = open("templates/login.html", "r").read()
 upload_template = open("templates/upload.html", "r").read()
-admin_template= open("templates/admin.html", "r").read()
+admin_template = open("templates/admin.html", "r").read()
+
+# for git queuing
 pushScheduled = threading.Event();
+
+# validated user cache, per restart
 authed_users = {}
 
 class DocHandler (SimpleHTTPServer.SimpleHTTPRequestHandler):
@@ -550,15 +555,13 @@ def _clearall():
         invalidate_key(key)
 
 def parse_data(key, data):
+    # FIXME: need to invalidate cache entry if file mtime is newer than last read. maybe in read_file?
     if not key in data_cache:
         data_cache[key] = core.publish_parts(
             source=data, source_path="/",
             destination_path="/", writer=DojoHTMLWriter(), settings_overrides={})
             
     return data_cache[key]['html_body'];
-
-# FIXME:  oldschool. move to template logic.
-
 
 def rawlink(path):
     # this is kind of useless? add a [cancel] button to the editing form
