@@ -209,7 +209,7 @@ class DojoHTMLTranslator(HTMLTranslator):
     """
 
     def visit_codeviewer(self, node):
-        self.body.append('<div class="CodeGlassMiniRaw" label="%s" lang="%s"><textarea>' % (node['label'], node['lang']))
+        self.body.append('<div class="CodeGlassMiniRaw" label="%s" lang="%s"><textarea style="display:none">' % (node['label'], node['lang']))
         
     def depart_codeviewer(self, node):
         self.body.append('</textarea></div>')
