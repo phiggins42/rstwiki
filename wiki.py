@@ -4,10 +4,24 @@
     teh root wiki logic
 """
 
-import conf, os, subprocess
-from docserver import DocHandler
-from BaseHTTPServer import HTTPServer
+import os.path,sys
 
+sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
+
+from docserver import Wiki
+import cherrypy
+
+conf = os.path.join(os.path.dirname(__file__), "wiki.conf")
+
+root = Wiki()
+
+conf = os.path.join(os.path.dirname(__file__), "wiki.conf")
+if __name__ == '__main__':
+    cherrypy.quickstart(root, config=conf)
+else:
+    cherrypy.quickstart(root, config=conf)
+
+'''
 class RstWiki(object):
     
     init_tries = 0
@@ -61,3 +75,4 @@ class RstWiki(object):
         
 if __name__ == "__main__":
     thewiki = RstWiki(conf.wiki)
+'''

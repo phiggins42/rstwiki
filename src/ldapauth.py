@@ -32,7 +32,7 @@ def isuser(uname, pw):
              print "RE-bind-ed as " + conf["LDAP_BIND_USER"]             
              filter = "(uid=" + uname + ")"
              print "Search Filter: " + filter
-             result = get_search_results(admincon.search_s(conf["LDAP_BASE_DN"], ldap.SCOPE_SUBTREE, filter, ['cn','dn','firstName','givenName','mail','githubUID']))[0];
+             result = get_search_results(admincon.search_s(conf["LDAP_BASE_DN"], ldap.SCOPE_SUBTREE, filter, conf["LDAP_USER_ATTRIBUTES"]))[0];
              print result.pretty_print()
              UserObj = result.get_attributes()
              filter = "(member=" + user + ")"
