@@ -2,7 +2,7 @@
     Dojo specific rst/sphinx directives
 """
 
-import types, re, json
+import types, re, json, cgi
 
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
@@ -24,7 +24,18 @@ class LiveCode(Directive):
     has_content = True
     
     def run(self):
-        markup = "<div class='live-example'>" + u"\n".join(self.content) + "</div>"
+        raw = u"\n".join(self.content)
+
+        try:
+            lexer = get_lexer_by_name("html")
+        except ValueError:
+            # no lexer found - use the text one instead of an exception
+            lexer = TextLexer()
+
+        formatter = HtmlFormatter(noclasses=False, style='fruity')
+        formatted = highlight(raw, lexer, formatter)
+
+        markup = "<div class='live-example'><div class='inner'>" + raw + "</div><div class='closed'><p>Example Source:</p>" + formatted + "</div></div>"
         return [nodes.raw('', markup, format='html')]
         
 

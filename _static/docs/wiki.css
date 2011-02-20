@@ -302,3 +302,23 @@ input {
 .CodeGlassMiniRaw {
     display:none;
 }
+
+.live-example {
+    position:relative;
+}
+
+.live-example .inner {
+    padding:5px 15px;
+    border-left:1px dotted #666;
+    background-color:#f8f8f8;
+}
+
+.live-example a {
+    position:absolute;
+    left:-20px;
+    top:0;
+}
+
+.live-example .closed {
+    display:none;
+}

@@ -237,8 +237,16 @@ dojo.require("dijit.Dialog");
         
     d.ready(function(){
         d.parser.parse();
-        dialog = new dijit.Dialog({ title:"Running Example" }),
+        dialog = new dijit.Dialog({ title:"Running Example" });
         masterviewer = new docs.CodeGlassViewerMini();
+        dojo.query(".live-example").forEach(function(n){
+            var link = dojo.place("<a href='#' title='Example Code'><span class='a11y'>?</span></a>", n, "first");
+            var data = dojo.query(".closed", n)[0];
+            dojo.connect(link, "onclick", function(e){
+                e && e.preventDefault();
+                dojo.toggleClass(data, "closed");
+            });
+        });
     });
     
 })(dojo);
