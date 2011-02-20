@@ -244,12 +244,23 @@ class codeviewer_compound(General, Element): pass
 # Additional directive to output an example/source viewer
 def _codeviewer(name, arguments, options, content, lineno, 
                content_offset, block_text, state, state_machine):
-    code = u'\n'.join(content)
+    #code = u'\n'.join(content)
+
     language = "html"
     if len(arguments) > 0:
         language = arguments[0]
         if language == "js":
             language = "javascript"
+    
+    try:
+        lexer = get_lexer_by_name(language)
+    except ValueError:
+        # no lexer found - use the text one instead of an exception
+        lexer = TextLexer()
+        
+    formatter = HtmlFormatter(noclasses=False, style='fruity')
+    code = highlight(u'\n'.join(content), lexer, formatter)
+                
     label = ""
     if 'label' in options:
         label = options['label']
