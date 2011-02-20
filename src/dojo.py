@@ -216,7 +216,7 @@ class DojoHTMLTranslator(HTMLTranslator):
         
     def visit_codeviewer_compound(self, node):
         # testing. switch to CodeGlass.base and require() it for backwards compat for now
-        self.body.append('<div dojoType="CodeGlass.mini" class="CodeGlassMini" type="%s" pluginArgs="{djConfig:\'%s\', version:\'%s\'}" width="%s" height="%s" toolbar="%s"><div class="CodeGlassMiniInner">' % (
+        self.body.append('<div dojoType="docs.MiniGlass" class="CodeGlassMini" type="%s" pluginArgs="{djConfig:\'%s\', version:\'%s\'}" width="%s" height="%s" toolbar="%s"><div class="CodeGlassMiniInner">' % (
             node['type'].lower(),
             node['djconfig'],
             node['version'],

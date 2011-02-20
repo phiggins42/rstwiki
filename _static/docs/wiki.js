@@ -13,7 +13,7 @@ dojo.require("dijit.Dialog");
         scriptclose = "</" + "scri" + "pt>"
     ;
     
-    d.declare("CodeGlass.mini", dijit._Widget, {
+    d.declare("docs.MiniGlass", dijit._Widget, {
         
         djconfig:"",
         width:700,
@@ -236,6 +236,8 @@ dojo.require("dijit.Dialog");
     
     masterviewer = new docs.CodeGlassViewerMini();
     
-    dojo.ready(dojo.parser, "parse");
+    dojo.ready(function(){
+        dojo.parser.parse();
+    });
     
 })(dojo);
