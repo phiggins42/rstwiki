@@ -209,13 +209,14 @@ class DojoHTMLTranslator(HTMLTranslator):
     """
 
     def visit_codeviewer(self, node):
-        self.body.append('<div label="%s" lang="%s"><pre>' % (node['label'], node['lang']))
+        self.body.append('<div class="highlight" label="%s" lang="%s"><pre>' % (node['label'], node['lang']))
         
     def depart_codeviewer(self, node):
         self.body.append('</pre></div>')
         
     def visit_codeviewer_compound(self, node):
-        self.body.append('<div dojoType="CodeGlass.base" class="codeglassfouc" type="%s" pluginArgs="{djConfig:\'%s\', version:\'%s\'}" width="%s" height="%s" toolbar="%s">' % (
+        # testing. switch to CodeGlass.base and require() it for backwards compat for now
+        self.body.append('<div dojoType="CodeGlass.mini" class="CodeGlassMini" type="%s" pluginArgs="{djConfig:\'%s\', version:\'%s\'}" width="%s" height="%s" toolbar="%s"><div class="CodeGlassMiniInner">' % (
             node['type'].lower(),
             node['djconfig'],
             node['version'],
@@ -225,7 +226,7 @@ class DojoHTMLTranslator(HTMLTranslator):
         )
 
     def depart_codeviewer_compound(self, node):
-        self.body.append('</div>')
+        self.body.append('</div></div>')
         
     # Don't apply smartypants to literal blocks
     def visit_literal_block(self, node):
@@ -252,6 +253,7 @@ def _codeviewer(name, arguments, options, content, lineno,
     label = ""
     if 'label' in options:
         label = options['label']
+    
     mycode = codeviewer(code, code)
     mycode['lang'] = language
     mycode['label'] = label

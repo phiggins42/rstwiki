@@ -1,6 +1,8 @@
 @import "../dijit/themes/claro/claro.css";
+/*
 @import "../CodeGlass/resources/CodeGlass.css";
 @import "../CodeGlass/chromes/default/default.css";
+*/
 
 body, html {
     margin:0; padding:0;
@@ -86,8 +88,9 @@ body {
 }
 
 .highlight .hll { background-color: #ffffcc }
+
 .highlight { border:1px dashed #666; padding:5px 15px; background: #f8f8f8; }
-.highlight pre { width:100%; overflow:auto; }
+.highlight pre { width:100%; overflow:auto; font-size:94.2%; }
 .highlight .c { color: #408080; font-style: italic } /* Comment */
 .highlight .err { /* border: 1px solid #FF0000 */ } /* Error */
 .highlight .k { color: #008000; font-weight: bold } /* Keyword */
@@ -224,4 +227,79 @@ input {
 .codeglassfouc { 
     visibility:hidden;
     height:3.1em;
+}
+
+.CodeGlassMini {
+    padding:0 0 5px 0;
+    position:relative;
+    border-top:1px dashed #666;
+
+}
+
+.CodeGlassMini.closed {
+   background:#f8f8f8;
+}
+.closed .CodeGlassMiniInner {
+    display:none;
+}
+
+.closed .CodeGlassMiniInner:before {
+    content:"Example Code";
+}
+.CodeGlassMini + .CodeGlassMini {
+    margin-top:15px;
+}
+
+.CodeGlassMiniCollapser {
+    position:absolute;
+    top:-8px;
+    left:-36px;
+    width:18px;
+    height:18px;
+    text-indent:-999px;
+    background:url("/_static/dijit/themes/claro/images/treeExpandImages8bit.png") no-repeat -36px 0;
+}
+
+.CodeGlassMiniCollapser:hover {
+    background-position:-54px 0;
+}
+
+.closed .CodeGlassMiniCollapser {
+    background-position:0 0
+}
+
+.closed .CodeGlassMiniCollapser:hover {
+    background-position:-18px 0;
+}
+
+.CodeGlassMiniRunner {
+    position:absolute;
+    left:-20px;
+    top:-8px;
+    width:18px;
+    height:18px;
+    text-indent:-999px;
+    background:url("/_static/dijit/themes/claro/images/calendarArrows8bit.png") no-repeat -18px 0;
+    overflow:hidden;
+}
+
+.CodeGlassMiniRunner:hover {
+    background-position:-91px 0;
+}
+
+/* the wrap stuff is hackish */
+.CodeGlassMini pre {
+    overflow:auto;
+    width:100%;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+}
+
+.highlight + .highlight, 
+.highlight + .highlight + .highlight {
+    margin-top:1em;
+}
 }

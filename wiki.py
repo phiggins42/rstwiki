@@ -21,6 +21,8 @@ class RstWiki(object):
             server = HTTPServer(('', self.config["LISTEN_PORT"]), DocHandler)
             server.serve_forever()
         except KeyboardInterrupt:
+            # FIXME: if the threading in docserver.py for git push is pending, ctrl-c won't kill this
+            # until it's done
             server.socket.close()
         
     def init_data(self):
@@ -41,7 +43,6 @@ class RstWiki(object):
                 from git import Repo,GitDB
                 print self.config["RST_ROOT"] + " does not exist.  Cloning " + self.config["SRC_REPO"] + " to " + self.config["RST_ROOT"]
                 Repo.clone_from(self.config["SRC_REPO"],self.config["RST_ROOT"])
-		
             elif vcs == "svn":
                 print "SVN Checkout"
                 args = ["svn","co", self.config["SRC_REPO"], self.config['RST_ROOT']];
