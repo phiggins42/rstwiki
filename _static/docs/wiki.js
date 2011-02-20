@@ -194,13 +194,12 @@ dojo.require("dijit.Dialog");
 
                 doc.write(who.renderedTemplate);
 
-                if(dojo.isIE){
+                //if(dojo.isIE){
                     
                     // we're only here because '
-                    console.log("IE branch to write scripts");
+//                    console.log("IE branch to write scripts");
                     var scripts = who.lazyScripts, errors = [],
                         inject = dojo.partial(dojo.forEach, scripts, function(s){ 
-                            console.log("injecting js to", doc);
                             try{
                                 addscripttext(doc, s); 
                             }catch(er){
@@ -210,24 +209,23 @@ dojo.require("dijit.Dialog");
                         }, this)
                     ;
                     
-                    var e;
-                    if(frame.addEventListener){
-                        e = frame.addEventListener("load", inject, false);
-                    }else if(frame.attachEvent){
-                        e = frame.attachEvent("onload", inject);
-                    }
                     
-                }else{
+                //}else{
 
-                    var joinedscripts = dojo.map(who.lazyScripts, function(body){
-                        return scriptopen + body + scriptclose
-                    }).join("");
-                    doc.write(joinedscripts);
+                //    var joinedscripts = dojo.map(who.lazyScripts, function(body){
+                //        return scriptopen + body + scriptclose
+                //    }).join("");
+                //    doc.write(joinedscripts);
+                //}
+
+                var e;
+                if(frame.addEventListener){
+                    e = frame.addEventListener("load", inject, false)
+                }else if(frame.attachEvent){
+                    e = frame.attachEvent("onload", inject);
                 }
                 
-                doc.close();
-
-                
+                setTimeout(function(){ doc.close(); }, 50);
                 
             }), dialog.duration + 450);            
 
