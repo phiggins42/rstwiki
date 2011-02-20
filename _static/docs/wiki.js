@@ -47,7 +47,7 @@ dojo.require("dijit.Dialog");
             this._hasRun = true;
             try{
                 console.log("run example");
-                dojo.query("pre", this.domNode).forEach(this.handlePart, this);
+                dojo.query("textarea", this.domNode).forEach(this.handlePart, this);
                 this._partsSurvived();
             }catch(er){
                 console.warn("running miniglass threw", er);
@@ -73,22 +73,22 @@ dojo.require("dijit.Dialog");
         handlePart: function(n){
             // this is testing the label="" and lang="" attribute. it's html/javascript/css enum
             var t = dojo.attr(n.parentNode, "lang");
-            t && this._processPart(t, n.innerHTML);
+            t && this._processPart(t, n.value);
             var label = dojo.attr(n.parentNode, "label");
             label && dojo.place("<p>" + label + "</p>", n.parentNode, "before");
         },
         
         _processPart: function(type, content){
             console.log("adding part", type, "with content");
-            ta.innerHTML = content;
+//            ta.innerHTML = content;
             if(!this.parts[type]){
                 this.parts[type] = []
             }
             
-            var orig = ta.value;
+            var orig = content;
             var openswith = d.trim(orig).charAt(0);
             if(type == "javascript" && openswith == "<"){
-                // strip the `script` text
+                // strip the `script` text, this is a special consideration
 //                orig = "<script>" + orig + "</" + "script>";
                 
             }else if(type == "css" && openswith != "<"){

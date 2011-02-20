@@ -209,10 +209,10 @@ class DojoHTMLTranslator(HTMLTranslator):
     """
 
     def visit_codeviewer(self, node):
-        self.body.append('<div class="highlight" label="%s" lang="%s"><pre>' % (node['label'], node['lang']))
+        self.body.append('<div class="CodeGlassMiniRaw" label="%s" lang="%s"><textarea>' % (node['label'], node['lang']))
         
     def depart_codeviewer(self, node):
-        self.body.append('</pre></div>')
+        self.body.append('</textarea></div>')
         
     def visit_codeviewer_compound(self, node):
         # testing. switch to CodeGlass.base and require() it for backwards compat for now
@@ -244,7 +244,8 @@ class codeviewer_compound(General, Element): pass
 # Additional directive to output an example/source viewer
 def _codeviewer(name, arguments, options, content, lineno, 
                content_offset, block_text, state, state_machine):
-    #code = u'\n'.join(content)
+
+    raw = u'\n'.join(content)
 
     language = "html"
     if len(arguments) > 0:
@@ -259,16 +260,20 @@ def _codeviewer(name, arguments, options, content, lineno,
         lexer = TextLexer()
         
     formatter = HtmlFormatter(noclasses=False, style='fruity')
-    code = highlight(u'\n'.join(content), lexer, formatter)
+    code = highlight(raw, lexer, formatter)
                 
     label = ""
     if 'label' in options:
         label = options['label']
     
-    mycode = codeviewer(code, code)
+    mycode = codeviewer(raw, raw)
     mycode['lang'] = language
     mycode['label'] = label
-    return [mycode]
+    
+    # returns both the highlighted text, and the codeviewer code (which goes through visit_codeviewer)
+    # codeviewer code is hidden. highlighted is in it's place.
+    return [nodes.raw('', code, format='html'), mycode]
+    
 
 def _codeviewer_js(name, arguments, options, content, lineno, 
                content_offset, block_text, state, state_machine):

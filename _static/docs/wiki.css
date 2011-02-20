@@ -298,8 +298,11 @@ input {
     word-wrap: break-word;
 }
 
-.highlight + .highlight, 
-.highlight + .highlight + .highlight {
+.highlight + .CodeGlassMiniRaw + .highlight, 
+.highlight + .CodeGlassMiniRaw + .highlight + .CodeGlassMiniRaw + .highlight {
     margin-top:1em;
 }
+
+.CodeGlassMiniRaw {
+    display:none;
 }
