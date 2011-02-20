@@ -8,7 +8,9 @@ dojo.require("dijit.Dialog");
     
     var ta = d.create("textarea"),
         dialog = new dijit.Dialog({ title:"Running Example" }),
-        masterviewer
+        masterviewer,
+        scriptopen = "<scr" + "ipt>",
+        scriptclose = "</" + "scri" + "pt>"
     ;
     
     d.declare("CodeGlass.mini", dijit._Widget, {
@@ -40,34 +42,21 @@ dojo.require("dijit.Dialog");
         _hasRun: false,
         _run: function(e){
             e && e.preventDefault();
-            if(this._hasRun){ 
-                this.show();
-                return; 
-            }
-            this._hasRun = true;
-            try{
-                console.log("run example");
-                dojo.query("textarea", this.domNode).forEach(this.handlePart, this);
-                this._partsSurvived();
-            }catch(er){
-                console.warn("running miniglass threw", er);
+            if(!this._hasRun){ 
+                this._hasRun = true;
+                try{
+                    dojo.query("textarea", this.domNode).forEach(this.handlePart, this);
+                    this._partsSurvived();
+                }catch(er){
+                    console.warn("running miniglass threw", er);
+                }
             }
             this.show();
         },
         
         _toggle: function(e){
-            var t = this;
             e && e.preventDefault();
-//            this.anim && this.anim.stop();
-//            var closed = d.hasClass(this.domNode, "closed");
-//            this.anim = dojo.fx[closed ? "wipeIn" : "wipeOut"]({
-//                node: t.inner, 
-//                onEnd: function(){
-//                    dojo.toggleClass(t.domNode, "closed", !closed);
-//                }
-//            })
-//            this.anim.play();
-            dojo.toggleClass(t.domNode, "closed");
+            dojo.toggleClass(this.domNode, "closed");
         },
         
         handlePart: function(n){
@@ -79,8 +68,6 @@ dojo.require("dijit.Dialog");
         },
         
         _processPart: function(type, content){
-            console.log("adding part", type, "with content");
-//            ta.innerHTML = content;
             if(!this.parts[type]){
                 this.parts[type] = []
             }
@@ -89,8 +76,10 @@ dojo.require("dijit.Dialog");
             var openswith = d.trim(orig).charAt(0);
             if(type == "javascript" && openswith == "<"){
                 // strip the `script` text, this is a special consideration
-//                orig = "<script>" + orig + "</" + "script>";
-                
+                orig = orig
+                    .replace(/<script[\s+]?.*?>/g, "")
+                    .replace(/[\s+]?<\/script>/g, "")
+                ;
             }else if(type == "css" && openswith != "<"){
                 orig = '<style type="text/css">' + orig + '</style>';
             }
@@ -110,7 +99,11 @@ dojo.require("dijit.Dialog");
             
             this.lazyScripts = [];
             var templateParts = {
-                javascript:"",
+                javascript:"<scr" + "ipt src='" + 
+                    this.baseUrl + "/dojo/dojo.js' djConfig='" + 
+                    (dojo.isIE ? "isDebug:true, " : "") + 
+                    // (dojo.isIE ? 'afterOnLoad:true, ' : '') + 
+                    "parseOnLoad:true'>" + scriptclose,
                 
                 htmlcode:"", 
                 
@@ -169,40 +162,74 @@ dojo.require("dijit.Dialog");
             e[how] = code;
         }
             
-        doc.getElementsByTagName("head")[0].appendChild(e);
+        doc.getElementsByTagName("body")[0].appendChild(e);
 
     }
     
+    var loadingMessage = "<p>Preparing Example....</p>";
     dojo.declare("docs.CodeGlassViewerMini", null, {
 
         show: function(who){
             // some codeglassmini instance wants us to show them. 
 
-            dialog.show();
             if(this.iframe){ dojo.destroy(this.iframe); }
-            var frame = this.iframe = dojo.create("iframe", {
-                    style:{
-                        heigth: who.height + "px",
-                        width: who.width + "px"
+            dialog.set("content", loadingMessage);
+            dialog.show();
+            
+            setTimeout(dojo.hitch(this, function(){
+
+                var frame = this.iframe = dojo.create("iframe", {
+                        style:{
+                            height: who.height + "px",
+                            width: who.width + "px",
+                            border:"none"
+                        }
+                    });
+                
+                dialog.set("content", frame);
+                
+                var doc = frame.contentDocument || frame.contentWindow.document;                
+                doc.open();
+
+                doc.write(who.renderedTemplate);
+
+                if(dojo.isIE){
+                    
+                    // we're only here because '
+                    console.log("IE branch to write scripts");
+                    var scripts = who.lazyScripts, errors = [],
+                        inject = dojo.partial(dojo.forEach, scripts, function(s){ 
+                            console.log("injecting js to", doc);
+                            try{
+                                addscripttext(doc, s); 
+                            }catch(er){
+                                console.log("an error happened");
+                                errors.push(er)
+                            }
+                        }, this)
+                    ;
+                    
+                    var e;
+                    if(frame.addEventListener){
+                        e = frame.addEventListener("load", inject, false);
+                    }else if(frame.attachEvent){
+                        e = frame.attachEvent("onload", inject);
                     }
-                }, dojo.body()),
-                doc = frame.contendDocument || frame.contentWindow.document
-            ;
-            
-    
+                    
+                }else{
 
-            doc.open();
-            console.log("writing", who.renderedTemplate);
-            doc.write(who.renderedTemplate);
-            doc.close();
+                    var joinedscripts = dojo.map(who.lazyScripts, function(body){
+                        return scriptopen + body + scriptclose
+                    }).join("");
+                    doc.write(joinedscripts);
+                }
+                
+                doc.close();
 
-            dialog.set("content", frame);
-            
-            // attach onload event
-            // when fired:
-            // dojo.forEach(this.lazyScripts, function(script){
-            //      addscripttext(doc, script)         
-            // })
+                
+                
+            }), dialog.duration + 450);            
+
         }
 
     });
