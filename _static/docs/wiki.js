@@ -1,16 +1,17 @@
 dojo.provide("docs.wiki");
+
 dojo.require("dojo.parser");
 dojo.require("dijit._Widget");
 dojo.require("dojo.fx");
 dojo.require("dijit.form.Button");
 dojo.require("dijit.Dialog");
+
 (function(d){
     
     var ta = d.create("textarea"),
-        dialog = new dijit.Dialog({ title:"Running Example" }),
-        masterviewer,
         scriptopen = "<scr" + "ipt>",
-        scriptclose = "</" + "scri" + "pt>"
+        scriptclose = "</" + "scri" + "pt>",
+        masterviewer, dialog;
     ;
     
     d.declare("docs.MiniGlass", dijit._Widget, {
@@ -233,11 +234,11 @@ dojo.require("dijit.Dialog");
         }
 
     });
-    
-    masterviewer = new docs.CodeGlassViewerMini();
-    
-    dojo.ready(function(){
-        dojo.parser.parse();
+        
+    d.ready(function(){
+        d.parser.parse();
+        dialog = new dijit.Dialog({ title:"Running Example" }),
+        masterviewer = new docs.CodeGlassViewerMini();
     });
     
 })(dojo);
