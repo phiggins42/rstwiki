@@ -141,10 +141,10 @@ class DojoApiInline(Directive):
         out = ""
         
         if showsummary and "summary" in info:
-            out += ":summary:\t" + info["summary"] + "\n"
+            out += ":summary:\t%s\n" % info["summary"]
         
         if showreturns and "returns" in info:
-            out += ":returns:\t" + info["returns"] + "\n"
+            out += ":returns:\t%s\n" % info["returns"]
                 
         out += "\n"
         
@@ -161,17 +161,18 @@ class DojoApiInline(Directive):
                 type = param.get("type")
                 name = param.get("name")
                 desc = param.get("description", "").strip()
-                tab += "* **" + name + "** `" + type + "`\n\t\t" + "".join(desc.split("\n")) + "\n"
+                body = "".join(desc.split("\n"))
                 
-                sig += " /* " + type + " */ " + name + ", "
+                tab += "* **%s** `%s`\n\t\t\%s\n" % ( name, type, body )
+                sig += " /* %s */ %s, " % ( type, name )
             
             sig = sig[:-2] + ")"
             
             if showsignature:
-                out += "Signature\n\n.. cv :: javascript\n\n\t" + sig + "\n\n"
+                out += "Signature\n\n.. cv :: javascript\n\n\t%s\n\n" % sig
         
             if showlongsignature: 
-                out += "Overview\n\n" + tab + "\n"
+                out += "Overview\n\n%s\n" % tab
             
         
         if showexamples and "examples" in info:
@@ -188,16 +189,16 @@ class DojoApiInline(Directive):
                         if not intabs:
                             # make a new tab block
                             intabs = True
-                            out += "\n\n.. cv :: javascript\n\n" + part + "\n"
+                            out += "\n\n.. cv :: javascript\n\n%s\n" % part
                         else:
                             # keep just pumping
                             # if part.endswith("\n"): part = part[:-1]
-                            out +=  part + "\n"
+                            out +=  "%s\n" % part
 
                     # make a new text block
                     else:
                         if intabs: out += "\n\n"
-                        out += part.strip() + "\n"
+                        out += "%s\n" % part.strip()
                         intabs = False
                         
                 out += "\n"
