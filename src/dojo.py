@@ -2,7 +2,7 @@
     Dojo specific rst/sphinx directives
 """
 
-import types, re, json
+import types, re, json, cgi
 
 from pygments import highlight
 from pygments.formatters import HtmlFormatter
@@ -24,7 +24,28 @@ class LiveCode(Directive):
     has_content = True
     
     def run(self):
-        markup = "<div class='live-example'>" + u"\n".join(self.content) + "</div>"
+        raw = u"\n".join(self.content)
+
+        try:
+            # it's always html.
+            lexer = get_lexer_by_name("html")
+        except ValueError:
+            # no lexer found - use the text one instead of an exception
+            lexer = TextLexer()
+
+        formatter = HtmlFormatter(noclasses=False, style='fruity')
+        formatted = highlight(raw, lexer, formatter)
+
+        markup = """
+            <div class='live-example'>
+                <div class='inner'>%s</div>
+                <div class='closed'>
+                    <p>Example Source:</p>
+                    %s
+                </div>
+            </div>
+            """ % ( raw, formatted )
+            
         return [nodes.raw('', markup, format='html')]
         
 
@@ -43,7 +64,8 @@ class DojoApi(Directive):
         
         # insert code here to generate some markup for `api` ... ttrenka might already have these cached
         # as part of the api doc generation.
-        markup = "<p class='apiref'>API Rerence: <a target='_api' href='http://dojotoolkit.org/api/" + apislashed + "'>" + apidotted + "</a></p>"
+        markup = "<p class='apiref'>API Rerence: <a target='_api' href='http://dojotoolkit.org/api/%s'>%s</a></p>" % ( apislashed, apidotted )
+            
         return [nodes.raw('', markup, format='html')]
 
 
@@ -74,7 +96,7 @@ class DojoApiInline(Directive):
     """
     
     required_arguments = 1
-    optional_arguments = 5
+    optional_arguments = 10
     has_content = False
 
     base_url = "http://dojotoolkit.org/api/rpc/" # json api
@@ -83,6 +105,16 @@ class DojoApiInline(Directive):
     def run(self):
 
         arguments = self.arguments
+        
+        if len(arguments) == 1:
+            showexamples = showtitles = showsummary = showsignature = showlongsignature = showreturns = True
+        else:
+            showexamples = ":examples:" in arguments
+            showtitles = ":no-titles:" not in arguments
+            showsummary = ":summary:" in arguments
+            showsignature = ":signature:" in arguments
+            showlongsignature = ":longsignature:" in arguments
+            showreturns = ":returns:" in arguments
             
         api = self.arguments[0];
         apislashed = api.replace(".", "/")
@@ -108,19 +140,17 @@ class DojoApiInline(Directive):
 
         out = ""
         
-        if not ":no-title:" in arguments:
-            out += "API Information\n---------------\n\n"
+        if showsummary and "summary" in info:
+            out += ":summary:\t%s\n" % info["summary"]
         
-        if "summary" in info and not ":no-summary:" in arguments:
-            out += ":summary:\t" + info["summary"] + "\n"
-        
-        if "returns" in info:
-            out += ":returns:\t" + info["returns"] + "\n"
+        if showreturns and "returns" in info:
+            out += ":returns:\t%s\n" % info["returns"]
                 
         out += "\n"
         
-        if "parameters" in info and not ":no-params:" in arguments:
-            out += "Parameters\n~~~~~~~~~~\n\nSignature\n\n"
+        if "parameters" in info and (showsignature or showlongsignature):
+            if showtitles:
+                out += "Parameters\n~~~~~~~~~~\n\n"
             
             # determine if ClassLike and add a `new `
             sig = apidotted + "("
@@ -131,20 +161,25 @@ class DojoApiInline(Directive):
                 type = param.get("type")
                 name = param.get("name")
                 desc = param.get("description", "").strip()
-                tab += "* **" + name + "** `" + type + "`\n\t\t" + "".join(desc.split("\n")) + "\n"
+                body = "".join(desc.split("\n"))
                 
-                sig += " /* " + type + " */ " + name + ", "
+                tab += "* **%s** `%s`\n\t\t\%s\n" % ( name, type, body )
+                sig += " /* %s */ %s, " % ( type, name )
             
             sig = sig[:-2] + ")"
             
-            out += ".. code :: javascript\n\n\t" + sig + "\n\n"
+            if showsignature:
+                out += "Signature\n\n.. cv :: javascript\n\n\t%s\n\n" % sig
         
-            out += "Overview\n\n" + tab + "\n"
+            if showlongsignature: 
+                out += "Overview\n\n%s\n" % tab
             
         
-        if "examples" in info and not ":no-examples:" in arguments:
+        if showexamples and "examples" in info:
             
-            out += "Examples\n~~~~~~~~~~\n\n"
+            if showtitles:
+                out += "Examples\n~~~~~~~~~~\n\n"
+                
             for example in info['examples']:
                 parts = example.split("\n")
                 intabs = False
@@ -154,16 +189,16 @@ class DojoApiInline(Directive):
                         if not intabs:
                             # make a new tab block
                             intabs = True
-                            out += "\n\n.. code :: javascript\n\n" + part + "\n"
+                            out += "\n\n.. cv :: javascript\n\n%s\n" % part
                         else:
                             # keep just pumping
                             # if part.endswith("\n"): part = part[:-1]
-                            out +=  part + "\n"
+                            out +=  "%s\n" % part
 
                     # make a new text block
                     else:
                         if intabs: out += "\n\n"
-                        out += part.strip() + "\n"
+                        out += "%s\n" % part.strip()
                         intabs = False
                         
                 out += "\n"
@@ -209,13 +244,14 @@ class DojoHTMLTranslator(HTMLTranslator):
     """
 
     def visit_codeviewer(self, node):
-        self.body.append('<div label="%s" lang="%s"><pre>' % (node['label'], node['lang']))
+        self.body.append('<div class="CodeGlassMiniRaw" label="%s" lang="%s"><textarea style="display:none">' % (node['label'], node['lang']))
         
     def depart_codeviewer(self, node):
-        self.body.append('</pre></div>')
+        self.body.append('</textarea></div>')
         
     def visit_codeviewer_compound(self, node):
-        self.body.append('<div dojoType="CodeGlass.base" type="%s" pluginArgs="{djConfig:\'%s\', version:\'%s\'}" width="%s" height="%s" toolbar="%s">' % (
+        # testing. switch to CodeGlass.base and require() it for backwards compat for now
+        self.body.append('<div dojoType="docs.MiniGlass" class="CodeGlassMini" type="%s" pluginArgs="{djConfig:\'%s\', version:\'%s\'}" width="%s" height="%s" toolbar="%s"><div class="CodeGlassMiniInner">' % (
             node['type'].lower(),
             node['djconfig'],
             node['version'],
@@ -225,7 +261,7 @@ class DojoHTMLTranslator(HTMLTranslator):
         )
 
     def depart_codeviewer_compound(self, node):
-        self.body.append('</div>')
+        self.body.append('</div></div>')
         
     # Don't apply smartypants to literal blocks
     def visit_literal_block(self, node):
@@ -243,19 +279,36 @@ class codeviewer_compound(General, Element): pass
 # Additional directive to output an example/source viewer
 def _codeviewer(name, arguments, options, content, lineno, 
                content_offset, block_text, state, state_machine):
-    code = u'\n'.join(content)
+
+    raw = u'\n'.join(content)
+
     language = "html"
     if len(arguments) > 0:
         language = arguments[0]
         if language == "js":
             language = "javascript"
+    
+    try:
+        lexer = get_lexer_by_name(language)
+    except ValueError:
+        # no lexer found - use the text one instead of an exception
+        lexer = TextLexer()
+        
+    formatter = HtmlFormatter(noclasses=False, style='fruity')
+    code = highlight(raw, lexer, formatter)
+                
     label = ""
     if 'label' in options:
         label = options['label']
-    mycode = codeviewer(code, code)
+    
+    mycode = codeviewer(raw, raw)
     mycode['lang'] = language
     mycode['label'] = label
-    return [mycode]
+    
+    # returns both the highlighted text, and the codeviewer code (which goes through visit_codeviewer)
+    # codeviewer code is hidden. highlighted is in it's place.
+    return [nodes.raw('', code, format='html'), mycode]
+    
 
 def _codeviewer_js(name, arguments, options, content, lineno, 
                content_offset, block_text, state, state_machine):

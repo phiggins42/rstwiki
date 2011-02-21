@@ -27,7 +27,7 @@ DEFAULT = HtmlFormatter(noclasses=INLINESTYLES, style=STYLE)
 
 # Add name -> formatter pairs for every variant you want to use
 VARIANTS = {
-    'linenos': HtmlFormatter(noclasses=INLINESTYLES, linenos=False),
+    'linenos': HtmlFormatter(noclasses=INLINESTYLES, linenos=True),
 }
 
 class Pygments(Directive):

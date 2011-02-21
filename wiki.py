@@ -12,7 +12,6 @@ from docserver import DocServer
 root = DocServer()
 root.auth=AuthController()
 cherrypy.tree.mount(root, "/", os.path.join(os.path.dirname(__file__), "wiki.conf"))
-
 root.start()
 
 if __name__ == '__main__':
