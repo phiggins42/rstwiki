@@ -38,7 +38,7 @@ class DocServer():
         if os.path.isfile(path):
             return open(path).read()
         elif os.path.isdir(path) and os.path.isfile(os.path.join(path,"/index.rst")):
-            return self.render(self.getTemplate("master"), RstDocument(os.path.join(path,"/index.rst"),"View",basePath).render())
+            return self.render(self.getTemplate("master"), RstDocument(os.path.join(path,"/index.rst").render(),"View",basePath))
         elif os.path.isfile(path + ".rst"):
             return self.render(self.getTemplate("master"),RstDocument(path+".rst").render(),"View", basePath)
         else:
