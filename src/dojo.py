@@ -27,6 +27,7 @@ class LiveCode(Directive):
         raw = u"\n".join(self.content)
 
         try:
+            # it's always html.
             lexer = get_lexer_by_name("html")
         except ValueError:
             # no lexer found - use the text one instead of an exception
@@ -35,7 +36,16 @@ class LiveCode(Directive):
         formatter = HtmlFormatter(noclasses=False, style='fruity')
         formatted = highlight(raw, lexer, formatter)
 
-        markup = "<div class='live-example'><div class='inner'>" + raw + "</div><div class='closed'><p>Example Source:</p>" + formatted + "</div></div>"
+        markup = """
+            <div class='live-example'>
+                <div class='inner'>%s</div>
+                <div class='closed'>
+                    <p>Example Source:</p>
+                    %s
+                </div>
+            </div>
+            """ % ( raw, formatted )
+            
         return [nodes.raw('', markup, format='html')]
         
 
@@ -54,7 +64,8 @@ class DojoApi(Directive):
         
         # insert code here to generate some markup for `api` ... ttrenka might already have these cached
         # as part of the api doc generation.
-        markup = "<p class='apiref'>API Rerence: <a target='_api' href='http://dojotoolkit.org/api/" + apislashed + "'>" + apidotted + "</a></p>"
+        markup = "<p class='apiref'>API Rerence: <a target='_api' href='http://dojotoolkit.org/api/%s'>%s</a></p>" % ( apislashed, apidotted )
+            
         return [nodes.raw('', markup, format='html')]
 
 
@@ -85,7 +96,7 @@ class DojoApiInline(Directive):
     """
     
     required_arguments = 1
-    optional_arguments = 5
+    optional_arguments = 10
     has_content = False
 
     base_url = "http://dojotoolkit.org/api/rpc/" # json api
@@ -94,6 +105,16 @@ class DojoApiInline(Directive):
     def run(self):
 
         arguments = self.arguments
+        
+        if len(arguments) == 1:
+            showexamples = showtitles = showsummary = showsignature = showlongsignature = showreturns = True
+        else:
+            showexamples = ":examples:" in arguments
+            showtitles = ":no-titles:" not in arguments
+            showsummary = ":summary:" in arguments
+            showsignature = ":signature:" in arguments
+            showlongsignature = ":longsignature:" in arguments
+            showreturns = ":returns:" in arguments
             
         api = self.arguments[0];
         apislashed = api.replace(".", "/")
@@ -119,19 +140,17 @@ class DojoApiInline(Directive):
 
         out = ""
         
-        if not ":no-title:" in arguments:
-            out += "API Information\n---------------\n\n"
-        
-        if "summary" in info and not ":no-summary:" in arguments:
+        if showsummary and "summary" in info:
             out += ":summary:\t" + info["summary"] + "\n"
         
-        if "returns" in info:
+        if showreturns and "returns" in info:
             out += ":returns:\t" + info["returns"] + "\n"
                 
         out += "\n"
         
-        if "parameters" in info and not ":no-params:" in arguments:
-            out += "Parameters\n~~~~~~~~~~\n\nSignature\n\n"
+        if "parameters" in info and (showsignature or showlongsignature):
+            if showtitles:
+                out += "Parameters\n~~~~~~~~~~\n\n"
             
             # determine if ClassLike and add a `new `
             sig = apidotted + "("
@@ -148,14 +167,18 @@ class DojoApiInline(Directive):
             
             sig = sig[:-2] + ")"
             
-            out += ".. code :: javascript\n\n\t" + sig + "\n\n"
+            if showsignature:
+                out += "Signature\n\n.. cv :: javascript\n\n\t" + sig + "\n\n"
         
-            out += "Overview\n\n" + tab + "\n"
+            if showlongsignature: 
+                out += "Overview\n\n" + tab + "\n"
             
         
-        if "examples" in info and not ":no-examples:" in arguments:
+        if showexamples and "examples" in info:
             
-            out += "Examples\n~~~~~~~~~~\n\n"
+            if showtitles:
+                out += "Examples\n~~~~~~~~~~\n\n"
+                
             for example in info['examples']:
                 parts = example.split("\n")
                 intabs = False
@@ -165,7 +188,7 @@ class DojoApiInline(Directive):
                         if not intabs:
                             # make a new tab block
                             intabs = True
-                            out += "\n\n.. code :: javascript\n\n" + part + "\n"
+                            out += "\n\n.. cv :: javascript\n\n" + part + "\n"
                         else:
                             # keep just pumping
                             # if part.endswith("\n"): part = part[:-1]
