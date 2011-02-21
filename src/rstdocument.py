@@ -4,8 +4,7 @@ from docutils import core, io
 import inspect
 
 class RstDocument():
-    def __init__(self,path):
-        print "Opening %s" % (path) 
+    def __init__(self,path,**kwargs):
         self.path = path
         self.document=open(path).read()
 

@@ -1,26 +1,41 @@
-import cherrypy
-import os.path
+import cherrypy,os.path,re
 from rstdocument import RstDocument
-import re
 from Crumbs import Crumbs as crumbs
+from auth import AuthController, require, member_of, name_is
 
-class Wiki():
-    templates={}
- 
+class DocServer():
+    templates = {}
+     
     def __init__(self):
          print "Starting Wiki..."
+         self.config = None
+         self.vcs = None
+ 
+    def start(self):
+         #FIXME having to set the app myself here, need to change this
+         #       it is out of the request cycle, and so cherrypy.request.config
+         #       doesn't exist
 
+         #print "Config: %s" % (cherrypy.tree.apps[''].config.keys())
+         app=''
+         self.config=cherrypy.tree.apps[app].config.get("wiki") 
+         
+         if "enable_vcs" in self.config and self.config.get("enable_vcs"):
+             vcsconfig=cherrypy.tree.apps[app].config.get("vcs") 
+             if vcsconfig["type"] is not None:
+                 if vcsconfig['type']=="git":
+                     from vcs import Git as VCS
+                     self.vcs = VCS(cherrypy.tree.apps[app].config)
+
+    @cherrypy.expose
     def index(self, *args): 
          return self.default(('index'))
 
-    index.exposed = True
-
+    @cherrypy.expose
     def default(self, *args):
         basePath = self.getPath(args)
         path = self.getDocPath(basePath)
-        print "Looking up doc file: %s" % (path)
         if os.path.isfile(path):
-            print "Found exact file: %s" %(path)
             return open(path).read()
         elif os.path.isdir(path) and os.path.isfile(os.path.join(path,"/index.rst")):
             return self.render(self.getTemplate("master"), RstDocument(os.path.join(path,"/index.rst"),"View",basePath).render())
@@ -29,13 +44,13 @@ class Wiki():
         else:
             if os.path.splitext(basePath)[1] != "":
                 raise cherrypy.HTTPError(404)
+
             raise cherrypy.HTTPError(404)
             #raise cherrypy.InternalRedirect("/edit/" + basePath)
             #self.do_serv(response=200, body=open(file).read(), raw=True)                                                                            
             #return open(path).read()
 
-    default.exposed=True
-
+    @cherrypy.expose
     def edit(self,*args,**kwargs):
         basePath = self.getPath(args)
         path = self.getDocPath(basePath)
@@ -43,18 +58,21 @@ class Wiki():
         if cherrypy.request.method=="POST":
             post=True
 
-        print "Looking up doc file: %s" % (path)
         if os.path.isfile(path):
-            print "Found exact file: %s" %(path)
             return open(path).read()
         elif os.path.isdir(path) and os.path.isfile(os.path.join(path,"/index.rst")):
             return self.render(self.getTemplate("editform"), RstDocument(os.path.join(path,"/index.rst"),"Edit",basePath).document)
         elif os.path.isfile(path + ".rst"):
-            doc=RstDocument(path+".rst")
-
+            filename=path+".rst"
+            doc=RstDocument(filename, config=self.config)
+            
             if post:
                 doc.update(kwargs['content'])
                 doc.save()
+                if self.vcs is not None:
+                    print "Send Commit to VCS system"
+                    self.vcs.commit(filename,message="Update Message")
+
                 print "Internal Redirect to: %s" %(basePath)
                 raise cherrypy.HTTPRedirect("/" + basePath)             
                 return "Saved"
@@ -65,8 +83,6 @@ class Wiki():
             if os.path.splitext(basePath)[1] != "":
                 raise cherrypy.HTTPError(404)
             raise cherrypy.HTTPError(404)
-
-    edit.exposed = True
 
     def fillTemplate(self,template,**kwargs):
         return re.sub("{{(.*)}}", lambda m: kwargs.get(m.group(1), ""), template)
@@ -80,25 +96,33 @@ class Wiki():
             nav=self.editLink(path)
         )
 
+    # FIXME get rid of this and make it part of the template
     def editLink(self, path):
-        return "<a href='/edit/" + path + "'>edit</a>\
-                <a href='/upload/" + path + "'>upload</a>\
-                "
-        #else:    
-        #    return "<a id='loginanchor' href='/login" + path + "'>login</a>"
+        user = cherrypy.session.get("user",None)
+        #print "edit LInk user: %s" %(user)
+        if user is not None:
+            out = "<span>[%s]</span>\n" % (user["cn"])
+            #admin link to re-enable later  
+            #if member_of(cherrypy.request.app.config.get("auth").get("adminGroup")):
+            #    out += '<a href="/admin">admin</a>\n'
+
+            out += "<a href='/edit/" + path + "'>edit</a>\
+                    <a href='/upload/" + path + "'>upload</a>\
+                    <a href='/auth/logout'>logout</a>\
+                    "
+            return out
+        else:    
+            return "<a id='loginanchor' href='/auth/login?from_page=%s'>login</a>" % (path)
 
     def getDocPath(self, path):
-        #print "vcs.root: %s" % (cherrypy.request.config["/vcs/root"]) 
-        path = os.path.join('rstwiki_git',path)
+        path = os.path.join(self.config["root"],path)
         return path 
 
     def getPath(self, args):
-        #print "vcs.root: %s" % (vcsconf.root) 
         path = os.path.join(os.path.join(*args))
         return path 
 
     def makeNavCrumbs(self, path):
-        #path= '/'.join(path.split("/")[1:])
         parts = crumbs(path);
         return "<div class='crumbs'><a href='/'>home</a> / " + " / ".join(parts.links()) + "</div>"
 

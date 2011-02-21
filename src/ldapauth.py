@@ -2,51 +2,50 @@
     Simple auth against ldap
 """
 import inspect
-import ldap, sys
+import ldap, sys,cherrypy
 from conf import wiki as conf
 import ldif
 from StringIO import StringIO
 from ldap.cidict import cidict
 
 def isuser(uname, pw):
-   
-    if "LDAP_BASE_DN" in conf:
-        user = "uid=" + uname + "," + conf["LDAP_BASE_DN"]
+
+    ldapconf = cherrypy.request.app.config.get("ldap")
+ 
+
+    if "base_dn" in ldapconf and ldapconf.get("base_dn") :
+        user = "uid=%s,%s" %(uname, ldapconf.get("base_dn"))
     else: 
         user = uname
-    
     try:
-        print "Connecting to " + conf["LDAP_HOST"]
-        con = ldap.initialize(conf["LDAP_HOST"])
+        con = ldap.initialize(ldapconf.get("host","ldap://localhost"))
 
-	UserObj = {}
+	UserObj = {'uname': uname, 'groups': []}
         #first bind as the user to make sure we can login
-        print "Simple LDAP Login : " + user
-        con.simple_bind_s( user, pw )
+        con.simple_bind_s( user, pw)
 
         #if LDAP_BIND_USER is defined, rebind as that user to get some additional info
-        if "LDAP_BIND_USER" in conf:
-             print "re-binding as: " + conf["LDAP_BIND_USER"]
-             admincon = ldap.initialize(conf["LDAP_HOST"])
-             admincon.simple_bind_s(conf["LDAP_BIND_USER"],conf["LDAP_BIND_PASSWORD"])
-             print "RE-bind-ed as " + conf["LDAP_BIND_USER"]             
-             filter = "(uid=" + uname + ")"
-             print "Search Filter: " + filter
-             result = get_search_results(admincon.search_s(conf["LDAP_BASE_DN"], ldap.SCOPE_SUBTREE, filter, conf["LDAP_USER_ATTRIBUTES"]))[0];
-             print result.pretty_print()
-             UserObj = result.get_attributes()
-             filter = "(member=" + user + ")"
-             print "groupFilter: " + filter
+        bind_dn = ldapconf.get("bind_dn",None)
 
-             groups = get_search_results(admincon.search_s(conf["LDAP_GROUP_BASE_DN"], ldap.SCOPE_SUBTREE, filter, ['cn']))
-             UserObj.groups = []
+        if bind_dn is not None:
+             admincon = ldap.initialize(ldapconf.get("host","ldap://localhost"))
+             admincon.simple_bind_s(bind_dn,ldapconf.get("bind_password"))
+             filter = "(uid=" + uname + ")"
+             result = get_search_results(admincon.search_s(ldapconf.get("base_dn"), ldap.SCOPE_SUBTREE, filter, ldapconf.get("user_attributes")))[0];
+             #print result.pretty_print()
+             for key in result.get_attr_names():
+                  UserObj[key]=result.get_attr_values(key)[0]
+
+             filter = "(member=" + user + ")"
+             groups = get_search_results(admincon.search_s(ldapconf.get("groupBaseDn"), ldap.SCOPE_SUBTREE, filter, ['cn']))
 
              for group in groups:
-                 UserObj.groups.push(group.get_attributes()["cn"])
+                 UserObj['groups'].append(group.get_attributes()["cn"][0])
 
-             print inspect.getmembers(UserObj.get("groups"))
 
-        print user + " Logged in."
+        print "Logged In User: %s" % (UserObj)
+        cherrypy.session["user"] = UserObj
+
         return True
 
     except ldap.SERVER_DOWN:
@@ -58,19 +57,16 @@ def isuser(uname, pw):
 
 def get_search_results(results):
     res = []
-    print "Getting Search Results"
     if type(results) == tuple and len(results) == 2 :
         (code, arr) = results
     elif type(results) == list:
         arr = results
 
     if len(results) == 0:
-        print "No Search Results"
         return res
 
     for item in arr:
         res.append( LDAPSearchResult(item) )
-    print "Found " + str(len(res)) + "results"
     return res
 
 class LDAPSearchResult:
