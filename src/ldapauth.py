@@ -3,7 +3,6 @@
 """
 import inspect
 import ldap, sys,cherrypy
-from conf import wiki as conf
 import ldif
 from StringIO import StringIO
 from ldap.cidict import cidict
