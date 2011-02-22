@@ -1,0 +1,44 @@
+<!doctype html>
+#implements respond
+<html>
+<head>
+    <title>$action $path</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" href="${root}${static}docs/wiki.css">
+    <script src="${root}${static}dojo/dojo.js"></script>
+</head>
+<body class='claro wikidocs'>
+    <div class="head">
+        <div class="wrap">
+            <div id="rstwiki_nav">
+#if  $getVar('user',None) is not None:
+    #if $action is not "edit":
+		<a href='${root}$path?action=edit'>edit</a>
+    #end if 
+		<a href='${root}$path?action=upload'>upload</a>
+		<a href='${root}auth/logout'>logout</a>
+#else:
+    #if $action is not "Login":
+		<a href='${root}auth/login?from_page=${root}${path}'>login</a>
+    #end if
+#end if
+            </div>        
+
+#block crumbs
+            <div id="crumbs">
+		<div class='crumbs'><a href='/'>home</a> / 
+    #echo ' / '.join($path.split('/'))
+                </div>
+            </div>
+#end block
+
+        </div>
+    </div>
+    <div class="wrap">
+#block contentBlock 
+	$rst.render	
+#end block
+    </div>
+    <script src="${root}${static}docs/wiki.js"></script>
+</body>
+</html>

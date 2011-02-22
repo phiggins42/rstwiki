@@ -1,9 +1,12 @@
-<form method='POST' action="{{path}}">
+#extends master
+
+#block contentBlock
+<form method='POST' action="${root}${path}">
     <div class='resp'>
-        <h1>Editing {{path}}</h1>
+        <h1>Editing ${path}</h1>
 
         <div class="editor">
-            <textarea id='editor' resizeable='true' name='content' style='width:100%; height:420px;'>{{body}}</textarea>
+            <textarea id='editor' resizeable='true' name='content' style='width:100%; height:420px;'>${rst.document}</textarea>
             <div id='editorhandle'><a href="#">-</a></div>
         </div>
         
@@ -17,6 +20,6 @@
     
     </div>
 </form>
-
 <script src='{{root}}/CodeMirror/js/codemirror.js'></script>
 <script src='{{root}}/docs/editor.js'></script>
+#end block

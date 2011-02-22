@@ -140,15 +140,17 @@ class AuthController(object):
         """Called on logout"""
     
     def get_loginform(self, username, msg="Enter login information", from_page="/"):
-        return """<html><body>
-            <form method="post" action="/auth/login">
-            <input type="hidden" name="from_page" value="%(from_page)s" />
-            %(msg)s<br />
-            Username: <input type="text" name="username" value="%(username)s" /><br />
-            Password: <input type="password" name="password" /><br />
-            <input type="submit" value="Log in" />
-        </body></html>""" % locals()
-    
+        import login
+        #from login import login as loginTemplate
+         
+        template = login.login()
+        template.path = "auth/login"
+        template.static = "_static/"
+        template.root = "/"
+        template.action="Login"
+        template.from_page = from_page
+        return template.respond() 
+
     @cherrypy.expose
     def login(self, username=None, password=None, from_page="/"):
         if username is None or password is None:

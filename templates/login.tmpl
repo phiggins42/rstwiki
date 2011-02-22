@@ -1,14 +1,15 @@
+#extends master
+
+#block contentBlock 
 <div>
-    <form action="/{{path}}" method="POST">
+    <form action="${root}${path}?from_page=${root}${from_page}" method="POST">
         <h2>Login:</h2>
         
-        <label for="uname">Username:</label>
-        <input type="text" name="uname" id="uname" size="10">
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" size="10">
         
-        <label for="pw">Password:</label>
-        <input type="password" name="pw" id="pw">
-    
-        <input name="login" value="1" type="hidden">
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password">
         
         <button type="submit">Login</button>
 
@@ -18,3 +19,4 @@
         
     </form>
 </div>
+#end block

@@ -1,8 +1,11 @@
+#extends master
+
+#block contentBlock
 <div class="loginbox">
-    <form action="/{{path}}" enctype="multipart/form-data" method="POST">
+    <form action="${root}${path}" enctype="multipart/form-data" method="POST">
         <h2>Upload File(s)</h2>
         
-        <p>Destination is: {{path}}</p>
+        <p>Destination is: ${path}</p>
 
         <input type="hidden" name="upload" value="1">
 
@@ -23,6 +26,12 @@
 
     </form>
     
-    <script src="/_static/docs/upload.js"></script>
+    <script src="${root}${static}docs/upload.js"></script>
         
 </div>
+#end block
+
+#block crumbs
+	<div class='crumbs'><a href='/'>Home</a> / <a href="/upload">Upload</a> 
+	</div>
+#end block
