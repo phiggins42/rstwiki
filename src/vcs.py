@@ -28,7 +28,7 @@ class Git:
         try:
             print "Commit Filename: %s "%(filename)
             self.repo.git.commit(filename,message=message)
-            print "%s Commit: %s  :: %s" % (author,filename,message)
+            print "%s Git Commit: %s  :: %s" % (author,filename,message)
 
             if self.vcs.get('push.enabled'):
                 self.push()
@@ -39,3 +39,14 @@ class Git:
     def push(self, *args):
         print "Pushing latest commits to GIT origin: %s" %(self.repo.remotes.origin)
         self.repo.git.push(self.repo.remotes.origin)
+
+    def add(self,*arg,**kwargs):
+        import git 
+        for filename in arg:
+            try:
+                print "Add File: %s "%(filename)
+                self.repo.git.add(filename)
+
+            except IOError,e:
+                print "Failed to add file to repository %s" %(e)
+ 

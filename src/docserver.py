@@ -12,9 +12,11 @@ class DocServer():
          self.vcs = None
 
     def start(self):
-         #FIXME having to set the app myself here, need to change this
-         #       it is out of the request cycle, and so cherrypy.request.config
-         #       doesn't exist
+         '''
+                FIXME having to set the app myself here, need to change this
+                it is out of the request cycle, and so cherrypy.request.config
+                doesn't exist
+         '''
 
          #print "Config: %s" % (cherrypy.tree.apps[''].config.keys())
          app=''
@@ -29,10 +31,18 @@ class DocServer():
 
     @cherrypy.expose
     def index(self, *args, **kwargs): 
+        '''
+            Main index file, just goes to default
+        '''
         return self.default(*args,**kwargs)
 
     @cherrypy.expose
     def default(self, *args, **kwargs):
+        '''
+            This is the main handler for any requests
+            recieved on this mount point.
+        '''
+
         if "action" in kwargs:
            action = kwargs['action'] 
         else: 
@@ -66,8 +76,13 @@ class DocServer():
         return self.render()
 
     def _handlePost(self, *args, **kwargs):
-        print "DO POST %s" % (cherrypy.request.resourceFileExt)
-        if cherrypy.request.resourceFileExt == ".rst":
+        '''
+           When the self.default() detects a POST, it sends it here for processing.
+           This method returns an action so default () can decide how to proceed
+        '''
+
+        #if this form post has 'content' and we're writing to a .rst 
+        if 'content' in kwargs and cherrypy.request.resourceFileExt == ".rst":
             message = kwargs['message'] or "Updates to %s%s via Wiki" % (cherrypy.request.resourceDir,cherrypy.request.resourceFile)
             try:
                 doc=RstDocument(cherrypy.request.resourceFilePath, config=self.config)
@@ -82,7 +97,10 @@ class DocServer():
             
             except Exception,err:
                  print "Error updating file %s" %(err)
+                 # there was an error, send them back to the edit form
+                 # the edit form template can make use of cherrypy.request.formPostError if desired
                  cherrypy.request.formPostError = err
+ 
                  return "edit"
 
         print "POST to dir: %s " % (cherrypy.request.resourceDir)
@@ -93,17 +111,35 @@ class DocServer():
                 print "key: %s" % (key)
                 if kwargs[key].filename:
                     print "Handle upload of %s (%s)" %(kwargs[key].filename,kwargs[key].file)
-                    outfile = open(os.path.join(self.config["root"], cherrypy.request.resourceDir,kwargs[key].filename),'wb')
+                    filename = os.path.join(self.config["root"], cherrypy.request.resourceDir,kwargs[key].filename)
+                    isNew = os.path.isfile(filename)
+
+                    outfile = open(os.path.join(filename),'wb')
                     while True:
                         data = kwargs[key].file.read(8192)
                         if not data:
                             break
                         outfile.write(data)
                     outfile.close()
+                    if self.vcs is not None:
+                        if isNew:
+                            message = "*** ADDED *** new file '%s' to %s" % (kwargs[key].filename, cherrypy.request.resourceDir)
+                        else:
+                            message = "Updated '%s' to %s" % (kwargs[key].filename, cherrypy.request.resourceDir)
+
+                        print "Send Commit to VCS system"
+                        print "   Message: %s" % (message) 
+                        self.vcs.add(filename) 
+                        self.vcs.commit(filename,message=message)
+
 
         return "view"
 
     def render(self):
+        '''
+            Setup some template vars we want to be available on all
+            requests. Then tell the template to render (respond()) 
+        '''
         template = cherrypy.request.template
         template.resourceDir = cherrypy.request.resourceDir
         template.resourceFile = cherrypy.request.resourceFile
@@ -112,17 +148,13 @@ class DocServer():
         template.static= "_static/"
         return template.respond()
 
-    def getDocPath(self, path):
-        path = os.path.join(self.config["root"],path)
-        return path 
-
-    def getPath(self, args):
-        if len(args)<0:
-            return "index"
-        return os.path.join(os.path.join(*args))
-
     def parsePath(self, args):
         root = self.config["root"]
+
+        for arg in args:
+            if arg[0]==".": 
+                raise cherrypy.HTTPError(404)
+
         if len(args)<1:
             cherrypy.request.resourceDir = ""
             cherrypy.request.resourceFile = "index"
@@ -158,3 +190,6 @@ class DocServer():
         p = os.path.splitext(cherrypy.request.resourceFilePath)
         cherrypy.request.resourceFileExt = p[1] 
         print "DIR: %s FILE: %s FILEPATH: %s EXT: %s" % (cherrypy.request.resourceDir,cherrypy.request.resourceFile, cherrypy.request.resourceFilePath, cherrypy.request.resourceFileExt) 
+
+
+
