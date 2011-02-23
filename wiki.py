@@ -26,6 +26,6 @@ cherrypy.tree.mount(root, "/", os.path.join(os.path.dirname(__file__), "wiki.con
 root.start()
 
 if __name__ == '__main__':
-    cherrypy.config.update(os.path.join(os.path.dirname(__file__), 'global.conf'))
-    cherrypy.quickstart()
-    cherrypy.engine.start()
+   cherrypy.config.update(os.path.join(os.path.dirname(__file__), 'global.conf'))
+   cherrypy.quickstart()
+   cherrypy.engine.start()

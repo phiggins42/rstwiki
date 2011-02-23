@@ -2,7 +2,7 @@
 #implements respond
 <html>
 <head>
-    <title>$action ${requestDir}${requestFile}</title>
+    <title>$action ${resourceDir}${resourceFile}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link rel="stylesheet" href="${root}${static}docs/wiki.css">
     <script src="${root}${static}dojo/dojo.js"></script>
@@ -13,15 +13,15 @@
             <div id="rstwiki_nav">
 #if  $getVar('user',None) is not None:
     #if $action is not "edit":
-		<a href='${root}${requestDir}${requestFile}?action=edit'>edit</a>
+		<a href='${root}${resourceDir}${resourceFile}?action=edit'>edit</a>
     #end if 
     #if $action is not "upload":
-		<a href='${root}${requestDir}?action=upload'>upload</a>
+		<a href='${root}${resourceDir}?action=upload'>upload</a>
     #end if
 		<a href='${root}auth/logout'>logout</a>
 #else:
     #if $action is not "Login":
-		<a href='${root}auth/login?from_page=${requestDir}${requestFile}'>login</a>
+		<a href='${root}auth/login?from_page=${resourceDir}${resourceFile}'>login</a>
     #end if
 #end if
             </div>        
@@ -29,7 +29,7 @@
 #block crumbs
             <div id="crumbs">
 		<div class='crumbs'><a href='/'>home</a> / 
-    #if $getVar($requestDir, None) is not None:
+    #if $getVar($resourceDir, None) is not None:
         
     #end if
                 </div>

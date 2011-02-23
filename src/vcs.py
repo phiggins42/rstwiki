@@ -20,7 +20,7 @@ class Git:
         author=None
   
         print "Committing file to GIT"    
-        if "message" in kwargs and kwargs["message"] != "":
+        if "message" in kwargs:
             message=kwargs['message']
         else:
             message="Wiki Update to %s" %(filename) 
@@ -28,6 +28,8 @@ class Git:
         if "author" in kwargs:
             author=kwargs["author"]
 
+        print "message: %s" % (message)
+        return
         try:
             print "Commit Filename: %s "%(filename)
             self.repo.git.commit(filename,message=message)

@@ -1,9 +1,9 @@
 #extends master
 
 #block contentBlock
-<form method='POST' action="${root}${requestDir}">
+<form method='POST' action="${root}${resourceDir}${resourceFile}">
     <div class='resp'>
-        <h1>Editing ${requestDir}${requestFile}</h1>
+        <h1>Editing ${resourceDir}${resourceFile}</h1>
 
         <div class="editor">
             <textarea id='editor' resizeable='true' name='content' style='width:100%; height:420px;'>${rst.document}</textarea>
