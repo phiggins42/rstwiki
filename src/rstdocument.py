@@ -9,7 +9,6 @@ class RstDocument():
         self.document=open(path).read()
 
     def render(self,*args,**kwargs):
-
         return self.parse_data(self.path, self.document)
  
     def parse_data(self, path, out):
@@ -22,7 +21,6 @@ class RstDocument():
 
     def update(self, content):
         self.document = content
-        print "Updated Content for %s." % (self.path)
 
     def save(self):
         dir = os.path.dirname(self.path)

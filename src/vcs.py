@@ -1,5 +1,6 @@
 import os.path
 
+#Git VCS class, instantiates a repo on __init_ and then methods can be called
 class Git:
     repo = None
     def __init__(self, config):

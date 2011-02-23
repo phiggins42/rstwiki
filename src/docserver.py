@@ -193,7 +193,7 @@ class DocServer():
 
         p = os.path.splitext(cherrypy.request.resourceFilePath)
         cherrypy.request.resourceFileExt = p[1] 
-        print "DIR: %s FILE: %s FILEPATH: %s EXT: %s" % (cherrypy.request.resourceDir,cherrypy.request.resourceFile, cherrypy.request.resourceFilePath, cherrypy.request.resourceFileExt) 
+        #print "DIR: %s FILE: %s FILEPATH: %s EXT: %s" % (cherrypy.request.resourceDir,cherrypy.request.resourceFile, cherrypy.request.resourceFilePath, cherrypy.request.resourceFileExt) 
 
 
 

@@ -1,40 +1,33 @@
-# -*- encoding: UTF-8 -*-
-#
-# Form based authentication for CherryPy. Requires the
-# Session tool to be loaded.
-#
+#here lies a bunch of auth tools, somewhat modified, taken from the cherrypy wiki
+#will probably change to a more plugged/standardized system in the future
 
 import cherrypy,urllib
+
 
 SESSION_KEY = '_cp_username'
 
 def check_credentials(username, password):
-    """Verifies credentials for username and password.
-    Returns None on success or a string describing the error on failure"""
-    # Adapt to your needs
+    """
+        Verifies credentials for username and password.
+        Returns None on success or a string describing the error on failure
+    """
 
+    
     authconf = cherrypy.request.app.config.get("auth")
     authtype = authconf.get('type',None)
+
     if authtype=='ldap':
         from ldapauth import isuser
         if isuser(username, password):
            return None
         else:
            return u"Incorrect username or password."
-    
- 
-    if username in ('joe', 'steve') and password == 'secret':
-        return None
-    else:
-        return u"Incorrect username or password."
-    
-    # An example implementation which uses an ORM could be:
-    # u = User.get(username)
-    # if u is None:
-    #     return u"Username %s is unknown to me." % username
-    # if u.password != md5.new(password).hexdigest():
-    #     return u"Incorrect password"
 
+    #untested, but should bypass auth if you set it in your config.  You should still login.
+    if authtype=="bypass":
+           cherrypy.session.user = {username: username}
+           return None
+    
 def check_auth(*args, **kwargs):
     """A tool that looks in config for 'auth.require'. If found and it
     is not None, a login is required and the entry is evaluated as alist of
