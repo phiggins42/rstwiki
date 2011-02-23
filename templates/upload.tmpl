@@ -2,10 +2,10 @@
 
 #block contentBlock
 <div class="loginbox">
-    <form action="${root}${path}" enctype="multipart/form-data" method="POST">
+    <form action="${root}${requestDir}" enctype="multipart/form-data" method="POST">
         <h2>Upload File(s)</h2>
         
-        <p>Destination is: ${path}</p>
+        <p>Destination is: ${requestDir}</p>
 
         <input type="hidden" name="upload" value="1">
 

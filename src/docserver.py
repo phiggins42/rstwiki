@@ -1,8 +1,7 @@
-import cherrypy,os.path,re
+import cherrypy,os.path,re,urlparse
 from rstdocument import RstDocument
 from Crumbs import Crumbs as crumbs
 from auth import AuthController, require, member_of, name_is
-#from template import Template
 from Cheetah.Template import Template
 
 class DocServer():
@@ -30,47 +29,79 @@ class DocServer():
 
     @cherrypy.expose
     def index(self, *args, **kwargs): 
-         if "action" in kwargs:
-             print "found action on index"
-             return self.default(('index'),action=kwargs['action'])
-         return self.default(('index'))
+        return self.default(*args,**kwargs)
 
     @cherrypy.expose
-    def default(self, *args,**kwargs ):
+    def default(self, *args, **kwargs):
         if "action" in kwargs:
-           print "kwargs action: %s" % (kwargs['action'])
            action = kwargs['action'] 
         else: 
-           action = None 
+           action = "view"
 
-        basePath = self.getPath(args)
-        path = self.getDocPath(basePath)
-        cherrypy.request.resourceBase = basePath 
-        print "action: %s" % (action) 
+        self.parsePath(args)
+
+        if cherrypy.request.method == "POST":
+           action=self.post(args,**kwargs)
+
         if action=="edit":
             import edit
             cherrypy.request.template = template = edit.edit()
+        elif action=="upload":
+            import upload
+            cherrypy.request.template = template = upload.upload()
         else:
             action = "view"
             import master
             cherrypy.request.template = template = master.master()
 
         template.action = action
-        template.path = basePath
 
-        if os.path.isfile(path):
-            return open(path).read()
-        elif os.path.isdir(path) and os.path.isfile(os.path.join(path,"/index.rst")):
-            template.rst =  RstDocument(os.path.join(path,"/index.rst"))
-            return self.render()
-        elif os.path.isfile(path + ".rst"):
-            template.rst =  RstDocument(path + ".rst")
-            return self.render()
+        if cherrypy.request.requestFileExt != ".rst":
+            return open(cherrypy.request.requestFilePath).read()
+        elif os.path.isfile(cherrypy.request.requestFilePath):
+            template.rst =  RstDocument(cherrypy.request.requestFilePath)
         else:
             raise cherrypy.HTTPError(404)
+ 
+        return self.render()
+    def post(self, *args, **kwargs):
+        print "DO POST %s" % (cherrypy.request.requestFileExt)
+        if cherrypy.request.requestFileExt == ".rst":
+            try:
+                print "Content: %s " %(kwargs['content'])
+                if "content" in kwargs:
+                     content = kwargs['content']
+                     f = open(cherrypy.request.requestFilePath,'w')
+                     f.write(content)
+                     f.close()
+                     return "view"
+            except Exception,err:
+                 print "Error updating file %s" %(err)
+                 cherrypy.request.formPostError = err
+                 return "edit"
+
+        print "POST to dir: %s " % (cherrypy.request.requestDir)
+
+        #handle file uploads
+        for key in kwargs.keys():
+            if key.startswith("uploadfile"):
+                print "key: %s" % (key)
+                if kwargs[key].filename:
+                    print "Handle upload of %s (%s)" %(kwargs[key].filename,kwargs[key].file)
+                    outfile = open(os.path.join(self.config["root"], cherrypy.request.requestDir,kwargs[key].filename),'wb')
+                    while True:
+                        data = kwargs[key].file.read(8192)
+                        if not data:
+                            break
+                        outfile.write(data)
+                    outfile.close()
+
+        return "view"
 
     def render(self):
         template = cherrypy.request.template
+        template.requestDir = cherrypy.request.requestDir
+        template.requestFile = cherrypy.request.requestFile
         template.user = cherrypy.session.get("user", None)
         template.root = "/"
         template.static= "_static/"
@@ -81,5 +112,44 @@ class DocServer():
         return path 
 
     def getPath(self, args):
-        path = os.path.join(os.path.join(*args))
-        return path 
+        if len(args)<0:
+            return "index"
+        return os.path.join(os.path.join(*args))
+
+    def parsePath(self, args):
+        root = self.config["root"]
+        if len(args)<1:
+            cherrypy.request.requestDir = ""
+            cherrypy.request.requestFile = "index"
+            cherrypy.request.requestFilePath = os.path.join(root,"index.rst")
+        else:
+            pinfo =  cherrypy.request.wsgi_environ["PATH_INFO"]  
+            requestForDir = False
+            if pinfo[len(pinfo)-1]=='/':
+                requestForDir = True
+
+            #print "requestForDir%s", requestForDir
+            #print "First Check %s %s " % ( requestForDir is False,  os.path.isdir(os.path.join(root, os.path.join(*args))+".rst"))
+            
+            if requestForDir is False and os.path.isfile(os.path.join(root, os.path.join(*args))+".rst"):
+                cherrypy.request.requestDir = str(os.path.join(*args[0:-1])) + "/"
+                cherrypy.request.requestFile=args[-1]   
+                cherrypy.request.requestFilePath = os.path.join(root,os.path.join(*args)) + ".rst"
+            elif os.path.isdir(os.path.join(root, os.path.join(*args))):
+                cherrypy.request.requestDir = os.path.join(*args) + "/"
+                cherrypy.request.requestFile = "index"
+                cherrypy.request.requestFilePath = os.path.join(root,os.path.join(*args),"index")+".rst"
+
+            elif os.path.isfile(os.path.join(root,os.path.join(*args))):
+                cherrypy.request.requestDir = str(os.path.join(args[0:-1])) + "/"
+                cherrypy.request.requestFile = args[-1]   
+                cherrypy.request.requestFilePath = os.path.join(root,os.path.join(*args))
+           
+            else:
+                cherrypy.request.requestDir = str(os.path.join(args[0:-1])) + "/"
+                cherrypy.request.requestFile=args[-1]   
+                cherrypy.request.requestFilePath = os.path.join(root,os.path.join(*args)) + ".rst"
+
+        p = os.path.splitext(cherrypy.request.requestFilePath)
+        cherrypy.request.requestFileExt = p[1] 
+        print "DIR: %s FILE: %s FILEPATH: %s EXT: %s" % (cherrypy.request.requestDir,cherrypy.request.requestFile, cherrypy.request.requestFilePath, cherrypy.request.requestFileExt) 

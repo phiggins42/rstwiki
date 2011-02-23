@@ -144,7 +144,8 @@ class AuthController(object):
         #from login import login as loginTemplate
          
         template = login.login()
-        template.path = "auth/login"
+        template.requestDir= "auth/login"
+        template.requestFile=""
         template.static = "_static/"
         template.root = "/"
         template.action="Login"
