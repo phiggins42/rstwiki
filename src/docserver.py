@@ -68,8 +68,7 @@ class DocServer():
     def _handlePost(self, *args, **kwargs):
         print "DO POST %s" % (cherrypy.request.resourceFileExt)
         if cherrypy.request.resourceFileExt == ".rst":
-            message = kwargs['message'] or "Documentation Update of %s%s via Wiki" % (cherrypy.request.resourceDir,cherrypy.request.resourceFile)
-
+            message = kwargs['message'] or "Updates to %s%s via Wiki" % (cherrypy.request.resourceDir,cherrypy.request.resourceFile)
             try:
                 doc=RstDocument(cherrypy.request.resourceFilePath, config=self.config)
                 doc.update(kwargs['content'])
