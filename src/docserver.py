@@ -43,6 +43,10 @@ class DocServer():
             recieved on this mount point.
         '''
 
+        if cherrypy.request.method != "GET" and cherrypy.session.get("user",None) is None:
+            raise cherrypy.HTTPError(401, "Not authorized to %s to this source" %(cherrypy.request.method))
+
+
         if "action" in kwargs:
            action = kwargs['action'] 
         else: 
@@ -80,7 +84,7 @@ class DocServer():
            When the self.default() detects a POST, it sends it here for processing.
            This method returns an action so default () can decide how to proceed
         '''
-
+         
         #if this form post has 'content' and we're writing to a .rst 
         if 'content' in kwargs and cherrypy.request.resourceFileExt == ".rst":
             message = kwargs['message'] or "Updates to %s%s via Wiki" % (cherrypy.request.resourceDir,cherrypy.request.resourceFile)
