@@ -14,36 +14,34 @@ to a Sphinx documentation instance. The interface is a simple rst-rendering appl
 
 Requirements
 ------------
-
+    * cherrypy >= 3.1.2 http://cherrypy.org/
     * docutils >= 0.5 (use trunk)
     * python >= 2.4
     * Pygments >= 1.4 http://pypi.python.org/pypi/Pygments#downloads
-
+    * CheetahTemplates >= 2.4
 Optional
 ~~~~~~~~
 
     * python-ldap 
     * git
-    * svn
     * sphinx
     * dojo, CodeGlass
 
 Process
 -------
 
-    * edit config.py
+    * edit wiki.conf (and global.conf if you wanna)
     * spin server
         * check rst tree
         * fetch or init rst tree
             * git? clone branch with r/w
             * svn? co url
-    * server:
-        * handle special urls: /edit /do /login and /_static
-            * /edit == edit the associated .rst
-            * /login == right.
-            * /do == a series of REST type commands. do/update do/pullreq, etc
-            * /_static maps to a static tree to serve
-    * map http://us/a/b/c to $root/a/b/c.rst 
+        * templates automatically compile on server start
+   * server:
+        * cherrypy python web/wsgi server
+        * applications or functions can be mounted arbitrarily in the url path tree
+        * Default is root = DocServer and root.auth = AuthController, Modify in wiki.py
+   * map http://us/a/b/c to $root/a/b/c.rst 
         * handle root items as root/index (eg: http://us/foo means foo/index.rst)
         * view page:
             * render in html
