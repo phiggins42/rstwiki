@@ -162,7 +162,7 @@ class DocServer():
         pprint(parts)
         for p in parts:
             if len(p)>0 and p[0]==".":
-                raise cherrypy.HttpError(401)
+                raise cherrypy.HTTPError(401)
 
         plen = len(parts)
         print "Checking for direct file: " + root + path_info
