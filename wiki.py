@@ -7,7 +7,7 @@
 import os, os.path,sys,cherrypy
 sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 from auth import AuthController
-from docserver import DocServer,Wiki
+from docserver import Wiki
 
 #precompile templates
 templatePath = os.path.join(os.path.dirname(__file__), "templates") 
@@ -21,8 +21,13 @@ else:
 cherrypy.tree.apps[''] = Wiki('/', os.path.join(os.path.dirname(__file__), "wiki.conf"))
 cherrypy.tree.apps['/rstwiki'] = Wiki('/rstwiki', os.path.join(os.path.dirname(__file__), "rstwiki_docs.conf"))
 
-#mount the auth app (login/logout)
+#mount the auth app (login/logout), todo wrap this in an app when the AuthController gets a makeover
 cherrypy.tree.mount(AuthController(),"/auth",os.path.join(os.path.dirname(__file__), "wiki.conf"))
+
+
+#add files in the template dir to autoreload monitoring
+for f in os.listdir(os.path.join(os.path.dirname(__file__),"templates")):
+    cherrypy.engine.autoreload.files.add(os.path.join(os.path.dirname(__file__),"templates",f))
 
 if __name__ == '__main__':
    cherrypy.config.update(os.path.join(os.path.dirname(__file__), 'global.conf'))

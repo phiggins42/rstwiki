@@ -111,13 +111,9 @@ class DocServer():
                 print "key: %s" % (key)
                 if kwargs[key].filename:
                     print "Handle upload of %s (%s) to %s" %(kwargs[key].filename,kwargs[key].file,cherrypy.request.resourceFilePath )
-                    
                     parts = os.path.split(cherrypy.request.resourceFilePath)
-                    print "Directory: %s" % (parts[0])    
                     if os.path.isdir(parts[0]):
-                        print "Directory: %s" % (parts[0])    
                         filename = os.path.join(parts[0],kwargs[key].filename)
-                        print "outfilename: " + filename
                         isNew = os.path.isfile(filename)
 
                         outfile = open(os.path.join(filename),'wb')
@@ -155,9 +151,7 @@ class DocServer():
 
     def parsePath(self, args):
         root=cherrypy.request.app.config.get('wiki').get('root')
-        print "Root: %s" % (root)
         path_info = cherrypy.request.path_info
-        print "path_info: %s script_name %s" %(cherrypy.request.path_info,cherrypy.request.script_name)
         parts = path_info.split("/")
         pprint(parts)
         for p in parts:
@@ -165,16 +159,13 @@ class DocServer():
                 raise cherrypy.HTTPError(401)
 
         plen = len(parts)
-        print "Checking for direct file: " + root + path_info
         if os.path.isfile(root + path_info):
-            print "isFile: " + root + path_info
             cherrypy.request.resourceFilePath=root+path_info
         elif plen>0 and parts[plen-1]=='': 
             fn = os.path.join(os.path.join(root,*parts[0:-1]),"index.rst")
             cherrypy.request.resourceFilePath=fn
         else:
             fp = cherrypy.request.resourceFilePath= root + path_info + ".rst"
-            #print "root %s path_info %s cherrypy.request.resourceFilePath %s fp: %s" % (root,path_info,cherrypy.request.resourceFilePath, fp)
             if not os.path.isfile(cherrypy.request.resourceFilePath):
                 if os.path.isdir(root + path_info):
                      cherrypy.request.resourceFilePath= root + path_info + "/index.rst"
