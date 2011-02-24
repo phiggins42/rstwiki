@@ -1,48 +1,70 @@
 <!doctype html>
 #implements respond
+#import cherrypy
+#set global $req = $cherrypy.request
 <html>
 <head>
-    <title>$action ${resourceDir}${resourceFile}</title>
+    <title>$action $req.path_info</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link rel="stylesheet" href="${root}${static}docs/wiki.css">
-    <script src="${root}${static}dojo/dojo.js"></script>
+    <link rel="stylesheet" href="${req.script_name}/_static/docs/wiki.css">
+    <script src="${req.script_name}/_static/dojo/dojo.js"></script>
 </head>
 <body class='claro wikidocs'>
     <div class="head">
+
         <div class="wrap">
-            <div id="rstwiki_nav">
-#if  $getVar('user',None) is not None:
-    #if $action is not "edit":
-		<a href='${root}${resourceDir}${resourceFile}?action=edit'>edit</a>
-    #end if 
-    #if $action is not "upload":
-		<a href='${root}${resourceDir}?action=upload'>upload</a>
-    #end if
-		<a href='${root}auth/logout'>logout</a>
-#else:
-    #if $action is not "Login":
-		<a href='${root}auth/login?from_page=${resourceDir}${resourceFile}'>login</a>
-    #end if
-#end if
-            </div>        
-
-#block crumbs
-            <div id="crumbs">
-		<div class='crumbs'><a href='/'>home</a> / 
-    #if $getVar($resourceDir, None) is not None:
-        
-    #end if
-                </div>
-            </div>
-#end block
-
+		<div id="rstwiki_nav">
+			$nav()
+		</div>
+		
+		<div id="crumbs">
+			<div class='crumbs'>
+				$crumbs()
+			</div>
+		</div>
         </div>
     </div>
     <div class="wrap">
-#block contentBlock 
-	$rst.render	
-#end block
+	#block contentBlock 
+		$rst.render	
+	#end block
     </div>
-    <script src="${root}${static}docs/wiki.js"></script>
+    <script src="${req.script_name}${static}docs/wiki.js"></script>
 </body>
 </html>
+
+
+
+
+
+#def nav
+    #if  $getVar('user',None) is not None:
+       #if $editable:
+           #if $action != "edit":
+		<a href='${req.script_name}$req.path_info?action=edit'>edit</a>
+           #end if 
+           #if $action != "upload":
+		<a href='${req.script_name}$req.path_info?action=upload'>upload</a>
+           #end if
+       #end if
+		<a href='/auth/logout'>logout</a>
+    #else:
+        #if $action != "Login":
+		<a href='/auth/login?from_page=$req.path_info'>login</a>
+        #end if
+    #end if
+#end def
+
+#def crumbs()
+         #set $parts = ($req.script_name + $req.path_info).split('/')
+         #set $cpath = "" 
+                   <a href="/">home</a>
+         #for $part in $parts
+              #if $part!='':
+                   #set $cpath=$cpath+"/"+$part 
+                   / <a href="$cpath">$part</a>
+              #end if
+         #end for  
+#end def
+
+

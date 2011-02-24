@@ -1,11 +1,13 @@
 #extends master
+#import cherrypy
+#set global $req = $cherrypy.request
 
 #block contentBlock
 <div class="loginbox">
-    <form action="${root}${resourceDir}" enctype="multipart/form-data" method="POST">
+    <form action="${req.path_info}" enctype="multipart/form-data" method="POST">
         <h2>Upload File(s)</h2>
         
-        <p>Destination is: ${resourceDir}</p>
+        <p>Destination is: ${$req.path_info}</p>
 
         <input type="hidden" name="upload" value="1">
 
@@ -26,12 +28,7 @@
 
     </form>
     
-    <script src="${root}${static}docs/upload.js"></script>
+    <script src="${req.script_name}${static}docs/upload.js"></script>
         
 </div>
-#end block
-
-#block crumbs
-	<div class='crumbs'><a href='/'>Home</a> / <a href="/upload">Upload</a> 
-	</div>
 #end block
