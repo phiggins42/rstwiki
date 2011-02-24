@@ -4,6 +4,7 @@ from Crumbs import Crumbs as crumbs
 from auth import AuthController, require, member_of, name_is
 from Cheetah.Template import Template
 from pprint import pprint
+import mimetypes
 
 class Wiki(cherrypy.Application):
     def __init__(self, script_name="", config=None):
@@ -67,12 +68,13 @@ class DocServer():
         template.action = action
 
         if cherrypy.request.resourceFileExt != ".rst":
+            mimetype = mimetypes.guess_type(cherrypy.request.resourceFilePath) 
+            cherrypy.response.headers["Content-Type"] = mimetype[0]
             return open(cherrypy.request.resourceFilePath).read()
         elif os.path.isfile(cherrypy.request.resourceFilePath):
             template.rst =  RstDocument(cherrypy.request.resourceFilePath)
         else:
             raise cherrypy.HTTPError(404)
-        print "Before Render" 
         return self.render()
 
     def _handlePost(self, *args, **kwargs):
@@ -108,27 +110,33 @@ class DocServer():
             if key.startswith("uploadfile"):
                 print "key: %s" % (key)
                 if kwargs[key].filename:
-                    print "Handle upload of %s (%s)" %(kwargs[key].filename,kwargs[key].file)
-                    filename = os.path.join(cherrypy.request.app.config.get("wiki")["root"], cherrypy.request.path_info,kwargs[key].filename)
-                    isNew = os.path.isfile(filename)
+                    print "Handle upload of %s (%s) to %s" %(kwargs[key].filename,kwargs[key].file,cherrypy.request.resourceFilePath )
+                    
+                    parts = os.path.split(cherrypy.request.resourceFilePath)
+                    print "Directory: %s" % (parts[0])    
+                    if os.path.isdir(parts[0]):
+                        print "Directory: %s" % (parts[0])    
+                        filename = os.path.join(parts[0],kwargs[key].filename)
+                        print "outfilename: " + filename
+                        isNew = os.path.isfile(filename)
 
-                    outfile = open(os.path.join(filename),'wb')
-                    while True:
-                        data = kwargs[key].file.read(8192)
-                        if not data:
-                            break
-                        outfile.write(data)
-                    outfile.close()
-                    if cherrypy.request.app.vcs is not None:
-                        if isNew:
-                            message = "*** ADDED *** new file '%s' to %s" % (kwargs[key].filename, cherrypy.request.path_info)
-                        else:
-                            message = "Updated '%s' to %s" % (kwargs[key].filename, cherrypy.request.path_info)
+                        outfile = open(os.path.join(filename),'wb')
+                        while True:
+                            data = kwargs[key].file.read(8192)
+                            if not data:
+                                break
+                            outfile.write(data)
+                        outfile.close()
+                        if cherrypy.request.app.vcs is not None:
+                            if isNew:
+                                message = "*** ADDED *** new file '%s' to %s" % (kwargs[key].filename, cherrypy.request.path_info)
+                            else:
+                                message = "Updated '%s' to %s" % (kwargs[key].filename, cherrypy.request.path_info)
 
-                        print "Send Commit to VCS system"
-                        print "   Message: %s" % (message) 
-                        cherrypy.request.app.vcs.add(filename) 
-                        cherrypy.request.app.vcs.commit(filename,message=message)
+                            print "Send Commit to VCS system"
+                            print "   Message: %s" % (message) 
+                            cherrypy.request.app.vcs.add(filename) 
+                            cherrypy.request.app.vcs.commit(filename,message=message)
 
 
         return "view"
@@ -146,7 +154,8 @@ class DocServer():
         return template.respond()
 
     def parsePath(self, args):
-        root=cherrypy.request.app.config.get("wiki")["root"]
+        root=cherrypy.request.app.config.get('wiki').get('root')
+        print "Root: %s" % (root)
         path_info = cherrypy.request.path_info
         print "path_info: %s script_name %s" %(cherrypy.request.path_info,cherrypy.request.script_name)
         parts = path_info.split("/")
@@ -156,10 +165,11 @@ class DocServer():
                 raise cherrypy.HttpError(401)
 
         plen = len(parts)
-        if os.path.isfile(os.path.join(root,path_info)):
-            cherrypy.resoureFilePath=os.path.join(root,path_info)
+        print "Checking for direct file: " + root + path_info
+        if os.path.isfile(root + path_info):
+            print "isFile: " + root + path_info
+            cherrypy.request.resourceFilePath=root+path_info
         elif plen>0 and parts[plen-1]=='': 
-
             fn = os.path.join(os.path.join(root,*parts[0:-1]),"index.rst")
             cherrypy.request.resourceFilePath=fn
         else:
