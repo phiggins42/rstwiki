@@ -305,3 +305,8 @@ textarea {
 	border:1px solid gray;
 	overflow: none;
 }
+
+#editorMessage {
+	font-size:75%;
+	font-weight:normal;
+}

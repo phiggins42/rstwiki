@@ -9,6 +9,7 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
 	editControlsId: "editControls",
         resetButtonId: "resetButton",
         editorMessageId: "editorMessage",
+		noticeId:"noticenode",
 	height: 400,
 	postCreate: function(){
 		this.editing=false;
@@ -20,7 +21,8 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
 		this.saveButton = dojo.byId(this.saveButtonId);
 		this.resetButton = dojo.byId(this.resetButtonId);
 		this.editorMessage= dojo.byId(this.editorMessageId);	
-
+		this.notice = dojo.byId(this.noticeId);
+		
 		//connect to external buttons
 
 		console.log(this.toggleButton, this.saveButton,this.resetButton)
@@ -136,6 +138,7 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
 		dojo.style(this.contentPanel,"display","none");
 		dojo.style(this.previewPanel,"display","");
 		dojo.style(this.editControls, "display","");
+		dojo.style(this.notice, "display", "");
 		this.toggleButton.innerHTML="hide editor"
 		return this._showDef.then(dojo.hitch(this,"onShow"));
 	},
@@ -157,6 +160,7 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
 		dojo.style(this.contentPanel,"display", "block");
 		dojo.style(this.previewPanel,"display", "none");
 		dojo.style(this.editControls, "display","none");
+		dojo.style(this.notice,"display","none");
 	
 		return this._hideDef.then(dojo.hitch(this,function(){
 			dojo.style(this.domNode, "display", "None");
