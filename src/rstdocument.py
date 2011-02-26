@@ -5,6 +5,7 @@ import inspect
 from docutils.parsers.rst.roles import register_canonical_role
 from docutils.nodes import literal_block, TextElement, FixedTextElement, Element, General
 from docutils import nodes, utils, statemachine
+from directives import *
 
 class RstDocument():
     def __init__(self,path=None,**kwargs):
