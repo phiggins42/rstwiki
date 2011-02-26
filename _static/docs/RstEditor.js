@@ -192,6 +192,7 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
 			console.log("posting: ",{preview:this.domNode.value});
 			this._previewContent = this.domNode.value;
 			dojo.xhrPost({
+				url: window.location,
 				content:{preview:this._previewContent},
 				handleAs: "text",
 				load: dojo.hitch(this, function(content){
