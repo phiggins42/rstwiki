@@ -22,9 +22,13 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
 		this.editorMessage= dojo.byId(this.editorMessageId);	
 
 		//connect to external buttons
-            	this.connect(dojo.byId(this.toggleButtonId),"onclick", "toggle") 
-            	this.connect(dojo.byId(this.saveButtonId),"onclick", "save") 
-            	this.connect(dojo.byId(this.resetButton),"onclick", "reset") 
+
+		console.log(this.toggleButton, this.saveButton,this.resetButton)
+		if (this.toggleButton) {
+	            	this.connect(this.toggleButton,"onclick", "toggle") 
+       		     	this.connect(this.saveButton,"onclick", "save") 
+       		     	this.connect(this.resetButton,"onclick", "reset") 
+		}
 
 		// catch a bunch of text editor events so we know
 		// when things have changed

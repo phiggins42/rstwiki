@@ -12,10 +12,12 @@
 <body class='claro wikidocs' >
 
     <div id="head" class="head">
+#if $action!="Login"
         <div class="wrap"> 
 		<textarea id="rstEditor" dojoType="docs.RstEditor" class="rstEditor" style="height:0px;display:none">
 #if $rst.document 
 $rst.document
+#end if
 #end if
 </textarea>
 	</div>
