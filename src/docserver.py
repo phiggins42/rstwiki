@@ -60,6 +60,8 @@ class DocServer():
         elif action=="upload":
             import upload
             cherrypy.request.template = template = upload.upload()
+        elif action=="bare":
+            return cherrypy.request.rst.render()            
         else:
             action = "view"
             import master
@@ -82,12 +84,19 @@ class DocServer():
            When the self.default() detects a POST, it sends it here for processing.
            This method returns an action so default () can decide how to proceed
         '''
-         
+	
+        
+	if 'preview' in kwargs:
+            cherrypy.request.rst = RstDocument()
+            cherrypy.request.rst.document=kwargs['preview']
+            return "bare"	
+            
+ 
         #if this form post has 'content' and we're writing to a .rst 
         if 'content' in kwargs and cherrypy.request.resourceFileExt == ".rst":
             message = kwargs['message'] or "Updates to %s via Wiki" % (cherrypy.request.path_info)
             try:
-                doc=RstDocument(cherrypy.request.resourceFilePath)
+                doc = cherrypy.request.rst = RstDocument(cherrypy.request.resourceFilePath)
                 doc.update(kwargs['content'])
                 doc.save()
                 if cherrypy.request.app.vcs is not None:
@@ -95,14 +104,16 @@ class DocServer():
                     print "   Message: %s" % (message) 
                     cherrypy.request.app.vcs.commit(cherrypy.request.resourceFilePath,message=message)
 
-                return "view"
+                return kwargs['action'] or 'view'
             
             except Exception,err:
                  print "Error updating file %s" %(err)
                  # there was an error, send them back to the edit form
                  # the edit form template can make use of cherrypy.request.formPostError if desired
                  cherrypy.request.formPostError = err
- 
+                 if kwargs['action']=='bare':
+                    raise cherrypy.HTTPError(500,err)
+                      
                  return "edit"
 
         #handle file uploads

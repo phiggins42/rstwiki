@@ -292,3 +292,16 @@ textarea {
 .live-example .closed {
     display:none;
 }
+
+/* editor */
+.preview > .document{
+	background-color: #FCFFC7;
+	background-transparency: none;	
+}
+
+.rstEditor {
+	margin-top:5px;
+	width:100%;
+	border:1px solid gray;
+	overflow: none;
+}

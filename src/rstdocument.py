@@ -7,9 +7,13 @@ from docutils.nodes import literal_block, TextElement, FixedTextElement, Element
 from docutils import nodes, utils, statemachine
 
 class RstDocument():
-    def __init__(self,path,**kwargs):
-        self.path = path
-        self.document=open(path).read()
+    def __init__(self,path=None,**kwargs):
+        if path is not None:
+            self.path = path
+            self.document=open(path).read()
+        else:
+            self.path = None
+            self.document=None 
 
     def render(self,*args,**kwargs):
         return self.parse_data(self.path, self.document)
