@@ -32,5 +32,6 @@ for f in os.listdir(os.path.join(os.path.dirname(__file__),"templates")):
 
 if __name__ == '__main__':
    cherrypy.config.update(os.path.join(os.path.dirname(__file__), 'global.conf'))
-   cherrypy.quickstart()
+   #cherrypy.quickstart()
    cherrypy.engine.start()
+   cherrypy.engine.block()
