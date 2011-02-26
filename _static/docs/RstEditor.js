@@ -8,8 +8,10 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
 	contentPanelId: "contentPanel",
 	editControlsId: "editControls",
         resetButtonId: "resetButton",
+        editorMessageId: "editorMessage",
 	height: 400,
 	postCreate: function(){
+		this.editing=false;
 		console.log("editor start");
 		this.previewPanel = dojo.byId(this.previewPanelId);
 		this.contentPanel= dojo.byId(this.contentPanelId);
@@ -17,7 +19,8 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
 		this.toggleButton = dojo.byId(this.toggleButtonId);
 		this.saveButton = dojo.byId(this.saveButtonId);
 		this.resetButton = dojo.byId(this.resetButtonId);
-	
+		this.editorMessage= dojo.byId(this.editorMessageId);	
+
 		//connect to external buttons
             	this.connect(dojo.byId(this.toggleButtonId),"onclick", "toggle") 
             	this.connect(dojo.byId(this.saveButtonId),"onclick", "save") 
@@ -35,19 +38,33 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
 	onKeyDown: function(evt){
 		//global shortcuts
 		//	metaKey + E  toggles edit mode
+		//	metaKey + S  saves editor content if it is dirty
 		var code = evt.which;
 		switch(code){
 			case 69:
-				dojo.stopEvent(evt);
-				this.toggle();
+				if (!evt.metaKey)return;
+				this.toggle(evt);
 			break;
+			case 83:
+				if (!evt.metaKey)return;
+				this.save(evt);
+				break;
+			//default:
+			//	console.log(code);
 		}
 	},
 
 	onChange: function(){
 		// on change, wait a bit then get a preview, cancel previous if another change happens
+		if (!this.editing) return;
 		if (this._delayedFetch){
 			clearTimeout(this._delayedFetch);
+		}
+
+		if (this.domNode.value != this._previousContent){
+			this.editorMessage.innerHTML="Content has changed."
+		}else{
+			this.editorMessage.innerHTML="";
 		}
 
 		this._delayedFetch=setTimeout(dojo.hitch(this, function(){
@@ -66,17 +83,28 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
 		//use the preview content as the editor content unless
 		//the response comes back with something different 
 		dojo.stopEvent(e);
-		if (this.domNode.value != this._previousContent){
+		console.log('editing: ', this.editing);
+		if (this._previousContent && this.domNode.value != this._previousContent){
+			this.saving=true;
+			this.editorMessage.innerHTML="Saving.";
+
 			dojo.xhrPost({
 				url: window.location,
 				content: {content: this.domNode.value,message:"Update from Wiki",action:"bare"},
 				handleAs: "text",
-				load: function(content){
+				load: dojo.hitch(this, function(content){
+					this.saving=false;
 					console.log('saved');
-					if (this.contentPanel.innerHTML != content){
+					delete this._previousContent;
+					if (content && this.contentPanel.innerHTML != content){
 						this.contentPanel.innerHTML=content;
 					}	
-				}
+					this.editorMessage.innerHTML="";
+				}),
+				error: dojo.hitch(this, function(){
+					this.editorMessage.innerHTML="";
+					this.saving=false;
+				})
 				
 			})
 			this.contentPanel.innerHTML = this.previewPanel.innerHTML;
@@ -122,12 +150,12 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
 			},
 			onEnd: dojo.hitch(this._hideDef,"resolve",true)
 		}).play();	
-
+		dojo.style(this.contentPanel,"display", "block");
+		dojo.style(this.previewPanel,"display", "none");
+		dojo.style(this.editControls, "display","none");
+	
 		return this._hideDef.then(dojo.hitch(this,function(){
 			dojo.style(this.domNode, "display", "None");
-			dojo.style(this.contentPanel,"display", "");
-			dojo.style(this.previewPanel,"display", "none");
-			dojo.style(this.editControls, "display","none");
 			this.toggleButton.innerHTML="edit"
 		})).then(dojo.hitch(this,"onHide"));
 	},
@@ -141,7 +169,6 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
 			this.show()
 		}else{
 			this.hide();
-			dojo.style(this.previewPanel, "display", "none")
 		}
 	},
 
@@ -154,6 +181,7 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
 	},
 	
 	getPreview:function(){
+		if (!this.editing || this.saving){return;}
 		this.previewPanel.innerHTML = this.contentPanel.innerHTML;
 		dojo.style(this.contentPanel,"display","none");
 		if (!this._previewContent || this.domNode.value != this._previewContent){
@@ -163,9 +191,8 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
 				content:{preview:this._previewContent},
 				handleAs: "text",
 				load: dojo.hitch(this, function(content){
-					if (content != dojo.byId("previewPanel").innerHTML && this.domNode.value==this._previewContent){
-						dojo.style(this.contentPanel, "display", "none")
-						dojo.style(this.previewPanel,"display", "");
+
+					if (!this.saving &&  content != dojo.byId("previewPanel").innerHTML && this.domNode.value==this._previewContent){
 						this.previewPanel.innerHTML=content;
 					}
 				})
@@ -173,7 +200,22 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
 		}
 	},
 	onShow:function(){
+		this.editing=true;
+		if (this._previousContent && this.domNode.value != this._previousContent){
+			this.editorMessage.innerHTML="Content has changed."
+		}else{
+			this.editorMessage.innerHTML=""
+		}
+		this.domNode.focus();
 	},
 	onHide:function(){
+		this.editing=false;
+		if (this._previousContent && this.domNode.value != this._previousContent){
+			if (!this.saving){
+				this.editorMessage.innerHTML="Content has changed."
+			}
+		}else{
+			this.editorMessage.innerHTML=""
+		}
 	}
 });
