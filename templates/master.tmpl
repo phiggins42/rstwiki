@@ -57,8 +57,10 @@
 
 
 #def nav
+    #if $action != "Login" and $action != "upload":
         <a id="blame" href='http://github.com/dmachi/Dojotoolkit-ReST-Docs/blame/wiki/${req.relativeResourcePath}'>blame</a>
         <a id="history" href='http://github.com/dmachi/Dojotoolkit-ReST-Docs/commits/wiki/${req.relativeResourcePath}'>history</a>
+    #end if
     #if  $getVar('user',None) is not None:
        #if $editable:
            #if $action != "edit":
