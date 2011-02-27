@@ -67,6 +67,7 @@
            #end if
        #end if
 		<a href='/auth/logout'>logout</a>
+       $user.uname
     #else:
         #if $action != "Login":
 		<a href='/auth/login?from_page=$req.path_info'>login</a>
