@@ -172,16 +172,20 @@ class DocServer():
         plen = len(parts)
         if os.path.isfile(root + path_info):
             cherrypy.request.resourceFilePath=root+path_info
+            cherrypy.request.relativeResourcePath = path_info
         elif plen>0 and parts[plen-1]=='': 
             fn = os.path.join(os.path.join(root,*parts[0:-1]),"index.rst")
             cherrypy.request.resourceFilePath=fn
+            cherrypy.request.relativeResourcePath = os.path.join(*parts[0:-1]) +"/index.rst"
         else:
             fp = cherrypy.request.resourceFilePath= root + path_info + ".rst"
+            cherrypy.request.relativeResourcePath = path_info + ".rst"
             if not os.path.isfile(cherrypy.request.resourceFilePath):
                 if os.path.isdir(root + path_info):
                      cherrypy.request.resourceFilePath= root + path_info + "/index.rst"
+                     cherrypy.request.relativeResourcePath = path_info + "/index.rst"
             
-         
+             
         cherrypy.request.resourceFileExt = os.path.splitext(cherrypy.request.resourceFilePath)[1]
         print "FILE: %s EXT: %s" % (cherrypy.request.resourceFilePath, cherrypy.request.resourceFileExt)
 

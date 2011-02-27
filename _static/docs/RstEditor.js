@@ -1,7 +1,9 @@
 dojo.provide("docs.RstEditor");
 dojo.require("dijit._Widget");
+dojo.require("dijit._HasDropDown");
+dojo.require('dijit.form.TextBox');
 
-dojo.declare("docs.RstEditor", [dijit._Widget],{
+dojo.declare("docs.RstEditor", [dijit._Widget, dijit._HasDropDown],{
 	toggleButtonId: "editActionButton",
         saveButtonId: "saveButton",
 	previewPanelId: "previewPanel",
@@ -11,7 +13,9 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
         editorMessageId: "editorMessage",
 		noticeId:"noticenode",
 	height: 400,
-	postCreate: function(){
+	_dropDownPOsition: ["below"],	
+	buildRendering: function(){
+
 		this.editing=false;
 		console.log("editor start");
 		this.previewPanel = dojo.byId(this.previewPanelId);
@@ -22,7 +26,11 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
 		this.resetButton = dojo.byId(this.resetButtonId);
 		this.editorMessage= dojo.byId(this.editorMessageId);	
 		this.notice = dojo.byId(this.noticeId);
-		
+		this._aroundNode = this.saveButton;
+		this._buttonNode = this.saveButton
+		this.inherited(arguments);
+	},	
+	postCreate: function(){
 		//connect to external buttons
 
 		console.log(this.toggleButton, this.saveButton,this.resetButton)
@@ -31,7 +39,6 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
        		     	this.connect(this.saveButton,"onclick", "save") 
        		     	this.connect(this.resetButton,"onclick", "reset") 
 		}
-
 		// catch a bunch of text editor events so we know
 		// when things have changed
 		this.connect(dojo.global,"onkeydown", "onKeyDown");
@@ -39,6 +46,15 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
                 this.connect(this.domNode, "onchange", "onChange");
                 this.connect(this.domNode, "onpaste", "_onCopyPaste");
                 this.connect(this.domNode, "oncut", "_onCopyPaste");
+
+
+		this.dropDown= new dijit.TooltipDialog({
+			content:
+			'<div>Please describe your changes</div><textarea cols=40 rows=3 id="' + this.id + '_textarea" name="message"></textarea><br>' +
+			'<button id="' + this.id + '_commit" dojoType="dijit.form.Button" type="submit">Save</button>'+
+			'<button id="' + this.id + '_cancel" dojoType="dijit.form.Button" type="button">Cancel</button>',
+		});
+
 	},
 
 	onKeyDown: function(evt){
@@ -85,10 +101,33 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
 	},
 
 	save: function(e){
+		console.log("save dialog");
+		if (e){
+			dojo.stopEvent(e);
+		}
+		if (this._previousContent && this.domNode.value != this._previousContent){
+			this.saving=true;
+			this.editorMessage.innerHTML="Saving.";
+			this.openDropDown();
+			var ch =dojo.connect(dojo.byId(this.id + "_commit"), 'onclick', this, function(evt){
+				dojo.stopEvent(evt);
+				this.commit(dojo.byId(this.id+"_textarea").value);
+				this.closeDropDown();	
+				dojo.disconnect(ch);
+			});
+			var ch =dojo.connect(dojo.byId(this.id + "_cancel"), 'onclick', this, function(evt){
+				dojo.stopEvent(evt);
+				this.closeDropDown();	
+				dojo.disconnect(ch);
+			});
+	
+		}
+	},	
+
+	commit: function(message){
 		//save the editor content and close the panel.
 		//use the preview content as the editor content unless
 		//the response comes back with something different 
-		dojo.stopEvent(e);
 		console.log('editing: ', this.editing);
 		if (this._previousContent && this.domNode.value != this._previousContent){
 			this.saving=true;
@@ -96,7 +135,7 @@ dojo.declare("docs.RstEditor", [dijit._Widget],{
 
 			dojo.xhrPost({
 				url: window.location,
-				content: {content: this.domNode.value,message:"Update from Wiki",action:"bare"},
+				content: {content: this.domNode.value,message:message,action:"bare"},
 				handleAs: "text",
 				load: dojo.hitch(this, function(content){
 					this.saving=false;
