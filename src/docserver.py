@@ -61,6 +61,9 @@ class DocServer():
             import upload
             cherrypy.request.template = template = upload.upload()
         elif action=="bare":
+            if 'id_prefix' in kwargs:
+                print "id_prefix: "+ kwargs["id_prefix"]
+                return cherrypy.request.rst.render(settings_overrides={'id_prefix': kwargs['id_prefix']})
             return cherrypy.request.rst.render()            
         else:
             action = "view"

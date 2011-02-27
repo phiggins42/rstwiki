@@ -152,7 +152,7 @@ dojo.declare("docs.RstEditor", [dijit._Widget, dijit._HasDropDown],{
 				})
 				
 			})
-			this.contentPanel.innerHTML = this.previewPanel.innerHTML;
+			//this.contentPanel.innerHTML = this.previewPanel.innerHTML;
 			this.hide();
 		}
 	},
@@ -170,9 +170,6 @@ dojo.declare("docs.RstEditor", [dijit._Widget, dijit._HasDropDown],{
 		}).play();	
 		if (!this._previousContent || this._previousContent == this.domNode.value){
 			this._previousContent = this.domNode.value;
-		}
-		if (!this.previewPanel.innerHTML){
-			this.previewPanel.innerHTML = this.contentPanel.innerHTML;
 		}
 		dojo.style(this.contentPanel,"display","none");
 		dojo.style(this.previewPanel,"display","");
@@ -227,19 +224,19 @@ dojo.declare("docs.RstEditor", [dijit._Widget, dijit._HasDropDown],{
 		}
 	},
 	
-	getPreview:function(){
-		if (!this.editing || this.saving){return;}
+	getPreview:function(force){
+		if (!force && ( !this.editing || this.saving)){return;}
 		this.previewPanel.innerHTML = this.contentPanel.innerHTML;
-		dojo.style(this.contentPanel,"display","none");
-		if (!this._previewContent || this.domNode.value != this._previewContent){
+		if (!this.previewPanel.innerHTML || !this._previewContent || this.domNode.value != this._previewContent){
 			console.log("posting: ",{preview:this.domNode.value});
 			this._previewContent = this.domNode.value;
 			dojo.xhrPost({
 				url: window.location,
-				content:{preview:this._previewContent},
+				content:{preview:this._previewContent,id_prefix:"preview_"},
 				handleAs: "text",
 				load: dojo.hitch(this, function(content){
 
+					dojo.style(this.contentPanel,"display","none");
 					if (!this.saving &&  content != dojo.byId("previewPanel").innerHTML && this.domNode.value==this._previewContent){
 						this.previewPanel.innerHTML=content;
 					}
@@ -249,6 +246,12 @@ dojo.declare("docs.RstEditor", [dijit._Widget, dijit._HasDropDown],{
 	},
 	onShow:function(){
 		this.editing=true;
+		if (!this.previewPanel.innerHTML){
+			this.getPreview()
+			//this.previewPanel.innerHTML = this.contentPanel.innerHTML;
+		}
+
+
 		if (this._previousContent && this.domNode.value != this._previousContent){
 			this.editorMessage.innerHTML="Content has changed."
 		}else{

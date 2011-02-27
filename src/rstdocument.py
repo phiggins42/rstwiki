@@ -17,12 +17,19 @@ class RstDocument():
             self.document=None 
 
     def render(self,*args,**kwargs):
-        return self.parse_data(self.path, self.document)
+        return self.parse_data(self.path, self.document,**kwargs)
  
-    def parse_data(self, path, out):
+    def parse_data(self, path, out,**kwargs):
+        if "settings_overrides" in kwargs:
+            over = kwargs['settings_overrides']
+            print "Using settings_overrides"  
+            print(over)
+        else:
+            over = None 
+
         return core.publish_parts(
             source=self.document, source_path="/",
-            destination_path="/", writer=DojoHTMLWriter(), settings_overrides={'id_prefix':cherrypy.request.script_name + "/"})['html_body']
+            destination_path="/", writer=DojoHTMLWriter(), settings_overrides=over)['html_body']
 
     def create(self, *args, **kwargs):
         return "Create"
