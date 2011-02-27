@@ -13,15 +13,15 @@
 
     <div id="head" class="head">    
         <div class="wrap">
-		    <div id="rstwiki_nav">
-			    <span id="editControls" style="display:none">
-				    <a id="resetButton" href='#save'>reset</a>
-				    <a id="saveButton" href='#save'>save</a>
-			    </span>
-			    $nav()
-		    </div>
-		
-		    <div id="crumbs"><div class='crumbs'>$crumbs()</div></div>
+            <div id="rstwiki_nav">
+                <span id="editControls" style="display:none">
+                    <a id="resetButton" href='#save'>reset</a>
+                    <a id="saveButton" href='#save'>save</a>
+                </span>
+                $nav()
+            </div>
+        
+            <div id="crumbs"><div class='crumbs'>$crumbs()</div></div>
 
         </div>
 
@@ -41,9 +41,9 @@
     
     <div id="previewPanel" class="wrap preview"></div>
     <div id="contentPanel" class="wrap">
-	#block contentBlock 
-		$rst.render	
-	#end block
+    #block contentBlock 
+        $rst.render 
+    #end block
     </div>
     <script src="${req.script_name}${static}docs/wiki.js"></script>
     <script>
@@ -64,17 +64,17 @@
     #if  $getVar('user',None) is not None:
        #if $editable:
            #if $action != "edit":
-		<a id="editActionButton" href='${req.script_name}$req.path_info?action=edit'>edit</a>
+        <a id="editActionButton" href='${req.script_name}$req.path_info?action=edit'>edit</a>
            #end if 
            #if $action != "upload":
-		<a href='${req.script_name}$req.path_info?action=upload'>upload</a>
+        <a href='${req.script_name}$req.path_info?action=upload'>upload</a>
            #end if
        #end if
-		<a href='/auth/logout'>logout</a>
+        <a href='/auth/logout'>logout</a>
        $user.uname
     #else:
         #if $action != "Login":
-		<a href='/auth/login?from_page=$req.path_info'>login</a>
+        <a href='/auth/login?from_page=$req.path_info'>login</a>
         #end if
     #end if
 #end def

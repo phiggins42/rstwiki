@@ -71,12 +71,12 @@ class Git:
     def mergeShadow(self):
         print "Merging Shadow"
         git = self.shadow  
-	
+
         #checkout a copy of the wiki branch
         print "Checkout %s" % (self.vcs.get("branch"))
         self.checkoutBranch(self.vcs.get("branch"),repo=self.shadow)
         self.shadow.active_branch.pull()
-	#switch back to master
+        #switch back to master
         print "Checkout %s" % (self.vcs.get("shadow_branch"))
         self.checkoutBranch(self.vcs.get("shadow_branch"),repo=self.shadow)
         self.shadow.active_branch.pull()

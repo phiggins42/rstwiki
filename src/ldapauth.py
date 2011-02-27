@@ -19,7 +19,7 @@ def isuser(uname, pw):
     try:
         con = ldap.initialize(ldapconf.get("host","ldap://localhost"))
 
-	UserObj = {'uname': uname, 'groups': []}
+        UserObj = {'uname': uname, 'groups': []}
         #first bind as the user to make sure we can login
         con.simple_bind_s( user, pw)
 
