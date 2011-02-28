@@ -11,67 +11,66 @@
 </head>
 <body class='claro wikidocs'>
 
-    <div id="head" class="head">    
+    <div id="rstwiki-head" class="head">    
         <div class="wrap">
-            <div id="rstwiki_nav">
-                <span id="editControls" style="display:none">
-                    <a id="resetButton" href='#save'>reset</a>
-                    <a id="saveButton" href='#save'>save</a>
+            <div id="rstwiki-nav">
+                <span id="rstwiki-editControls" style="display:none">
+                    <a id="rstwiki-saveButton" href='#save'>save</a>
+                    <a id="rstwiki-resetButton" href='#save'>reset</a>
                 </span>
                 $nav()
             </div>
         
-            <div id="crumbs"><div class='crumbs'>$crumbs()</div></div>
+            <div id="rstwiki-crumbs"><div class='crumbs'>$crumbs()</div></div>
 
         </div>
 
-        #if $action!="Login"
-        <div class="wrap"><textarea id="rstEditor" dojoType="docs.RstEditor" class="rstEditor" style="height:0px;display:none">
-        #if $rst.document 
-        $rst.document
-        #end if
-        </textarea>
-            <div id="noticenode" style="display:none">
-                <h3>Preview: <span id="editorMessage"></span></h3>
+        #if $getVar('user',None) is not None and $rst.document:
+        <div class="wrap">
+<textarea id="rstwiki-rstEditor" data-dojo-type="docs.RstEditor" class="rstEditor" style="height:0px;display:none">$rst.document</textarea>
+            <div id="rstwiki-noticenode" style="display:none">
+                <h3>Preview: <span id="rstwiki-editorMessage"></span></h3>
             </div>
         </div>
         #end if        
         
     </div>
     
-    <div id="previewPanel" class="wrap preview"></div>
-    <div id="contentPanel" class="wrap">
+    <div id="rstwiki-previewPanel" class="wrap preview"></div>
+    <div id="rstwiki-contentPanel" class="wrap">
     #block contentBlock 
         $rst.render 
     #end block
     </div>
+    <div id="rstwiki-footer">
+        #if $action != "Login" and $action != "upload":
+        <div class="wrap">
+            <a id="rstwiki-blame" href='http://github.com/dmachi/Dojotoolkit-ReST-Docs/blame/wiki/${req.relativeResourcePath}'>blame</a>
+            <a id="rstwiki-history" href='http://github.com/dmachi/Dojotoolkit-ReST-Docs/commits/wiki/${req.relativeResourcePath}'>history</a>
+        </div>
+        #end if        
+    </div>
     <script src="${req.script_name}${static}docs/wiki.js"></script>
+    #if  $getVar('user',None) is not None:
     <script>
         dojo.require('docs.RstEditor');
     </script>
+    #end if
 </body>
 </html>
 
-
-
-
-
 #def nav
-    #if $action != "Login" and $action != "upload":
-        <a id="blame" href='http://github.com/dmachi/Dojotoolkit-ReST-Docs/blame/wiki/${req.relativeResourcePath}'>blame</a>
-        <a id="history" href='http://github.com/dmachi/Dojotoolkit-ReST-Docs/commits/wiki/${req.relativeResourcePath}'>history</a>
-    #end if
     #if  $getVar('user',None) is not None:
        #if $editable:
            #if $action != "edit":
-        <a id="editActionButton" href='${req.script_name}$req.path_info?action=edit'>edit</a>
+        <a id="rstwiki-editActionButton" href='${req.script_name}$req.path_info?action=edit'>edit</a>
            #end if 
            #if $action != "upload":
         <a href='${req.script_name}$req.path_info?action=upload'>upload</a>
            #end if
        #end if
         <a href='/auth/logout'>logout</a>
-       $user.uname
+       | $user.uname
     #else:
         #if $action != "Login":
         <a href='/auth/login?from_page=$req.path_info'>login</a>

@@ -20,9 +20,9 @@ class DocServer():
     def initVCS(self,app):
          wiki = app.config.get('wiki')
          if "enable_vcs" in wiki and wiki.get("enable_vcs"):
-             vcsconfig=app.config.get("vcs") 
+             vcsconfig = app.config.get("vcs") 
              if vcsconfig["type"] is not None:
-                 if vcsconfig['type']=="git":
+                 if vcsconfig['type'] == "git":
                      from vcs import Git as VCS
                      app.vcs = VCS(app.config)
 
@@ -54,13 +54,13 @@ class DocServer():
         if cherrypy.request.method == "POST":
            action=self._handlePost(args,**kwargs)
 
-        if action=="edit":
+        if action == "edit":
             import edit
             cherrypy.request.template = template = edit.edit()
-        elif action=="upload":
+        elif action == "upload":
             import upload
             cherrypy.request.template = template = upload.upload()
-        elif action=="bare":
+        elif action == "bare":
             if 'id_prefix' in kwargs:
                 print "id_prefix: "+ kwargs["id_prefix"]
                 return cherrypy.request.rst.render(settings_overrides={'id_prefix': kwargs['id_prefix']})
@@ -87,13 +87,12 @@ class DocServer():
            When the self.default() detects a POST, it sends it here for processing.
            This method returns an action so default () can decide how to proceed
         '''
-	
         
-	if 'preview' in kwargs:
+        
+        if 'preview' in kwargs:
             cherrypy.request.rst = RstDocument()
             cherrypy.request.rst.document=kwargs['preview']
-            return "bare"	
-            
+            return "bare"
  
         #if this form post has 'content' and we're writing to a .rst 
         if 'content' in kwargs and cherrypy.request.resourceFileExt == ".rst":
@@ -124,7 +123,13 @@ class DocServer():
             if key.startswith("uploadfile"):
                 print "key: %s" % (key)
                 if kwargs[key].filename:
-                    print "Handle upload of %s (%s) to %s" %(kwargs[key].filename,kwargs[key].file,cherrypy.request.resourceFilePath )
+
+                    print "Handle upload of %s (%s) to %s" % (
+                        kwargs[key].filename,
+                        kwargs[key].file,
+                        cherrypy.request.resourceFilePath 
+                    )
+                    
                     parts = os.path.split(cherrypy.request.resourceFilePath)
                     if os.path.isdir(parts[0]):
                         filename = os.path.join(parts[0],kwargs[key].filename)
@@ -139,7 +144,10 @@ class DocServer():
                         outfile.close()
                         if cherrypy.request.app.vcs is not None:
                             if isNew:
-                                message = "*** ADDED *** new file '%s' to %s" % (kwargs[key].filename, cherrypy.request.path_info)
+                                message = "*** ADDED *** new file '%s' to %s" % (
+                                    kwargs[key].filename, 
+                                    cherrypy.request.path_info
+                                )
                             else:
                                 message = "Updated '%s' to %s" % (kwargs[key].filename, cherrypy.request.path_info)
 
@@ -158,39 +166,36 @@ class DocServer():
         '''
         template = cherrypy.request.template
         template.user = cherrypy.session.get("user", None)
-        template.static= "/_static/"
+        # FIXME: this should be from a per-mount conf, no?
+        template.static = "/_static/"
         template.editable = cherrypy.request.app.config.get("wiki")["editable"]
          
         return template.respond()
 
     def parsePath(self, args):
-        root=cherrypy.request.app.config.get('wiki').get('root')
+        root = cherrypy.request.app.config.get('wiki').get('root')
         path_info = cherrypy.request.path_info
         parts = path_info.split("/")
         pprint(parts)
         for p in parts:
-            if len(p)>0 and p[0]==".":
+            if len(p) > 0 and p[0] == ".":
                 raise cherrypy.HTTPError(401)
 
         plen = len(parts)
         if os.path.isfile(root + path_info):
             cherrypy.request.resourceFilePath=root+path_info
             cherrypy.request.relativeResourcePath = path_info
-        elif plen>0 and parts[plen-1]=='': 
-            fn = os.path.join(os.path.join(root,*parts[0:-1]),"index.rst")
-            cherrypy.request.resourceFilePath=fn
-            cherrypy.request.relativeResourcePath = os.path.join(*parts[0:-1]) +"/index.rst"
+        elif plen > 0 and parts[plen - 1] == '': 
+            fn = os.path.join(os.path.join(root, *parts[0:-1]), "index.rst")
+            cherrypy.request.resourceFilePath = fn
+            cherrypy.request.relativeResourcePath = os.path.join(*parts[0:-1]) + "/index.rst"
         else:
-            fp = cherrypy.request.resourceFilePath= root + path_info + ".rst"
+            fp = cherrypy.request.resourceFilePath = root + path_info + ".rst"
             cherrypy.request.relativeResourcePath = path_info + ".rst"
             if not os.path.isfile(cherrypy.request.resourceFilePath):
                 if os.path.isdir(root + path_info):
                      cherrypy.request.resourceFilePath= root + path_info + "/index.rst"
                      cherrypy.request.relativeResourcePath = path_info + "/index.rst"
-            
-             
+                     
         cherrypy.request.resourceFileExt = os.path.splitext(cherrypy.request.resourceFilePath)[1]
         print "FILE: %s EXT: %s" % (cherrypy.request.resourceFilePath, cherrypy.request.resourceFileExt)
-
-
-

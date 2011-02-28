@@ -7,15 +7,15 @@ dojo.ready(function(){
     ;
 
     // if they click cancel, go back to non edit page and unlock
-    dojo.query("#canceler").onclick(function(){
+    dojo.query("#rstwiki-canceler").onclick(function(){
         unlock();
         window.location.href = path
     });
     
-    dojo.query("#editorhandle")
+    dojo.query("#rstwiki-editorhandle")
         .forEach(function(n){
             
-            var target = dojo.byId("editor");
+            var target = dojo.byId("rstwiki-editor");
             var cury = 0;
             function mover(e){
                 var nowy = e.pageY,

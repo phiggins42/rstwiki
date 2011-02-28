@@ -10,18 +10,18 @@ from ldap.cidict import cidict
 def isuser(uname, pw):
 
     ldapconf = cherrypy.request.app.config.get("ldap")
- 
 
     if "base_dn" in ldapconf and ldapconf.get("base_dn") :
-        user = "uid=%s,%s" %(uname, ldapconf.get("base_dn"))
+        user = "uid=%s,%s" % ( uname, ldapconf.get("base_dn") )
     else: 
         user = uname
+        
     try:
         con = ldap.initialize(ldapconf.get("host","ldap://localhost"))
 
-        UserObj = {'uname': uname, 'groups': []}
+        UserObj = { 'uname': uname, 'groups': [] }
         #first bind as the user to make sure we can login
-        con.simple_bind_s( user, pw)
+        con.simple_bind_s( user, pw )
 
         #if LDAP_BIND_USER is defined, rebind as that user to get some additional info
         bind_dn = ldapconf.get("bind_dn",None)
@@ -30,10 +30,15 @@ def isuser(uname, pw):
              admincon = ldap.initialize(ldapconf.get("host","ldap://localhost"))
              admincon.simple_bind_s(bind_dn,ldapconf.get("bind_password"))
              filter = "(uid=" + uname + ")"
-             result = get_search_results(admincon.search_s(ldapconf.get("base_dn"), ldap.SCOPE_SUBTREE, filter, ldapconf.get("user_attributes")))[0];
-             #print result.pretty_print()
+             result = get_search_results(admincon.search_s(
+                ldapconf.get("base_dn"), 
+                ldap.SCOPE_SUBTREE, 
+                filter, 
+                ldapconf.get("user_attributes")
+             ))[0];
+             
              for key in result.get_attr_names():
-                  UserObj[key]=result.get_attr_values(key)[0]
+                  UserObj[key] = result.get_attr_values(key)[0]
 
              filter = "(member=" + user + ")"
              groups = get_search_results(admincon.search_s(ldapconf.get("groupBaseDn"), ldap.SCOPE_SUBTREE, filter, ['cn']))
