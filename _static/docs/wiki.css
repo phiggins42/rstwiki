@@ -64,10 +64,10 @@ body.wikidocs {
     text-decoration:none;
 }
 
-.wikidocs #nav a { color:#fff; }
-.wikidocs #nav a:link { color:#fff; text-decoration:none; }
-.wikidocs #nav a:visited { color:#fff; text-decoration:none; }
-.wikidocs #nav a:hover { color:#fff; text-decoration:underline; }
+.wikidocs #rstwiki-nav a { color:#000; }
+.wikidocs #rstwiki-nav a:link { color:#000; text-decoration:underline; }
+.wikidocs #rstwiki-nav a:visited { color:#101010; text-decoration:underline; }
+.wikidocs #rstwiki-nav a:hover { color:red; text-decoration:underline; }
 
 .wikidocs .head {
     background:#ededed;
@@ -176,7 +176,7 @@ textarea {
 
 .wikidocs #editorhandle a { display:none; }
 
-.wikidocs #rstwiki_nav {
+.wikidocs #rstwiki-nav {
     margin-top:10px;
     float:right;
 }
@@ -295,18 +295,22 @@ textarea {
 
 /* editor */
 .preview > .document{
-	background-color: #FCFFC7;
-	background-transparency: none;	
+    background-color: #FCFFC7;
+    background-transparency: none;	
 }
 
 .rstEditor {
-	margin-top:5px;
-	width:100%;
-	border:1px solid gray;
-	overflow: none;
+    margin-top:5px;
+    width:100%;
+    border:1px solid gray;
+    overflow: none;
 }
 
-#editorMessage {
-	font-size:75%;
-	font-weight:normal;
+#rstwiki-editorMessage {
+    font-size:75%;
+    font-weight:normal;
+}
+
+#rstwiki-footer {
+    font-size:65%;
 }
