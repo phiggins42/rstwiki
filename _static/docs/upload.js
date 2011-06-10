@@ -1,7 +1,5 @@
-dojo.provide("docs.upload");
-dojo.require("dojo.fx");
-dojo.ready(function(){
-    
+define(["dojo", "dojo/fx", "dojo/domReady!"], function(dojo){
+
     var template = "<div class='bloc'><label for='uploadfile{count}'>Select File:</label>" +
                 "<input type='file' name='uploadfile{count}' id='uploadfile{count}'></div>"
 
@@ -21,5 +19,7 @@ dojo.ready(function(){
                 }
             });
     });
+
+    return dojo;
     
 });

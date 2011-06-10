@@ -1,7 +1,5 @@
-dojo.provide("docs.editor");
-
-dojo.ready(function(){ 
-
+define(["dojo", "dojo/domReady!"], function(dojo){
+    
     var path = window.location.pathname.replace("/edit", ""),
         unlock = dojo.partial(dojo.xhrGet, { url:"/unlock" + path })
     ;
