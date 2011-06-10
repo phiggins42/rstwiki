@@ -1,13 +1,6 @@
-dojo.provide("docs.wiki");
+define(["dojo", "dijit", "dojo/parser", "dojo/fx", "dijit/_Widget", "dijit/form/Button", "dojox/widget/Dialog"], function(dojo, dijit){
 
-dojo.require("dojo.parser");
-dojo.require("dijit._Widget");
-dojo.require("dojo.fx");
-dojo.require("dijit.form.Button");
-dojo.require("dijit.Dialog");
-
-(function(d){
-    
+    var d = dojo;
     var ta = d.create("textarea"),
         scriptopen = "<scr" + "ipt>",
         scriptclose = "</" + "scri" + "pt>",
@@ -24,7 +17,8 @@ dojo.require("dijit.Dialog");
         toolbar:"",
         debug:false,
         themename:"claro",
-        baseUrl: dojo.config.baseUrl + "..",
+        baseUrl: dojo.config.baseUrl + "../",
+        
         
         constructor: function(args){
             this.parts = args.parts || {}
@@ -91,7 +85,7 @@ dojo.require("dijit.Dialog");
         
         
         _partsSurvived: function(){
-            console.dir(this.parts)
+            //console.dir(this.parts)
             this._buildTemplate();
         },
         
@@ -101,7 +95,7 @@ dojo.require("dijit.Dialog");
             this.lazyScripts = [];
             var templateParts = {
                 javascript:"<scr" + "ipt src='" + 
-                    this.baseUrl + "/dojo/dojo.js' djConfig='" + 
+                    this.baseUrl + "dojo/dojo.js' djConfig='" + 
                     (dojo.isIE ? "isDebug:true, " : "") + 
                     // (dojo.isIE ? 'afterOnLoad:true, ' : '') + 
                     "parseOnLoad:true'>" + scriptclose,
@@ -109,7 +103,7 @@ dojo.require("dijit.Dialog");
                 htmlcode:"", 
                 
                 // if we have a theme set include a link to {baseUrl}/dijit/themes/{themename}/{themename}.css first
-                css:'\t<link rel="stylesheet" href="' + this.baseUrl + '/dijit/themes/' + this.themename + '/' + this.themename + '.css">\n\t',
+                css:'\t<link rel="stylesheet" href="' + this.baseUrl + 'dijit/themes/' + this.themename + '/' + this.themename + '.css">\n\t',
                 
                 // if we've set RTL include dir="rtl" i guess?
                 htmlargs:"",
@@ -125,11 +119,18 @@ dojo.require("dijit.Dialog");
                 
             }
             
+            var cgMiniRe = /\{\{\s+?([^\}]+)\s+?\}\}/g,
+                locals = {
+                    dataUrl: this.baseUrl,
+                    baseUrl: this.baseUrl,
+                    theme: this.themename
+                }
+            
             for(var i in this.parts){
                 dojo.forEach(this.parts[i], function(item){
                     switch(i){
                         case "javascript":
-                            this.lazyScripts.push(item);
+                            this.lazyScripts.push(dojo.replace(item, locals, cgMiniRe));
                             break
                         case "html":
                             templateParts['htmlcode'] += item;
@@ -139,7 +140,10 @@ dojo.require("dijit.Dialog");
                     }
                 }, this);
             }
-            this.renderedTemplate = dojo.replace(this.template, templateParts);
+            
+            // do the master template/html, then the {{codeGlass}} double ones:
+            this.renderedTemplate = dojo.replace(dojo.replace(this.template, templateParts), locals, cgMiniRe);
+            
         },
         
         show: function(){
@@ -194,29 +198,16 @@ dojo.require("dijit.Dialog");
 
                 doc.write(who.renderedTemplate);
 
-                //if(dojo.isIE){
-                    
-                    // we're only here because '
-//                    console.log("IE branch to write scripts");
-                    var scripts = who.lazyScripts, errors = [],
-                        inject = dojo.partial(dojo.forEach, scripts, function(s){ 
-                            try{
-                                addscripttext(doc, s); 
-                            }catch(er){
-                                console.log("an error happened");
-                                errors.push(er)
-                            }
-                        }, this)
-                    ;
-                    
-                    
-                //}else{
-
-                //    var joinedscripts = dojo.map(who.lazyScripts, function(body){
-                //        return scriptopen + body + scriptclose
-                //    }).join("");
-                //    doc.write(joinedscripts);
-                //}
+                var scripts = who.lazyScripts, errors = [],
+                    inject = dojo.partial(dojo.forEach, scripts, function(s){ 
+                        try{
+                            addscripttext(doc, s); 
+                        }catch(er){
+                            console.log("an error happened");
+                            errors.push(er)
+                        }
+                    }, this)
+                ;
 
                 var e;
                 if(frame.addEventListener){
@@ -235,7 +226,9 @@ dojo.require("dijit.Dialog");
         
     d.ready(function(){
         d.parser.parse();
-        dialog = new dijit.Dialog({ title:"Running Example" });
+        dialog = new dojox.widget.Dialog({
+            dimensions:[700,480]
+        });
         masterviewer = new docs.CodeGlassViewerMini();
         dojo.query(".live-example").forEach(function(n){
             var link = dojo.place("<a href='#' title='Example Code'><span class='a11y'>?</span></a>", n, "first");
@@ -247,4 +240,4 @@ dojo.require("dijit.Dialog");
         });
     });
     
-})(dojo);
+});
