@@ -1,4 +1,5 @@
 @import "../dijit/themes/claro/claro.css";
+@import "../dojox/widget/Dialog/Dialog.css";
 
 body, html {
     margin:0; padding:0;
