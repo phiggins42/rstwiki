@@ -10,13 +10,6 @@
 	path = _static/dojox
 	url = git://github.com/dojo/dojox.git
 
-[submodule "_static/CodeGlass"]
-	path = _static/CodeGlass
-	url = git://github.com/nonken/CodeGlass.git
-    
 [submodule "_static/util"]
 	path = _static/util
 	url = git://github.com/dojo/util.git
-[submodule "_static/CodeMirror"]
-	path = _static/CodeMirror
-	url = https://github.com/marijnh/CodeMirror.git
