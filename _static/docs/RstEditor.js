@@ -2,7 +2,7 @@ define([
     "dojo", "dijit", "dijit/_Widget", "dijit/_HasDropDown", "dijit/form/TextBox"
 ],function(dojo, dijit, widget, hdd, tb){
 
-    dojo.declare("docs.RstEditor", [widget, hdd],{
+    dojo.declare("dojo.RstEditor", [dijit._Widget, dijit._HasDropDown],{
         toggleButtonId: "rstwiki-editActionButton",
         saveButtonId: "rstwiki-saveButton",
         previewPanelId: "rstwiki-previewPanel",

@@ -27,7 +27,7 @@
 
         #if $getVar('user',None) is not None and $rst.document:
         <div class="wrap">
-<textarea id="rstwiki-rstEditor" data-dojo-type="docs.RstEditor" class="rstEditor" style="height:0px;display:none">$rst.document</textarea>
+            <textarea id="rstwiki-rstEditor" data-dojo-type="dojo.RstEditor" class="rstEditor" style="height:0px;display:none">$rst.document</textarea>
             <div id="rstwiki-noticenode" style="display:none">
                 <h3>Preview: <span id="rstwiki-editorMessage"></span></h3>
             </div>
@@ -50,12 +50,8 @@
         </div>
         #end if        
     </div>
-    <script src="${req.script_name}${static}docs/wiki.js"></script>
-    #if  $getVar('user',None) is not None:
-    <script>
-        dojo.require('docs.RstEditor');
-    </script>
-    #end if
+    <script>require(["docs/wiki"]);</script>
+    
 </body>
 </html>
 

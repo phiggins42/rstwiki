@@ -45,7 +45,9 @@ Installation
 
 * git clone https://github.com/cheetahtemplate/cheetah.git
     * easy_install ./cheetah/
-    
+
+* easy_install GitPython
+
 * if using ldap, start a tunnel:
     
     

@@ -1,4 +1,6 @@
-define(["dojo", "dijit", "dojo/parser", "dojo/fx", "dijit/_Widget", "dijit/form/Button", "dojox/widget/Dialog"], function(dojo, dijit){
+define([
+    "dojo", "dijit", "dojo/text!./CodeGlassMini.html", "dojo/parser", "dojo/fx", "dijit/_Widget", "dijit/form/Button", "dojox/widget/Dialog", "./RstEditor"
+], function(dojo, dijit, CodeGlassTemplate){
 
     var d = dojo;
     var ta = d.create("textarea"),
@@ -58,6 +60,8 @@ define(["dojo", "dijit", "dojo/parser", "dojo/fx", "dijit/_Widget", "dijit/form/
             // this is testing the label="" and lang="" attribute. it's html/javascript/css enum
             var t = dojo.attr(n.parentNode, "lang");
             t && this._processPart(t, n.value);
+            // rip the old label="" attr and move to a block before. this is the new syntax
+            // for codeglass examples, and will be removed from the markup slowly
             var label = dojo.attr(n.parentNode, "label");
             label && dojo.place("<p>" + label + "</p>", n.parentNode, "before");
         },
@@ -67,10 +71,12 @@ define(["dojo", "dijit", "dojo/parser", "dojo/fx", "dijit/_Widget", "dijit/form/
                 this.parts[type] = []
             }
             
+            console.log(content);
             var orig = content;
             var openswith = d.trim(orig).charAt(0);
             if(type == "javascript" && openswith == "<"){
                 // strip the `script` text, this is a special consideration
+                // also, this limits each .. js block to a single script tag, FIXME
                 orig = orig
                     .replace(/<script[\s+]?.*?>/g, "")
                     .replace(/[\s+]?<\/script>/g, "")
@@ -85,11 +91,11 @@ define(["dojo", "dijit", "dojo/parser", "dojo/fx", "dijit/_Widget", "dijit/form/
         
         
         _partsSurvived: function(){
-            //console.dir(this.parts)
+            console.dir(this.parts)
             this._buildTemplate();
         },
         
-        template: dojo.cache("docs", "CodeGlassMini.html"),
+        template: CodeGlassTemplate,
         _buildTemplate: function(){
             
             this.lazyScripts = [];
@@ -112,14 +118,11 @@ define(["dojo", "dijit", "dojo/parser", "dojo/fx", "dijit/_Widget", "dijit/form/
                 bodyargs:'class="' + this.themename + '"',
                 
                 // 
-                head:"",
-                
-                baseUrl: this.baseUrl,
-                dataUrl: this.dataUrl
+                head:""
                 
             }
             
-            var cgMiniRe = /\{\{\s+?([^\}]+)\s+?\}\}/g,
+            var cgMiniRe = /\{\{\s?([^\}]+)\s?\}\}/g,
                 locals = {
                     dataUrl: this.baseUrl,
                     baseUrl: this.baseUrl,
@@ -128,26 +131,32 @@ define(["dojo", "dijit", "dojo/parser", "dojo/fx", "dijit/_Widget", "dijit/form/
             
             for(var i in this.parts){
                 dojo.forEach(this.parts[i], function(item){
+                    
+                    var processed = dojo.replace(item, locals, cgMiniRe);
                     switch(i){
                         case "javascript":
-                            this.lazyScripts.push(dojo.replace(item, locals, cgMiniRe));
+                            this.lazyScripts.push(processed);
                             break
                         case "html":
-                            templateParts['htmlcode'] += item;
+                            templateParts['htmlcode'] += processed;
                             break;
                         case "css":
-                            templateParts['css'] += item
+                            templateParts['css'] += processed;
                     }
                 }, this);
             }
-            
+                        
             // do the master template/html, then the {{codeGlass}} double ones:
-            this.renderedTemplate = dojo.replace(dojo.replace(this.template, templateParts), locals, cgMiniRe);
-            
+            this.renderedTemplate = dojo.replace(this.template, templateParts);
         },
         
         show: function(){
-            masterviewer.show(this);
+            if(this.type == "dialog"){
+                masterviewer.show(this);
+            }else{
+                console.warn("intended to be injected inline");
+                masterviewer.show(this);
+            }
         }
                 
     });
@@ -179,6 +188,12 @@ define(["dojo", "dijit", "dojo/parser", "dojo/fx", "dijit/_Widget", "dijit/form/
 
             if(this.iframe){ dojo.destroy(this.iframe); }
             dialog.set("content", loadingMessage);
+
+            dojo.style(dialog.containerNode, {
+                width: who.width + "px",
+                height: who.height + "px"
+            });
+            
             dialog.show();
             
             setTimeout(dojo.hitch(this, function(){
@@ -187,7 +202,8 @@ define(["dojo", "dijit", "dojo/parser", "dojo/fx", "dijit/_Widget", "dijit/form/
                         style:{
                             height: who.height + "px",
                             width: who.width + "px",
-                            border:"none"
+                            border:"none",
+                            visibility:"hidden"
                         }
                     });
                 
@@ -199,16 +215,20 @@ define(["dojo", "dijit", "dojo/parser", "dojo/fx", "dijit/_Widget", "dijit/form/
                 doc.write(who.renderedTemplate);
 
                 var scripts = who.lazyScripts, errors = [],
-                    inject = dojo.partial(dojo.forEach, scripts, function(s){ 
-                        try{
-                            addscripttext(doc, s); 
-                        }catch(er){
-                            console.log("an error happened");
-                            errors.push(er)
-                        }
-                    }, this)
+                    inject = function(){
+                        dojo.forEach(scripts, function(s){ 
+                            addscripttext(doc, s);
+                        });
+                        
+                        dojo.style(frame, {
+                            "visibility": "visible",
+                            opacity: 0
+                        });
+                        
+                        dojo.anim(frame, { opacity:1 });
+                    }
                 ;
-
+                
                 var e;
                 if(frame.addEventListener){
                     e = frame.addEventListener("load", inject, false)
@@ -225,10 +245,9 @@ define(["dojo", "dijit", "dojo/parser", "dojo/fx", "dijit/_Widget", "dijit/form/
     });
         
     d.ready(function(){
+        
         d.parser.parse();
-        dialog = new dojox.widget.Dialog({
-            dimensions:[700,480]
-        });
+        dialog = new dijit.Dialog({ title:"CodeGlass" });
         masterviewer = new docs.CodeGlassViewerMini();
         dojo.query(".live-example").forEach(function(n){
             var link = dojo.place("<a href='#' title='Example Code'><span class='a11y'>?</span></a>", n, "first");

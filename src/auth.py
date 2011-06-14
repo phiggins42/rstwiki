@@ -139,7 +139,7 @@ class AuthController(object):
         template = login.login()
         template.resourceDir= "auth/login"
         template.resourceFile=""
-        template.static = "_static/"
+        template.static = "/_static/"
         template.root = "/"
         template.action="Login"
         template.from_page = from_page
