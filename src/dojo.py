@@ -206,13 +206,9 @@ class DojoApiInline(Directive):
         #out += "</pre>"
         
         lines = statemachine.string2lines(out)
-        self.state_machine.insert_input(lines, "/")      
+        self.state_machine.insert_input(lines, "/")
 
         return []
-        
-        #markup = "<div><div class='api-title'>" + apidotted + " API</div><div class='api-body'>" + out + "</div>"
-        #return [nodes.raw('', markup, format='html')]
-
 
 # define a `ref:` role for reST, so Sphinx links turn back to wiki links:
 def ref_role(role, rawtext, text, lineno, inliner, options={}, content=[]):
@@ -328,6 +324,7 @@ def _codeviewer_html(name, arguments, options, content, lineno,
 # a more complex compounded component (so we can separate our code-blocks)
 def _codeviewer_compound(name, arguments, options, content, lineno,
              content_offset, block_text, state, state_machine):
+    
     text = '\n'.join(content)
     if not text:
         error = state_machine.reporter.error(
@@ -362,6 +359,17 @@ def _codeviewer_compound(name, arguments, options, content, lineno,
     state.nested_parse(content, content_offset, node)
     return [node]
 
+# all the available codeglass options need defined here?
+masterOptions = { 
+    'toolbar': lambda x: x, 
+    'version': lambda x: x,
+    'width': lambda x: x,
+    'height': lambda x: x,
+    'djconfig': lambda x: x,
+    'theme': lambda x: x,
+    'type': lambda x: x
+}
+    
 # Directive is either new-style or old-style
 clstypes = (type, types.ClassType)
 def add_directive(name, obj, content=None, arguments=None, **options):
@@ -373,7 +381,7 @@ def add_directive(name, obj, content=None, arguments=None, **options):
     else:
         obj.content = content
         obj.arguments = arguments
-        obj.options = options
+        obj.options = masterOptions
         directives.register_directive(name, obj)
 
 # the main extensions
@@ -381,11 +389,13 @@ add_directive('js', _codeviewer_js, 1, (0, 1, 0), label=lambda x: x)
 add_directive('javascript', _codeviewer_js, 1, (0, 1, 0), label=lambda x: x)
 add_directive('css', _codeviewer_css, 1, (0, 1, 0), label=lambda x: x)
 add_directive('html', _codeviewer_html, 1, (0, 1, 0), label=lambda x: x)
-add_directive('code-example', _codeviewer_compound, 1, (0, 0, 0))
 
 # deprecated syntax:
 add_directive('cv', _codeviewer, 1, (0, 1, 0), label=lambda x: x) #deprecated
-add_directive('codeviewer', _codeviewer,  1, (0, 1, 0), label=lambda x: x) #deprecated  #deprecated
+add_directive('codeviewer', _codeviewer,  1, (0, 1, 0), label=lambda x: x) #deprecated  
+
+add_directive('code-example', _codeviewer_compound, 1, (0, 0, 0))
+#deprecated
 add_directive('codeviewer-compound', _codeviewer_compound, 1, (0, 0, 0)) # deprecated
 add_directive('cv-compound', _codeviewer_compound, 1, (0, 0, 0)) # deprecated
 
@@ -398,5 +408,6 @@ register_canonical_role('ref', ref_role);
 # TODO: DO WE STILL NEED THIS CODE?
 def add_node(node, **kwds):
     nodes._add_node_class_names([node.__name__])
+    
 add_node(codeviewer)
 add_node(codeviewer_compound)
