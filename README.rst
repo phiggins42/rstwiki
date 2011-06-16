@@ -1,10 +1,7 @@
 RstWiki - simple wiki/rst interface
 ===================================
 
-Goal
-----
-
-To provide a simple standalone Wiki interface to a directory of .rst
+RstWiki provides a simple standalone Wiki interface to a directory of .rst
 (reStructuredText) files. These .rst files are the sources to a Sphinx
 documentation instance. The interface is a simple rst-rendering application
 with basic authentication and VCS integration.
@@ -40,7 +37,7 @@ Installation
 2. Copy ``wiki.sample.conf`` to ``wiki.conf`` and configure appropriately
 3. Ensure the session storage directory exists (by default, this is
    ``/tmp/rstwiki_sessions``)
-3. Run ``wiki.py``
+4. Run ``wiki.py``
 
 Configuration
 -------------
@@ -78,10 +75,11 @@ wiki.conf
   editable - Whether or not wiki contents should be editable.
 
   [auth]
-  type -
+  type - Type of authentication to use. One of "ldap", "bypass".
 
   [vcs]
-  type - The type of version control system to use. Currently, only "git" is supported.
+  type - The type of version control system to use. Currently, only "git" is
+         supported.
   repo - The address of the repository used to store and retrieve wiki data.
-  push.enabled -
-  push.delay -
+  push.enabled - Whether or not to push to upstream when a commit is made to
+                 the local repository.
