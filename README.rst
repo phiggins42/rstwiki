@@ -24,11 +24,6 @@ Optional dependencies
 * Sphinx >= 1.0
 * Dojo, CodeGlass
 
-License
--------
-
-AFL/New BSD. See `Dojo's <http://dojotoolkit.org/license>`_ LICENSE for details
-
 Installation
 ------------
 
@@ -83,3 +78,8 @@ wiki.conf
   repo - The address of the repository used to store and retrieve wiki data.
   push.enabled - Whether or not to push to upstream when a commit is made to
                  the local repository.
+
+License
+-------
+
+AFL/New BSD. See `Dojo's <http://dojotoolkit.org/license>`_ LICENSE for details
