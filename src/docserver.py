@@ -1,4 +1,4 @@
-import cherrypy,os.path,re,urlparse
+import cherrypy,os.path,re,urlparse,cgi
 from rstdocument import RstDocument
 from Crumbs import Crumbs as crumbs
 from auth import AuthController, require, member_of, name_is
@@ -78,6 +78,7 @@ class DocServer():
             return open(cherrypy.request.resourceFilePath).read()
         elif os.path.isfile(cherrypy.request.resourceFilePath):
             template.rst =  RstDocument(cherrypy.request.resourceFilePath)
+            template.encoded_rst = cgi.escape(template.rst.document);
         else:
             raise cherrypy.HTTPError(404)
         return self.render()
