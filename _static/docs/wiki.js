@@ -1,15 +1,19 @@
 define([
-    "dojo", "dijit", "dojo/text!./CodeGlassMini.html", "dojo/parser", "dojo/fx", "dijit/_Widget", "dijit/form/Button", "dojox/widget/Dialog", "./RstEditor"
+    "dojo", "dijit", 
+    "dojo/text!./CodeGlassMini.html", 
+    "dojo/parser", "dojo/fx", 
+    "dijit/_Widget", "dijit/form/Button", 
+    "dojox/widget/Dialog", 
+    "./RstEditor"
 ], function(dojo, dijit, CodeGlassTemplate){
 
-    var d = dojo;
-    var ta = d.create("textarea"),
+    var ta = dojo.create("textarea"),
         scriptopen = "<scr" + "ipt>",
         scriptclose = "</" + "scri" + "pt>",
         masterviewer, dialog;
     ;
     
-    d.declare("docs.MiniGlass", dijit._Widget, {
+    dojo.declare("docs.MiniGlass", dijit._Widget, {
         
         djconfig:"",
         width:700,
@@ -21,7 +25,6 @@ define([
         themename:"claro",
         baseUrl: dojo.config.baseUrl + "../",
         
-        
         constructor: function(args){
             this.parts = args.parts || {}
         },
@@ -32,7 +35,7 @@ define([
             this.button = dojo.place("<a href='#' title='Run Example' class='CodeGlassMiniRunner'><span class='a11y'>run</span></a>", this.domNode, "first");
             this.connect(this.button, "onclick", "_run");
             this.connect(this.closer, "onclick", "_toggle");
-            this.inner = d.query(".CodeGlassMiniInner", this.domNode)[0];
+            this.inner = dojo.query(".CodeGlassMiniInner", this.domNode)[0];
         },
 
         // only run processing once:
@@ -43,7 +46,7 @@ define([
                 this._hasRun = true;
                 try{
                     dojo.query("textarea", this.domNode).forEach(this.handlePart, this);
-                    this._partsSurvived();
+                    this._buildTemplate();
                 }catch(er){
                     console.warn("running miniglass threw", er);
                 }
@@ -71,7 +74,6 @@ define([
                 this.parts[type] = []
             }
             
-            console.log(content);
             var orig = content;
             var openswith = d.trim(orig).charAt(0);
             if(type == "javascript" && openswith == "<"){
@@ -89,12 +91,6 @@ define([
 
         },
         
-        
-        _partsSurvived: function(){
-            console.dir(this.parts)
-            this._buildTemplate();
-        },
-        
         template: CodeGlassTemplate,
         _buildTemplate: function(){
             
@@ -102,8 +98,8 @@ define([
             var templateParts = {
                 javascript:"<scr" + "ipt src='" + 
                     this.baseUrl + "dojo/dojo.js' djConfig='" + 
+                    // fixme: use this.djConfig (or this.pluginArgs.djConfig, I forget)
                     (dojo.isIE ? "isDebug:true, " : "") + 
-                    // (dojo.isIE ? 'afterOnLoad:true, ' : '') + 
                     "parseOnLoad:true'>" + scriptclose,
                 
                 htmlcode:"", 
@@ -171,7 +167,7 @@ define([
         ;
             
         if(how == "appendChild"){
-            e[how](d.doc.createTextNode(code));
+            e[how](dojo.doc.createTextNode(code));
         }else{
             e[how] = code;
         }
@@ -195,7 +191,8 @@ define([
             });
             
             dialog.show();
-            
+            console.warn(who.renderedTemplate);
+            console.warn(who.lazyScripts);
             setTimeout(dojo.hitch(this, function(){
 
                 var frame = this.iframe = dojo.create("iframe", {
@@ -244,9 +241,9 @@ define([
 
     });
         
-    d.ready(function(){
+    dojo.ready(function(){
         
-        d.parser.parse();
+        dojo.parser.parse();
         dialog = new dijit.Dialog({ title:"CodeGlass" });
         masterviewer = new docs.CodeGlassViewerMini();
         dojo.query(".live-example").forEach(function(n){
