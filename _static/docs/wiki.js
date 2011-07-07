@@ -24,6 +24,7 @@ define([
         debug:false,
         themename:"claro",
         baseUrl: dojo.config.baseUrl + "../",
+        pluginargs:null,
         
         constructor: function(args){
             this.parts = args.parts || {}
@@ -75,7 +76,7 @@ define([
             }
             
             var orig = content;
-            var openswith = d.trim(orig).charAt(0);
+            var openswith = dojo.trim(orig).charAt(0);
             if(type == "javascript" && openswith == "<"){
                 // strip the `script` text, this is a special consideration
                 // also, this limits each .. js block to a single script tag, FIXME
@@ -97,10 +98,7 @@ define([
             this.lazyScripts = [];
             var templateParts = {
                 javascript:"<scr" + "ipt src='" + 
-                    this.baseUrl + "dojo/dojo.js' djConfig='" + 
-                    // fixme: use this.djConfig (or this.pluginArgs.djConfig, I forget)
-                    (dojo.isIE ? "isDebug:true, " : "") + 
-                    "parseOnLoad:true'>" + scriptclose,
+                    this.baseUrl + "dojo/dojo.js'>" + scriptclose,
                 
                 htmlcode:"", 
                 
@@ -143,6 +141,15 @@ define([
             }
                         
             // do the master template/html, then the {{codeGlass}} double ones:
+            var args = this.pluginargs;
+            if(args.djConfig){
+                this.djConfig = dojo.fromJson("{" + args.djConfig + "}");
+            }
+            
+            if(this.djConfig.parseOnLoad){
+                this.lazyScripts.push("require(['dojo/parser','dojo/domReady!'], function(p){ p.parse(); })");
+            }
+            
             this.renderedTemplate = dojo.replace(this.template, templateParts);
         },
         
@@ -192,7 +199,7 @@ define([
             
             dialog.show();
             console.warn(who.renderedTemplate);
-            console.warn(who.lazyScripts);
+            console.log(who.lazyScripts);
             setTimeout(dojo.hitch(this, function(){
 
                 var frame = this.iframe = dojo.create("iframe", {
@@ -213,7 +220,11 @@ define([
 
                 var scripts = who.lazyScripts, errors = [],
                     inject = function(){
+                        
+                        
                         dojo.forEach(scripts, function(s){ 
+                            console.log("adding script content", s);
+
                             addscripttext(doc, s);
                         });
                         

@@ -107,7 +107,7 @@ class DojoApiInline(Directive):
         arguments = self.arguments
         
         if len(arguments) == 1:
-            showexamples = showtitles = showsummary = showsignature = showlongsignature = showreturns = True
+            includelink = showmethods = showproperties = showexamples = showtitles = showsummary = showsignature = showlongsignature = showreturns = True
         else:
             showexamples = ":examples:" in arguments
             showtitles = ":no-titles:" not in arguments
@@ -115,6 +115,9 @@ class DojoApiInline(Directive):
             showsignature = ":signature:" in arguments
             showlongsignature = ":longsignature:" in arguments
             showreturns = ":returns:" in arguments
+            showmethods = ":methods:" in arguments
+            showproperties = ":properties:" in arguments
+            includelink = ":includelink:" in arguments
             
         api = self.arguments[0];
         apislashed = api.replace(".", "/")
@@ -140,6 +143,12 @@ class DojoApiInline(Directive):
 
         out = ""
         
+        if showtitles:
+            out = "\n========\nAPI Info\n========\n\n";
+        
+        if includelink:
+            out += ":full API:\t%s%s\n" % ("http://dojotoolkit.org/api/", apislashed)
+        
         if showsummary and "summary" in info:
             out += ":summary:\t%s\n" % info["summary"]
         
@@ -147,13 +156,21 @@ class DojoApiInline(Directive):
             out += ":returns:\t%s\n" % info["returns"]
                 
         out += "\n"
-        
+
+        sig = ""        
+        if "type" in info and info["type"] == "Constructor":
+            out += ".. api-inline :: %s\n\t:no-titles:\n\t:signature:\n\t:constructor:\n\n" % ( apidotted + ".constructor")
+
         if "parameters" in info and (showsignature or showlongsignature):
             if showtitles:
-                out += "Parameters\n~~~~~~~~~~\n\n"
+                out += "Parameters\n----------\n\n"
             
             # determine if ClassLike and add a `new `
-            sig = apidotted + "("
+            if ":constructor:" in arguments:
+                sig += "var thing = new "
+                apidotted = apidotted[:-12]
+                
+            sig += apidotted + "("
             tab = ""
             
             for param in info["parameters"]:
@@ -178,7 +195,7 @@ class DojoApiInline(Directive):
         if showexamples and "examples" in info:
             
             if showtitles:
-                out += "Examples\n~~~~~~~~~~\n\n"
+                out += "Examples\n---------\n\n"
                 
             for example in info['examples']:
                 parts = example.split("\n")
@@ -203,10 +220,36 @@ class DojoApiInline(Directive):
                         
                 out += "\n"
 
+        if showproperties and "properties" in info:
+            if ":showproperties:" in arguments:
+                only = arguments[":showproperties:"]
+                print only
+            
+            if showtitles:
+                out += "Properties\n----------\n\n"
+                
+            for prop in info["properties"]:
+                """"""
+                print "%s \n %s \n" % (prop, info["properties"][prop])
+
+
+        if showmethods and "methods" in info:
+            
+            if showtitles:
+                out += "Methods\n-------\n\n"
+            
+            for method in info["methods"]:
+                """"""
+
         #out += "</pre>"
         
-        lines = statemachine.string2lines(out)
-        self.state_machine.insert_input(lines, "/")
+        print out;
+        
+        try:
+            lines = statemachine.string2lines(out)
+            self.state_machine.insert_input(lines, "/")
+        except SystemMessage:
+            print "fooooooo"
 
         return []
 
