@@ -1,0 +1,27 @@
+K 12
+bzr:file-ids
+V 89
+mail/demo.html	14642@560b804f-0ae3-0310-86f3-f6aa0a117693:demos%2Ftrunk:mail%2Fdemo.html
+
+K 25
+bzr:revision-id:v3-trunk1
+V 61
+118 bryan@reigndropsfall.net-20090202171421-9mll518yqio2ehqt
+
+K 17
+bzr:revision-info
+V 131
+timestamp: 2009-02-02 11:14:21.005000114 -0600
+committer: Bryan Forbes <bryan@reigndropsfall.net>
+properties: 
+	branch-nick: demos
+
+K 16
+bzr:text-parents
+V 0
+
+K 18
+bzr:text-revisions
+V 0
+
+END

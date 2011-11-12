@@ -1,0 +1,83 @@
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/src/!svn/ver/26818/demos/trunk/mobileGallery
+END
+demo-sync.html
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/src/!svn/ver/26537/demos/trunk/mobileGallery/demo-sync.html
+END
+src.js
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/src/!svn/ver/26537/demos/trunk/mobileGallery/src.js
+END
+demo-ipad.html
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/src/!svn/ver/26387/demos/trunk/mobileGallery/demo-ipad.html
+END
+demo-android.html
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/src/!svn/ver/26818/demos/trunk/mobileGallery/demo-android.html
+END
+cache.appcache
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/src/!svn/ver/26387/demos/trunk/mobileGallery/cache.appcache
+END
+demo.html
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/src/!svn/ver/26297/demos/trunk/mobileGallery/demo.html
+END
+demo-iphone.html
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/src/!svn/ver/26387/demos/trunk/mobileGallery/demo-iphone.html
+END
+debug.html
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/src/!svn/ver/26537/demos/trunk/mobileGallery/debug.html
+END
+demo.css
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/src/!svn/ver/26387/demos/trunk/mobileGallery/demo.css
+END
+.htaccess
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/src/!svn/ver/24560/demos/trunk/mobileGallery/.htaccess
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/src/!svn/ver/25231/demos/trunk/mobileGallery/README
+END
+demo.appcache.php
+K 25
+svn:wc:ra_dav:version-url
+V 63
+/src/!svn/ver/26297/demos/trunk/mobileGallery/demo.appcache.php
+END
+icons-url.html
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/src/!svn/ver/26537/demos/trunk/mobileGallery/icons-url.html
+END

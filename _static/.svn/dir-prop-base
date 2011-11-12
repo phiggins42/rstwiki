@@ -1,0 +1,10 @@
+K 13
+svn:externals
+V 246
+dojo http://svn.dojotoolkit.org/src/dojo/trunk/
+dijit http://svn.dojotoolkit.org/src/dijit/trunk/
+dojox http://svn.dojotoolkit.org/src/dojox/trunk/
+util http://svn.dojotoolkit.org/src/util/trunk/
+demos http://svn.dojotoolkit.org/src/demos/trunk/
+
+END

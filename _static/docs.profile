@@ -1,6 +1,7 @@
 dependencies = {
     
     action:"release",
+    version: "0.0.0-" + (+new Date()),
     releaseName:"trunk",
     copyTests:true,
     mini:false,

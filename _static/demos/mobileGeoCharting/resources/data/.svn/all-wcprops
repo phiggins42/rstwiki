@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/src/!svn/ver/24610/demos/trunk/mobileGeoCharting/resources/data
+END
+series.json
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/src/!svn/ver/24610/demos/trunk/mobileGeoCharting/resources/data/series.json
+END
+USPopulation.csv
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/src/!svn/ver/24610/demos/trunk/mobileGeoCharting/resources/data/USPopulation.csv
+END
+US_States_intermediate.json
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/src/!svn/ver/24610/demos/trunk/mobileGeoCharting/resources/data/US_States_intermediate.json
+END
+markers.json
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/src/!svn/ver/24610/demos/trunk/mobileGeoCharting/resources/data/markers.json
+END
+dataStore.json
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/src/!svn/ver/24610/demos/trunk/mobileGeoCharting/resources/data/dataStore.json
+END

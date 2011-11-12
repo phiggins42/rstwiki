@@ -1,0 +1,24 @@
+This is the ALL view, it includes all of the Dojo Toolkit packages.  
+
+This currently consists of:
+	dojo/ (the core) 
+	dijit/ (the Dojo widget system)
+	dojox/ (additional Dojo-based components)
+	demos/ (the demos for use on dojotoolkit.org)
+	utils/ (the build system, doc system, and additional resources)
+
+When viewing this tree from http://svn.dojotoolkit.org/src/view/anon/all/trunk you
+will not see any of the available files. Each project above is using an svn:external
+pointing to it's trunk folder. 
+
+For instance, Dojo Core repository is: 
+http://svn.dojotoolkit.org/src/dojo/trunk 
+
+There are two versions of this view: anonymous and committer. 
+
+For users (readonly):
+http://svn.dojotoolkit.org/src/view/anon/all/trunk
+
+For committers (read/write):
+https://svn.dojotoolkit.org/src/view/committer/all/trunk
+
