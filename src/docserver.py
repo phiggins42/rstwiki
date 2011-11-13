@@ -80,6 +80,10 @@ class DocServer():
             template.rst =  RstDocument(cherrypy.request.resourceFilePath)
             template.encoded_rst = cgi.escape(template.rst.document);
         else:
+            '''
+                FIXME: if the page is a 404 we might prompt to create new page at said location
+            '''
+            print "404 Found for %s" % (cherrypy.request.resourceFilePath)
             raise cherrypy.HTTPError(404)
         return self.render()
 
