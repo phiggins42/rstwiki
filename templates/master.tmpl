@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 #implements respond
 #import cherrypy
 #set global $req = $cherrypy.request
@@ -38,6 +38,7 @@
     
     <div id="rstwiki-previewPanel" class="wrap preview"></div>
     <div id="rstwiki-contentPanel" class="wrap">
+        <p><span style="color:red">WARNING:</span> These documents reflect <em>TRUNK</em> and are a work-in-progress.</p>
     #block contentBlock 
         $rst.render 
     #end block
