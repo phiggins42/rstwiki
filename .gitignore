@@ -3,3 +3,5 @@ conf.py
 *_lock
 _static/release
 _cache/*
+_templates
+wiki.conf
