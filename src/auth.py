@@ -25,8 +25,8 @@ def check_credentials(username, password):
 
     #untested, but should bypass auth if you set it in your config.  You should still login.
     if authtype=="bypass":
-           cherrypy.session.user = {username: username}
-           return None
+        cherrypy.session["user"] = { 'uname': username, 'groups': [] }
+        return None
     
 def check_auth(*args, **kwargs):
     """A tool that looks in config for 'auth.require'. If found and it
