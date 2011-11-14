@@ -51,8 +51,7 @@
     <div id="rstwiki-footer">
         #if $action != "Login" and $action != "upload":
         <div class="wrap">
-            <a id="rstwiki-blame" href='http://github.com/dmachi/Dojotoolkit-ReST-Docs/blame/wiki/${req.relativeResourcePath}'>blame</a>
-            <a id="rstwiki-history" href='http://github.com/dmachi/Dojotoolkit-ReST-Docs/commits/wiki/${req.relativeResourcePath}'>history</a>
+            $foot()
         </div>
         #end if        
     </div>
@@ -90,4 +89,12 @@
                    / <a href="$cpath">$part</a>
               #end if
          #end for  
+#end def
+
+#def foot
+    #if $action == "view" and $req.githublink is not None:
+    <a id="rstwiki-blame" href='${req.githublink}/blame/master${req.relativeResourcePath}'>blame</a>
+    <a id="rstwiki-history" href='${req.githublink}/commits/master${req.relativeResourcePath}'>history</a>
+    <a id="rstwiki-tree" href="${req.githublink}/blog/master${req.relativeResourcePath}">browse</a>
+    #end if
 #end def

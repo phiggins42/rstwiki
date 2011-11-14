@@ -15,16 +15,19 @@ class Wiki(cherrypy.Application):
 class DocServer():
  
     def __init__(self):
-         print "Starting Wiki..."
+        print "Starting Wiki..."
 
     def initVCS(self,app):
-         wiki = app.config.get('wiki')
-         if "enable_vcs" in wiki and wiki.get("enable_vcs"):
-             vcsconfig = app.config.get("vcs") 
-             if vcsconfig["type"] is not None:
-                 if vcsconfig['type'] == "git":
-                     from vcs import Git as VCS
-                     app.vcs = VCS(app.config)
+        wiki = app.config.get('wiki')
+        if "enable_vcs" in wiki and wiki.get("enable_vcs"):
+            vcsconfig = app.config.get("vcs") 
+            if vcsconfig["type"] is not None:
+                if vcsconfig['type'] == "git":
+                    from vcs import Git as VCS
+                    app.vcs = VCS(app.config)
+                     
+        if "githubroot" in wiki:
+            self.githubroot = wiki.get("githubroot")
 
     @cherrypy.expose
     def index(self, *args, **kwargs): 
@@ -42,7 +45,6 @@ class DocServer():
 
         if cherrypy.request.method != "GET" and cherrypy.session.get("user",None) is None:
             raise cherrypy.HTTPError(401, "Not authorized to %s to this source" %(cherrypy.request.method))
-
 
         if "action" in kwargs:
            action = kwargs['action'] 
@@ -63,11 +65,11 @@ class DocServer():
             title = filename.replace("/", ".")
             heading = "=" * len(title)
             
-            somerst = ".. _%s:\n\n%s\n%s\n\nTODOC!\n\n.. contents:\n  :max-depth: 2\n\n=============\nFirst Section\n=============\n\n" % (filename, title, heading)
+            somerst = ".. _%s:\n\n%s\n%s\n\nTODOC!\n\n.. contents ::\n  :depth: 2\n\n=============\nFirst Section\n=============\n\n" % (filename, title, heading)
             
             template.rst = RstDocument();
             template.rst.update(somerst);
-            template.encoded_rst = cgi.escape(template.rst.document);
+            template.encoded_rst = cgi.escape(template.rst.document)
             
         elif action == "edit":
             import edit
@@ -84,6 +86,7 @@ class DocServer():
             action = "view"
             import master
             cherrypy.request.template = template = master.master()
+            cherrypy.request.githublink = self.githubroot
 
         template.action = action
 
@@ -93,16 +96,16 @@ class DocServer():
             return open(cherrypy.request.resourceFilePath).read()
         elif os.path.isfile(cherrypy.request.resourceFilePath):
             template.rst =  RstDocument(cherrypy.request.resourceFilePath)
-            template.encoded_rst = cgi.escape(template.rst.document);
+            template.encoded_rst = cgi.escape(template.rst.document)
         else:
 
             get_parmas = urllib.quote(cherrypy.request.request_line.split()[1])
-            redir = get_parmas + "?action=create";
+            redir = get_parmas + "?action=create"
 
             if(action != "create"):
                 raise cherrypy.HTTPRedirect(redir)
-            else:
-                raise cherrypy.HTTPError(404);
+            #elif action == "create":
+            #    raise cherrypy.HTTPError(404);
             
         return self.render()
         
