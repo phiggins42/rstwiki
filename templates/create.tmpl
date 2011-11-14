@@ -1,0 +1,21 @@
+#extends master
+#import cherrypy
+#set global $req = $cherrypy.request
+#block contentBlock
+<form method='POST' action="${req.script_name}${req.path_info}">
+    <div class='resp'>
+        <h1>404</h1>
+        
+        <p>The page: ${req.script_name}${req.path_info} was not found. Create it?</p>
+
+        <div class="editor">
+            <textarea id='rstwiki-editor' resizeable='true' name='content' style='width:100%; height:420px;'>${rst.document}</textarea>
+        </div>
+        <input type="hidden" name="action" value="view">
+        <input type="hidden" name="message" value="Initial creation from website">
+        <button type='submit'>Create</button> 
+        <button type='reset' id='canceler'>Cancel</button>
+    
+    </div>
+</form>
+#end block

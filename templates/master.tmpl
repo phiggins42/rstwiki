@@ -4,7 +4,12 @@
 #set global $req = $cherrypy.request
 <html>
 <head>
-    <title>$action $req.path_info</title>
+    <title>
+        #if $getVar('title', None) is not None:
+            $title
+        #end if
+        $action $req.path_info
+    </title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link rel="stylesheet" href="${req.script_name}/_static/docs/wiki.css">
     <script src="${req.script_name}/_static/dojo/dojo.js"></script>
@@ -51,7 +56,7 @@
         </div>
         #end if        
     </div>
-    <script>require(["docs/wiki"]);</script>
+    <script>dojo.require("docs/wiki");</script>
     
 </body>
 </html>

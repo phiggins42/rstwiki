@@ -4,7 +4,7 @@ from Crumbs import Crumbs as crumbs
 from auth import AuthController, require, member_of, name_is
 from Cheetah.Template import Template
 from pprint import pprint
-import mimetypes
+import mimetypes, urllib
 
 class Wiki(cherrypy.Application):
     def __init__(self, script_name="", config=None):
@@ -54,7 +54,22 @@ class DocServer():
         if cherrypy.request.method == "POST":
            action=self._handlePost(args,**kwargs)
 
-        if action == "edit":
+        if action == "create":
+            import create
+            cherrypy.request.template = template = create.create()
+            print "Showing create page %s" % (cherrypy.request.path_info)
+            
+            filename = cherrypy.request.path_info[1:]
+            title = filename.replace("/", ".")
+            heading = "=" * len(title)
+            
+            somerst = ".. _%s:\n\n%s\n%s\n\nTODOC!\n\n.. contents:\n  :max-depth: 2\n\n=============\nFirst Section\n=============\n\n" % (filename, title, heading)
+            
+            template.rst = RstDocument();
+            template.rst.update(somerst);
+            template.encoded_rst = cgi.escape(template.rst.document);
+            
+        elif action == "edit":
             import edit
             cherrypy.request.template = template = edit.edit()
         elif action == "upload":
@@ -80,19 +95,22 @@ class DocServer():
             template.rst =  RstDocument(cherrypy.request.resourceFilePath)
             template.encoded_rst = cgi.escape(template.rst.document);
         else:
-            '''
-                FIXME: if the page is a 404 we might prompt to create new page at said location
-            '''
-            print "404 Found for %s" % (cherrypy.request.resourceFilePath)
-            raise cherrypy.HTTPError(404)
-        return self.render()
 
+            get_parmas = urllib.quote(cherrypy.request.request_line.split()[1])
+            redir = get_parmas + "?action=create";
+
+            if(action != "create"):
+                raise cherrypy.HTTPRedirect(redir)
+            else:
+                raise cherrypy.HTTPError(404);
+            
+        return self.render()
+        
     def _handlePost(self, *args, **kwargs):
         '''
            When the self.default() detects a POST, it sends it here for processing.
            This method returns an action so default () can decide how to proceed
         '''
-        
         
         if 'preview' in kwargs:
             cherrypy.request.rst = RstDocument()
@@ -103,13 +121,20 @@ class DocServer():
         if 'content' in kwargs and cherrypy.request.resourceFileExt == ".rst":
             message = kwargs['message'] or "Updates to %s via Wiki" % (cherrypy.request.path_info)
             try:
-                doc = cherrypy.request.rst = RstDocument(cherrypy.request.resourceFilePath)
+
+                # this ensures the document will be created if not already existing
+                doc = cherrypy.request.rst = RstDocument()
+                doc.path = cherrypy.request.resourceFilePath;
                 doc.update(kwargs['content'])
                 doc.save()
-                if cherrypy.request.app.vcs is not None:
-                    print "Send Commit to VCS system"
-                    print "   Message: %s" % (message) 
-                    cherrypy.request.app.vcs.commit(cherrypy.request.resourceFilePath,message=message)
+                
+                try:
+                    if cherrypy.request.app.vcs is not None:
+                        print "Send Commit to VCS system"
+                        print "   Message: %s" % (message) 
+                        cherrypy.request.app.vcs.commit(cherrypy.request.resourceFilePath,message=message)
+                except Exception,err:
+                    print "Error committing to VCS: %s" % err
 
                 return kwargs['action'] or 'view'
             
