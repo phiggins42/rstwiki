@@ -26,9 +26,8 @@ class DocServer():
                     from vcs import Git as VCS
                     app.vcs = VCS(app.config)
                      
-        if "githubroot" in wiki:
-            self.githubroot = wiki.get("githubroot")
-
+        self.githubroot = wiki.get("githubroot", None)
+        
     @cherrypy.expose
     def index(self, *args, **kwargs): 
         '''
