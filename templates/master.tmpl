@@ -95,6 +95,6 @@
     #if $action == "view" and $req.githublink is not None:
     <a id="rstwiki-blame" href='${req.githublink}/blame/master${req.relativeResourcePath}'>blame</a>
     <a id="rstwiki-history" href='${req.githublink}/commits/master${req.relativeResourcePath}'>history</a>
-    <a id="rstwiki-tree" href="${req.githublink}/blog/master${req.relativeResourcePath}">browse</a>
+    <a id="rstwiki-tree" href="${req.githublink}/blob/master${req.relativeResourcePath}">browse</a>
     #end if
 #end def
