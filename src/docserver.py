@@ -69,6 +69,7 @@ class DocServer():
             template.rst = RstDocument();
             template.rst.update(somerst);
             template.encoded_rst = cgi.escape(template.rst.document)
+            template.title = "Creating: %s" % (template.rst.gettitle())
             
         elif action == "edit":
             import edit
@@ -96,6 +97,7 @@ class DocServer():
         elif os.path.isfile(cherrypy.request.resourceFilePath):
             template.rst =  RstDocument(cherrypy.request.resourceFilePath)
             template.encoded_rst = cgi.escape(template.rst.document)
+            template.title = template.rst.gettitle()
         else:
 
             get_parmas = urllib.quote(cherrypy.request.request_line.split()[1])
