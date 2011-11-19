@@ -83,6 +83,12 @@ class Git:
         git.merge(self.vcs.get("branch"),self.vcs.get("shadow_master"))
         git.push() 
 
+    def pull(self):
+        #
+        #
+        print "Pulling updates"
+        self.repo.git.pull(self.repo.remotes.origin, self.vcs.get("branch", "master"))
+
     def checkoutBranch(self,branch,**kwargs):
         print "checkout branch: %s" % (branch)
         if "repo" in kwargs:

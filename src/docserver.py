@@ -16,6 +16,7 @@ class DocServer():
  
     def __init__(self):
         print "Starting Wiki..."
+        self._triggerurl = None
 
     def initVCS(self,app):
         wiki = app.config.get('wiki')
@@ -25,6 +26,8 @@ class DocServer():
                 if vcsconfig['type'] == "git":
                     from vcs import Git as VCS
                     app.vcs = VCS(app.config)
+                    if vcsconfig["postrecieve"] is not None:
+                        self._triggerurl = vcsconfig["postrecieve"]
                      
         self.githubroot = wiki.get("githubroot", None)
         
@@ -43,7 +46,15 @@ class DocServer():
         '''
 
         if cherrypy.request.method != "GET" and cherrypy.session.get("user",None) is None:
-            raise cherrypy.HTTPError(401, "Not authorized to %s to this source" %(cherrypy.request.method))
+            # if we've setup a post-recieve hook, check out this first.
+            print "trigger: %s post: %s" % (self._triggerurl, cherrypy.request.path_info)
+            if self._triggerurl == cherrypy.request.path_info and cherrypy.request.app.vcs is not None:
+                # perhaps do some exception handling and put a warning on .app that merge conflict happened?
+                cherrypy.request.app.vcs.pull()
+                return ""
+            else:
+            # otherwise:
+                raise cherrypy.HTTPError(401, "Not authorized to %s to this source" %(cherrypy.request.method))
 
         if "action" in kwargs:
            action = kwargs['action'] 
