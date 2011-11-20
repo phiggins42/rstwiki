@@ -265,6 +265,38 @@ define([
                 dojo.toggleClass(data, "closed");
             });
         });
+        
+        var linknode = dojo.byId("redirectlink");
+           if(linknode){
+
+               // redirect a/b/c to dtk.org/ref-guide/a/b/c.html
+
+               var base = 'http://dojotoolkit.org/reference-guide/';
+
+               var str = "Try <a href='{href}'>the last static version</a> of this doc (if it exists).";
+               var data = {
+                   href: (function(){
+
+                       var parts = window.location.pathname.split("/");
+
+                       var hrefparts = dojo.filter(parts, function(p){
+                           return dojo.trim(p).length;
+                       });
+                       console.log(hrefparts.length, "!!!");
+                       if(!hrefparts.length){
+                           console.warn(hrefparts);
+                           hrefparts.push("index");   
+                       }
+
+                       return base + hrefparts.join("/") + ".html";
+
+                   })()
+               };
+
+               dojo.place(dojo._toDom(dojo.replace(str, data)), linknode);
+
+           }
     });
+    
     
 });

@@ -43,7 +43,11 @@
     
     <div id="rstwiki-previewPanel" class="wrap preview"></div>
     <div id="rstwiki-contentPanel" class="wrap">
-        <p><span style="color:red">WARNING:</span> These documents reflect <em>TRUNK</em> and are a work-in-progress.</p>
+        #if $getVar('rst', None) is not None
+        <div id="redirectlink">
+            <span>WARNING:</span> These documents reflect <em>TRUNK</em> and are a work-in-progress. 
+        </div>
+        #end if
     #block contentBlock 
         $rst.render 
     #end block

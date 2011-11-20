@@ -140,7 +140,7 @@ class DocServer():
                 # this ensures the document will be created if not already existing
                 doc = cherrypy.request.rst = RstDocument()
                 doc.path = cherrypy.request.resourceFilePath;
-                doc.update(kwargs['content'])
+                doc.update(kwargs['content'].replace("\r", ""))
                 doc.save()
                 
                 try:

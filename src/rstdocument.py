@@ -1,7 +1,7 @@
 import cherrypy,os,re
 from dojo import DojoHTMLWriter
 from docutils import core, io
-import inspect
+import inspect, codecs
 from docutils.parsers.rst.roles import register_canonical_role
 from docutils.nodes import literal_block, TextElement, FixedTextElement, Element, General
 from docutils import nodes, utils, statemachine
@@ -12,7 +12,8 @@ class RstDocument():
         
         if path is not None:
             self.path = path
-            self.document = open(path).read()
+            self.document = codecs.open(path, "r", encoding="utf8").read()
+            print "document: %s" % self.document
         else:
             self.path = None
             self.document = None 
@@ -52,8 +53,12 @@ class RstDocument():
                
         if not os.path.exists(self.path): 
             isNewFile=True
-        open(self.path, 'w').write(self.document)
-        print "Saving Document."
+
+        print "Saving %s" % self.path
+        f = codecs.open(self.path, "w", encoding="utf8");    
+        f.write(self.document)
+        f.close();
+
 
 # define a `ref:` role for reST, need to override the one in dojo.py to make sure we are relative to request.script_name
 def ref_role(role, rawtext, text, lineno, inliner, options={}, content=[]):

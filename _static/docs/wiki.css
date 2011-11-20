@@ -312,5 +312,13 @@ textarea {
 }
 
 #rstwiki-footer {
-    font-size:65%;
+    font-size:75%;
+    margin-bottom:8px;
+}
+
+#redirectlink { 
+    margin-top:7px;
+}
+#redirectlink span {
+    color:red;
 }
