@@ -119,14 +119,15 @@ class DocServer():
         else:
 
             get_parmas = urllib.quote(cherrypy.request.request_line.split()[1])
-            creating = get_parmas.find("?action=create")
+            creating = get_parmas.find("action%3Dcreate")
+            print get_parmas
             
-            if creating >= 0:
-                raise cherrypy.HTTPError(404);
-            else:
+            if creating == -1:
                 redir = get_parmas + "?action=create"    
                 raise cherrypy.HTTPRedirect(redir)
-            
+            else:
+                raise cherrypy.HTTPError(404);
+                
         return self.render()
         
     def _handlePost(self, *args, **kwargs):
