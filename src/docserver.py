@@ -69,7 +69,7 @@ class DocServer():
         if cherrypy.request.method == "POST":
            action=self._handlePost(args,**kwargs)
 
-        if action == "create" and usar is not None:
+        if action == "create" and usar is not None and cherrypy.request.resourceFileExt == ".rst":
             
             import create
             cherrypy.request.template = template = create.create()
@@ -85,6 +85,9 @@ class DocServer():
             template.rst.update(somerst);
             template.encoded_rst = cgi.escape(template.rst.document)
             template.title = "Creating: %s" % (template.rst.gettitle())
+            template.action = action
+            cherrypy.response.status = 404;
+            return self.render()
             
         elif action == "edit":
             import edit
@@ -120,8 +123,8 @@ class DocServer():
 
             if(action != "create"):
                 raise cherrypy.HTTPRedirect(redir)
-            #elif action == "create":
-            #    raise cherrypy.HTTPError(404);
+            else:
+                raise cherrypy.HTTPError(404);
             
         return self.render()
         
