@@ -15,8 +15,7 @@ class RstDocument():
             self.document = codecs.open(path, "r", encoding="utf8").read()
         else:
             self.path = None
-            self.document = None 
-
+            self.document = None
 
     def render(self,*args,**kwargs):
         return self.parse_data(self.path, self.document,**kwargs)

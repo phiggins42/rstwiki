@@ -69,7 +69,8 @@ class DocServer():
         if cherrypy.request.method == "POST":
            action=self._handlePost(args,**kwargs)
 
-        if action == "create":
+        if action == "create" and usar is not None:
+            
             import create
             cherrypy.request.template = template = create.create()
             print "Showing create page %s" % (cherrypy.request.path_info)
@@ -224,7 +225,7 @@ class DocServer():
         root = cherrypy.request.app.config.get('wiki').get('root')
         path_info = cherrypy.request.path_info
         parts = path_info.split("/")
-        pprint(parts)
+
         for p in parts:
             if len(p) > 0 and p[0] == ".":
                 raise cherrypy.HTTPError(401)
@@ -246,4 +247,4 @@ class DocServer():
                      cherrypy.request.relativeResourcePath = path_info + "/index.rst"
                      
         cherrypy.request.resourceFileExt = os.path.splitext(cherrypy.request.resourceFilePath)[1]
-        print "FILE: %s EXT: %s" % (cherrypy.request.resourceFilePath, cherrypy.request.resourceFileExt)
+        # print "FILE: %s EXT: %s" % (cherrypy.request.resourceFilePath, cherrypy.request.resourceFileExt)

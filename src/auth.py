@@ -3,7 +3,6 @@
 
 import cherrypy,urllib
 
-
 SESSION_KEY = '_cp_username'
 
 def check_credentials(username, password):
@@ -11,7 +10,6 @@ def check_credentials(username, password):
         Verifies credentials for username and password.
         Returns None on success or a string describing the error on failure
     """
-
     
     authconf = cherrypy.request.app.config.get("auth")
     authtype = authconf.get('type',None)
