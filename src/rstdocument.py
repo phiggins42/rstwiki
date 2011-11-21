@@ -13,7 +13,6 @@ class RstDocument():
         if path is not None:
             self.path = path
             self.document = codecs.open(path, "r", encoding="utf8").read()
-            print "document: %s" % self.document
         else:
             self.path = None
             self.document = None 
@@ -25,8 +24,6 @@ class RstDocument():
     def parse_data(self, path, out,**kwargs):
         if "settings_overrides" in kwargs:
             over = kwargs['settings_overrides']
-            print "Using settings_overrides"  
-            print(over)
         else:
             over = None 
 

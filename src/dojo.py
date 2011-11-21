@@ -186,7 +186,7 @@ class DojoApiInline(Directive):
             sig = sig[:-2] + ")"
             
             if showsignature:
-                out += "Signature\n\n.. cv :: javascript\n\n\t%s\n\n" % sig
+                out += "Signature\n\n.. js ::\n\n\t%s\n\n" % sig
         
             if showlongsignature: 
                 out += "Overview\n\n%s\n" % tab
@@ -206,7 +206,7 @@ class DojoApiInline(Directive):
                         if not intabs:
                             # make a new tab block
                             intabs = True
-                            out += "\n\n.. cv :: javascript\n\n%s\n" % part
+                            out += "\n\n.. js ::\n\n%s\n" % part
                         else:
                             # keep just pumping
                             # if part.endswith("\n"): part = part[:-1]

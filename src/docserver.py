@@ -45,9 +45,12 @@ class DocServer():
             recieved on this mount point.
         '''
 
-        if cherrypy.request.method != "GET" and cherrypy.session.get("user",None) is None:
+        usar = cherrypy.session.get("user", None)
+        if usar is not None:
+            print usar.keys()
+
+        if cherrypy.request.method != "GET" and usar is None:
             # if we've setup a post-recieve hook, check out this first.
-            print "trigger: %s post: %s" % (self._triggerurl, cherrypy.request.path_info)
             if self._triggerurl == cherrypy.request.path_info and cherrypy.request.app.vcs is not None:
                 # perhaps do some exception handling and put a warning on .app that merge conflict happened?
                 cherrypy.request.app.vcs.pull()

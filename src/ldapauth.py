@@ -53,7 +53,7 @@ def isuser(uname, pw):
         return True
 
     except ldap.SERVER_DOWN:
-        print "Should we try to re-establish our tunnel somehow? root needs to do that..."
+        print "SERVER CONNECTION DOWN: Should we try to re-establish our tunnel somehow? root needs to do that..."
         return False
 
     except ldap.INVALID_CREDENTIALS, e:
