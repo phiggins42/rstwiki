@@ -20,7 +20,7 @@ else:
 
 #mount a couple of wikis, one at root and one /rstwiki  different configs for each
 cherrypy.tree.apps[''] = Wiki('/', os.path.join(os.path.dirname(__file__), "wiki.conf"))
-#cherrypy.tree.apps['/rstwiki'] = Wiki('/rstwiki', os.path.join(os.path.dirname(__file__), "rstwiki_docs.conf"))
+cherrypy.tree.apps['/rstwiki-howto'] = Wiki('/rstwiki-howto', os.path.join(os.path.dirname(__file__), "rstwiki_docs.conf"))
 cherrypy.tree.apps['/github'] = Github('/github', os.path.join(os.path.dirname(__file__), "github.conf"))
 #mount the auth app (login/logout), todo wrap this in an app when the AuthController gets a makeover
 cherrypy.tree.mount(AuthController(),"/auth",os.path.join(os.path.dirname(__file__), "wiki.conf"))
