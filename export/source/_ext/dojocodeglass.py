@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+"""
+    Definitions for all supported Dojo documentation directives (js, css, html, code-example)
+    But uses "old" CodeGlass viewer
+"""
+
 from docutils.nodes import literal_block, TextElement, Element, General
 from docutils.parsers.rst import directives
 import docutils

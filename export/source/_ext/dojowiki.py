@@ -2,12 +2,12 @@
 
 from docutils.nodes import literal_block, TextElement, Element, General
 from docutils.parsers.rst import directives
-import docutils, sys
-
-sys.path.append("../../../src")
-import dojo
-
+import docutils, sys, os
 from sphinx.writers.html import SmartyPantsHTMLTranslator
+
+# this registers all the same roles the rstwiki supports
+sys.path.append(os.path.abspath("../../../src"))
+import dojo
 
 class DojoHTMLTranslator(SmartyPantsHTMLTranslator):
     """
@@ -49,5 +49,8 @@ class DojoHTMLTranslator(SmartyPantsHTMLTranslator):
         self.no_smarty -= 1
 
 def setup(app):
+    """
+        This is just a placeholder so Sphinx thinks this is a genuine extension.
+        All the directives are registered by importing dojo module from rstwiki
+    """
     
-    print "DojoDocs shim loaded"
