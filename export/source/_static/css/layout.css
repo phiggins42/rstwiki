@@ -1,0 +1,456 @@
+/**
+ * Main layout
+ */
+html {
+	height: 100%;
+	width: 100%;
+}
+
+body {
+	width: 100%;
+	margin: 0;
+	font-family: Lucida Sans,Lucida Grande,Arial;
+	font-size: 12px;
+	display:table;
+	background:white;
+}
+
+#accessibilityNode { /*no conflict with accessibility node on dijit.layout.TabContainer page*/
+	font-size:1px;
+	position:absolute;
+	top:-9999px;
+	padding: 1em 0;
+	text-align:center;
+}
+
+#page {
+	position: relative;
+}
+
+/**
+ * Outer layout grid
+ */
+
+.innerBox {
+	/*
+	 * summary: used within head, foot, ... to center the outer box.
+	 */
+	width: 960px;
+	margin: 0 auto;
+	padding: 0px 10px;
+	position: relative;
+}
+
+#main {
+	padding: 55px 0px;
+}
+	
+	#main .sidebar .mod {
+		margin-bottom: 20px;
+	}
+	
+	#main .sidebar h1 {
+		padding-bottom:10px;
+	}
+	
+	#main .spacer {
+		padding-right: 90px;
+	}
+
+.footer {
+	border-top:1px solid #CCCCCC;
+	color:#333333;
+	font-size:0.8em;
+	height:24px;
+	left:0;
+	padding-top:13px;
+	margin-top:20px !important;
+}
+
+#main em {
+	font-style:normal;
+}
+
+/**
+ * main content
+ */
+#contentLeft {
+	float: left;
+	width: 575px;
+	padding-right: 20px;
+	position: relative;
+	background: url(../images/sepLrg.gif) no-repeat right 30px;
+}
+
+#contentNavRight {
+	float: right;
+	width: 250px;
+}
+
+#contentRight {
+	float: right;
+	width: 655px;
+	position: relative;
+}
+
+#contentNavLeft {
+	float: left;
+	width: 180px;
+	background: url(../images/sepLrg.gif) no-repeat right 30px;
+	padding-right: 10px;
+}
+
+.clearfix {
+	visibility: hidden;
+	clear: both;
+}
+
+
+
+/**
+ * Common
+ */
+.displayNone {
+	display: none;
+}
+
+/*-----------------------------------------------
+	The styles for the subnavigational elements.
+-----------------------------------------------*/
+.subnav {
+	list-style: none;
+	margin: 6px 0 0 0;
+	padding: 0;
+	float: right;
+}
+	.subnav li {
+		font-size: 12px;
+		line-height: 14px;
+		height: 26px;
+		display: inline;
+	}
+		.subnav li a {
+			display:inline;
+			float: left;
+			margin: 0 8px 0 0;
+			text-decoration: none;
+			color: #004fb1;
+			height: 26px;
+  	}
+			.subnav li a span {
+				display: block;
+				padding: 4px 12px 8px 0;
+				margin: 0 0 0 12px;
+			}
+			
+		.subnav li.active a,
+		.subnav li a:hover {
+			color: #050b10;
+
+		}
+			.subnav li.active a span,
+			.subnav li a:hover span {
+
+			}
+
+#intro {
+    background: url(../images/homeHeaderBg.jpg) no-repeat center top;
+		margin-top:30px;
+}
+
+    #intro .line {
+
+        padding:35px 0 27px 275px;
+    }
+
+    #intro .firstUnit {
+
+    }
+
+#main {
+	padding: 0px 0px;
+}
+
+	#main .firstUnit {
+
+	}
+	
+	#main .sidebar .mod {
+		margin-bottom: 20px;
+	}
+	
+	#main .sidebar h1 {
+		padding-bottom:10px;
+	}
+
+.spacer {
+	padding-right: 20px;
+}
+
+.rightUnitSpacer {
+	margin-right: 2em;
+}
+
+.leftUnitSpacer {
+	margin-left: 2em;
+}
+
+#foot {
+	height: 24px;
+	left: 0px;
+	color: #333;
+	font-size: 0.8em;
+	padding-top: 13px;
+}
+
+/**
+ * main content
+ */
+#contentLeft {
+	float: left;
+	width: 575px;
+	padding-right: 20px;
+	position: relative;
+	background: url(../images/sepLrg.gif) no-repeat right 30px;
+}
+
+#contentNavRight {
+	float: right;
+	width: 250px;
+}
+
+#contentRight {
+	float: right;
+	width: 655px;
+	position: relative;
+}
+
+#contentNavLeft {
+	float: left;
+	width: 180px;
+	background: url(../images/sepLrg.gif) no-repeat right 30px;
+	padding-right: 10px;
+}
+
+/* reference:
+ *	 http://www.positioniseverything.net/easyclearing.html
+ *	 http://www.zeldman.com/2006/10/27/ie7fixes1/
+ *		comment by michael on 10/28/2006
+ */
+.clearfix {
+	min-height: 1%;
+}
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+/* hides from ie5-mac \*/
+* html .clearfix { height: 1%; }
+/* end hide from ie5-mac */
+
+
+
+
+
+#contents, .logowelcome {
+	display:none;
+}
+
+a.toc-backref:link, a.toc-backref:hover, a.toc-backref:visited {
+	color:#333 !important;
+	text-decoration:none !important;
+}
+
+.sidebar .sphinxsidebar h4 {
+	background:none;
+	border:none;
+	margin:0.35em 0;
+	padding:0;
+	font-weight:normal;
+		padding-left:15px;
+}
+
+
+.sphinxsidebar h3 {
+	font-size:13px;
+	border-top:1px solid #ccc;
+	padding-top:1.5em;
+	padding-left:15px;
+	margin:20px 0 5px 0;
+}
+
+.sphinxsidebar h3 a:link, .sphinxsidebar h3 a:visited {
+	color:#333;
+}
+
+.sphinxsidebar ul {
+	padding:0 0 0 0;
+	margin:0;
+}
+
+.sphinxsidebar li {
+	list-style-type:none;
+	padding:0.5em 0;
+}
+
+.sphinxsidebar ul li ul {
+	margin-left:1em;
+}
+
+.sphinxsidebar p.topless {
+	padding-left:20px;
+}
+
+.section h1 {
+	font-size:20px;
+	font-family: "Lucida Grande", "Lucida Sans", Geneva, verdana, san-serif;
+	margin-bottom:50px !important;
+}
+
+.section h2 {
+	font-size:15px;
+	margin-bottom:0.8em;
+}
+
+.highlight-javascript {
+	margin:1.5em 0 0.5em 0;
+}
+
+.sidebar h4 {
+	padding:0;
+	margin:0;
+	background:#E9E9E9;
+	border:1px solid #DDDDDD;
+	-webkit-border-radius:6px;
+	-moz-border-radius:6px;
+	padding:0.35em 1em;
+}
+
+.sidebar ul {
+	margin:0.5em 0 0 1.5em;
+}
+
+.sidebar ul li {
+	list-style-type:none;
+	padding:0.6em 0;
+}
+
+
+
+.section ul {
+	margin-left:8px;
+}
+.section ul li {
+	list-style-type:none;
+}
+
+.section ul li ul {
+	margin-bottom:2em;
+}
+
+.section ul li p {
+	padding-left:1em;
+}
+
+.section ul li p.first {
+	font-weight:bold;
+	padding: 5px 0 2px 0;
+	margin-bottom:0;
+}
+
+.codeGlass .show {
+	margin-top:20px;
+	margin-bottom:10px;
+}
+
+.simple li {
+	padding:0.25em 0;
+}
+
+.sidebar #searchbox h3 {
+	color:#000;
+	font-size:13px;
+	margin:5px 0;
+}
+
+.sidebar #searchbox .searchtip {
+	margin-top:10px;
+}
+
+
+
+
+#resultbox {
+	border: 3px solid #999;
+	background:#fff;
+	padding:15px;
+	width:420px;
+	margin-top:5px;
+	margin-bottom:10px;
+	color:#000;
+	position:absolute;
+	right:0;
+	z-index:20;
+	-webkit-box-shadow:0 0 10px #333;
+	-moz-box-shadow:0 0 10px #333;
+	outline:none;
+}
+ 
+#googlesearch, #sitesearch {
+	margin-left:20px;
+}
+
+#header form span.gs-spacer {
+	background:none;
+	display:inline;
+	width:auto;
+	height:auto;
+}
+
+.googleheader {
+	margin:5px 0;
+	font-weight:bold;
+} 
+ 
+/* Google Style Hacks */
+.gsc-search-box, .gsc-configLabelCell {
+	display:none;
+}
+.gsc-control {
+	width:100%;
+}
+ 
+.gsc-tabHeader {
+	display:none;
+
+} 
+
+/* Link Colour */
+#resultbox a, .gs-title, .gs-title b {
+	font-size:13px;
+	font-weight:bold;
+	color:#2253AA !important;
+}
+.gs-visibleUrl, .gs-visibleUrl-short {
+	color:#666 !important;
+}
+
+#searchClose {
+	text-align:right;
+}
+
+#searchClose a {
+	font-size:10px !important;
+	color:#cc0000;
+	cursor:pointer;
+}
+
+
+#resultbox_underlay {
+	opacity:0;
+}

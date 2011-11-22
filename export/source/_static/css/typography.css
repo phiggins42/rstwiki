@@ -1,0 +1,153 @@
+/*===============================================
+  Description:
+    The typography for the dojotoolkit website, 
+    includes all base styles.
+===============================================*/
+body {
+	-x-system-font:none;
+	font-family: "Lucida Grande", "Lucida Sans", Geneva, verdana, san-serif;
+	font-size: 62.5%; /*Reset to 10px for default browser font sizes. */
+	font-size-adjust:none;
+	font-stretch:normal;
+	font-style:normal;
+	font-variant:normal;
+	font-weight:normal;
+	line-height: 1.4em;
+	vertical-align: baseline;
+	text-align: start;
+	color: #333;
+}
+
+h1, h2, h3, h4, h5, h6,
+p, blockquote, code, pre, 
+div, form, table {
+	vertical-align: baseline;
+}
+
+
+.accessibility {
+	display: none;
+	visibility: visible;
+}
+
+hr {
+	height: 1px;
+	width: auto;
+	border: medium none;
+	background: #DDDDDD;
+	margin: 10px 0;
+}
+
+em, i {font-style: italic;}
+strong, b {font-weight: bold;}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: normal;
+	color: #333333;
+	clear: both;
+}
+
+h1 {
+	font-family: Futura, "Century Gothic", AppleGothic, sans-serif;
+	font-size: 28px;
+	line-height: 120%;
+	margin: 0 0 18px 0;
+	clear: none;
+	display: inline;
+}
+
+h2 {
+	font-size: 20px;
+	line-height: 120%;
+	margin: 33px 0 10px 0;
+	color:#cc0000;
+}
+
+
+h2 em {
+	color:#333;
+	font-style:normal;
+}
+
+h3 {
+	font-size: 16px;
+	color: #CC0000;
+	line-height: 120%;
+	margin: 40px 0 10px 0;
+}
+
+h4 {
+	font-size: 14px;
+	font-weight: bold;
+	line-height: 120%;
+	margin: 37px 0 10px 0;
+}
+
+p, ol, ul, dl {
+	font-size: 12px;
+	color: #555;
+	line-height: 125%;
+	margin: 0 0 12px;
+}
+
+ol, ul {
+	margin: 0 0 12px 40px;
+	padding: 0px;
+	-moz-padding-start: 0px;
+}
+
+ol {
+	list-style-type: decimal;
+	list-style-position: outside;
+}
+
+ul {
+	list-style-type: disc;
+	list-style-position: outside;
+}
+
+dl {
+	margin: 0 0 12px 0;
+}
+	dl dt {
+		font-weight: bold;
+	}
+	dl dd {
+		margin: 0 0 0 40px;
+		padding: 0px;
+		-moz-padding-start: 0px;
+	}
+
+pre, code {
+	font-family: "Lucida Grande", "Lucida Sans", Geneva, verdana, san-serif;
+}
+	pre {
+		margin: 12px 0;
+		padding: 6px 9px 7px;
+		font-size: 11px;
+		border: 1px solid #CCCCCC;
+		background: #FFFFEB;
+		color: #555;
+	}
+
+	code {
+	}
+
+object, video {
+	margin: 12px 0 12px;
+}
+
+a, a:link {
+	color: #005197;
+	text-decoration: none;
+}
+a:active, a:visited {
+	color: #140586;
+}
+a:hover, a:focus {
+	text-decoration: underline;
+}
+
+a:hover img {
+	border-color: #005197;
+}
