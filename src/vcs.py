@@ -42,7 +42,7 @@ class Git:
 
         try:
             print "Commit Filename: %s "%(filename)
-            self.repo.git.commit(filename,message=message)
+            self.repo.git.commit(filename, message=message, author=author)
             print "%s Git Commit: %s  :: %s" % (author,filename,message)
 
             if self.vcs.get('push.enabled'):
