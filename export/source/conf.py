@@ -26,7 +26,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "_ext"))
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.todo', 'dojo'] # 'dojodocs']
+extensions = ['sphinx.ext.todo', 'dojocodeglass'] # , 'dojowiki']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -164,7 +164,7 @@ html_show_sourcelink = False
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'DojoToolkitdoc'
 
-html_translator_class = "dojo.DojoHTMLTranslator" # dojodocs.DojoHTMLTranslator
+html_translator_class = "dojodocs.DojoHTMLTranslator"
 
 
 # Options for LaTeX output
