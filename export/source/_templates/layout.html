@@ -41,9 +41,9 @@
                     <img alt="Dojo Toolkit" src="{{ pathto('_static/images/logo.png', 1) }}"></a>
                 </span>
                 <ul id="navigation">
-					<li class="home"><a href="http://dojotoolkit.org"><span class="homeIcon"></span></a></li>
+                    <li class="home"><a href="http://dojotoolkit.org"><span class="homeIcon"></span></a></li>
                     <li class="download"><a href="http://dojotoolkit.org/download/">Download</a></li>
-					<li class="features"><a href="http://dojotoolkit.org/features/">Features</a></li>
+                    <li class="features"><a href="http://dojotoolkit.org/features/">Features</a></li>
                     <li class="docs active"><a href="http://dojotoolkit.org/documentation/">Documentation</a></li>
                     <li class="community"><a href="http://dojotoolkit.org/community/">Community</a></li>
                     <li class="about"><a href="http://dojotoolkit.org/blog/">Blog</a></li>
@@ -101,10 +101,9 @@
                 </div>
             </div>  
         </div>
-	    <script src="{{ pathto('_static/js/docs/doclayer.js', 1 )}}"></script>
-	    <script src="http://www.google.com/jsapi?key=ABQIAAAAbTW5DVaTIHKHQe5Q75sB0BSaOaO_TgJ5c3mtQFnk5JO2zD5dZBSGHlRJ8HAPlCQCEO_FxSmyNAHSLw" type="text/javascript"></script>
-		
-		<script type="text/javascript">
+        <script src="{{ pathto('_static/js/docs/doclayer.js', 1 )}}"></script>
+        <script src="http://www.google.com/jsapi?key=ABQIAAAAbTW5DVaTIHKHQe5Q75sB0BSaOaO_TgJ5c3mtQFnk5JO2zD5dZBSGHlRJ8HAPlCQCEO_FxSmyNAHSLw" type="text/javascript"></script>
+        <script type="text/javascript">
             document.body.className = "nihilo";
             var CodeGlassConfig = {
                 dataUrl:"{{ pathto('_static/js', 1) }}/",
@@ -115,8 +114,9 @@
                     version: "1.7"
                }]
             };
+            
+            dojo.ready(function(){ dojo.style("searchbox", "display", "block"); });
         </script>
-		<script type="text/javascript">dojo.ready(function(){ dojo.style("searchbox", "display", "block"); });</script>
     </div>
 {%- endblock %}
 
