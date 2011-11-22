@@ -432,15 +432,7 @@ add_directive('js', _codeviewer_js, 1, (0, 1, 0), label=lambda x: x)
 add_directive('javascript', _codeviewer_js, 1, (0, 1, 0), label=lambda x: x)
 add_directive('css', _codeviewer_css, 1, (0, 1, 0), label=lambda x: x)
 add_directive('html', _codeviewer_html, 1, (0, 1, 0), label=lambda x: x)
-
-# deprecated syntax:
-add_directive('cv', _codeviewer, 1, (0, 1, 0), label=lambda x: x) #deprecated
-add_directive('codeviewer', _codeviewer,  1, (0, 1, 0), label=lambda x: x) #deprecated  
-
 add_directive('code-example', _codeviewer_compound, 1, (0, 0, 0))
-#deprecated
-add_directive('codeviewer-compound', _codeviewer_compound, 1, (0, 0, 0)) # deprecated
-add_directive('cv-compound', _codeviewer_compound, 1, (0, 0, 0)) # deprecated
 
 # Simple dojoisms
 directives.register_directive('live-code', LiveCode)
