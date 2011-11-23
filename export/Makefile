@@ -42,7 +42,7 @@ clean:
 
 data:
 	@echo "Copying dojodocs"
-	@cp -r ../dojodocs/* . 
+	@cp -r ../dojodocs/* source 
 
 all: dojo html
 	@echo "Creating the world. Cross your fingers."
