@@ -144,7 +144,7 @@ class DojoApiInline(Directive):
         out = ""
         
         if showtitles:
-            out = "\n========\nAPI Info\n========\n\n";
+            out = "\nAPI Info\n========\n\n";
         
         if includelink:
             out += ":full API:\t%s%s\n" % ("http://dojotoolkit.org/api/", apislashed)
@@ -226,7 +226,9 @@ class DojoApiInline(Directive):
                 print only
             
             if showtitles:
+                """
                 out += "Properties\n----------\n\n"
+                """
                 
             for prop in info["properties"]:
                 """"""
@@ -236,14 +238,18 @@ class DojoApiInline(Directive):
         if showmethods and "methods" in info:
             
             if showtitles:
+                """
                 out += "Methods\n-------\n\n"
+                """
             
             for method in info["methods"]:
                 """"""
+                print "%s \n %s \n" % (method, info["methods"][method])
+                
 
         #out += "</pre>"
         
-        print out;
+        #print out;
         
         try:
             lines = statemachine.string2lines(out)

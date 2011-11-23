@@ -32,13 +32,6 @@ Dojox
 
     dojox/contents
 
-Dojoc
------
-
-.. toctree::
-    :maxdepth: 2
-
-    dojoc/index
 
 Utilities
 ---------
@@ -46,10 +39,10 @@ Utilities
 .. toctree::
     :maxdepth: 2
 
-    build/contents
+    util/contents
     util/doctools
-    shrinksafe/index
-
+    build/contents
+    
 Miscellaneous
 -------------
 
@@ -57,10 +50,8 @@ Miscellaneous
     :maxdepth: 2
     :glob:
 
-    about/index
     key-links
     releasenotes/*
-    util/*
     developer/*
     loader/*
     thank-you
