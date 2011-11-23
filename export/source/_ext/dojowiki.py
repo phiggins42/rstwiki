@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 
+"""
+	Small shim loading rstWiki dojo.py to register directive, and providing duplicate DojoHtmlTranslator
+	class that subclasses SmartyHtmlTranslator instead
+"""
+
+
 from docutils.nodes import literal_block, TextElement, Element, General
 from docutils.parsers.rst import directives
 import docutils, sys, os
 from sphinx.writers.html import SmartyPantsHTMLTranslator
 
 # this registers all the same roles the rstwiki supports
-sys.path.append(os.path.abspath("../../../src"))
 import dojo
 
 class DojoHTMLTranslator(SmartyPantsHTMLTranslator):

@@ -20,6 +20,7 @@ import sys, os
 # is relative to the documentation root, use os.path.abspath to make it
 # absolute, like shown here.
 sys.path.append(os.path.join(os.path.dirname(__file__), "_ext"))
+sys.path.append(os.path.abspath("../../src"));
 
 # General configuration
 # ---------------------
@@ -164,7 +165,7 @@ html_show_sourcelink = False
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'DojoToolkitdoc'
 
-html_translator_class = "dojodocs.DojoHTMLTranslator"
+html_translator_class = "dojowiki.DojoHTMLTranslator" #dojocodelgass.DojoHTMLTranslator
 
 
 # Options for LaTeX output

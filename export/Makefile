@@ -36,7 +36,13 @@ deploy: clean js data html package
 	@$(PACKAGEDOJO) $(DOJOVERSION)
 
 clean:
+	@echo "Cleaning"
 	-rm -rf $(BUILDDIR)/*
+	git ls-files -o | xargs rm -f
+
+data:
+	@echo "Copying dojodocs"
+	@cp -r ../dojodocs/* . 
 
 all: dojo html
 	@echo "Creating the world. Cross your fingers."
