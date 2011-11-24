@@ -79,7 +79,9 @@ class DocServer():
             title = filename.replace("/", ".")
             heading = "=" * len(title)
             
-            somerst = ".. _%s:\n\n%s\n%s\n\nTODOC!\n\n.. contents ::\n  :depth: 2\n\n=============\nFirst Section\n=============\n\n" % (filename, title, heading)
+            somerst = ".. _%s:\n\n%s\n%s\n%s\n\nTODOC!\n\n.. contents ::\n  :depth: 2\n\n=============\nFirst Section\n=============\n\n" % (
+                filename, heading, title, heading
+            )
             
             template.rst = RstDocument();
             template.rst.update(somerst);
