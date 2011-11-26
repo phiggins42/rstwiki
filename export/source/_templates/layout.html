@@ -24,7 +24,7 @@
 
 {% block extrahead %}
 
-    <link rel="stylesheet" href="{{ pathto('_static/js/docs/doclayer.css', 1) }}">
+    <link rel="stylesheet" href="{{ pathto('_static/js/docs/guide.css', 1) }}">
     <script src="{{ pathto('_static/js/dojo/dojo.js', 1) }}"></script>
 
 {% endblock %}
@@ -101,7 +101,7 @@
                 </div>
             </div>  
         </div>
-        <script src="{{ pathto('_static/js/docs/doclayer.js', 1 )}}"></script>
+        <script src="{{ pathto('_static/js/docs/guide.js', 1 )}}"></script>
         <script src="http://www.google.com/jsapi?key=ABQIAAAAbTW5DVaTIHKHQe5Q75sB0BSaOaO_TgJ5c3mtQFnk5JO2zD5dZBSGHlRJ8HAPlCQCEO_FxSmyNAHSLw" type="text/javascript"></script>
         <script type="text/javascript">
             document.body.className = "nihilo";
@@ -114,7 +114,6 @@
                     version: "1.7"
                }]
             };
-            
             dojo.ready(function(){ dojo.style("searchbox", "display", "block"); });
         </script>
     </div>
