@@ -1,7 +1,7 @@
-conf.py
+/conf.py
 *.pyc
 *_lock
-_static/release
+/_static/release
 _cache/*
-_templates
-wiki.conf
+/_templates
+/wiki.conf
