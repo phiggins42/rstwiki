@@ -1,0 +1,4 @@
+@import "../../css/site.css";
+@import "../dijit/themes/dijit.css";
+@import "../dojox/highlight/resources/highlight.css";
+@import "../dojox/highlight/resources/pygments/colorful.css";
