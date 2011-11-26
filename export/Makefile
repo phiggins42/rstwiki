@@ -39,10 +39,11 @@ deploy: clean js data html package
 clean:
 	@echo "Cleaning"
 	-rm -rf $(BUILDDIR)/*
-	git ls-files -o | xargs rm -f
 
 dojo:
 	@echo "Installing a Dojo in _static/js"
+	@cd ../_static && ./build.sh
+	@cp -r ../_static/release/trunk/* source/_static/js/
 
 data:
 	@echo "Copying dojodocs"
