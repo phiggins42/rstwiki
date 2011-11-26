@@ -14,8 +14,16 @@ dependencies = {
             dependencies:[
                 "docs.wiki"
             ]
+        },
+
+        {
+            name:"../docs/guide.js",
+            dependencies:[
+                "docs.guide"
+            ]
         }
     ],
+
     
     prefixes:[
         ["dijit", "../dijit"],
