@@ -1,3 +1,6 @@
+.. _dijit/contents:
+
+=====
 Dijit
 =====
 
