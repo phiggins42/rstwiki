@@ -157,6 +157,7 @@ class DocServer():
                 try:
                     if cherrypy.request.app.vcs is not None:
 
+                        # need to check doc.isNew here, and vcs.add() ? it?
                         user = cherrypy.session.get("user", None)
                         _user = user.get("uname", "")
                         _email = user.get("mail", "")
