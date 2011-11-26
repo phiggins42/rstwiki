@@ -11,7 +11,7 @@ BUILDDIR      = build
 PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
 ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source
-DOJOVERSIONS	= 1.7.0
+DOJOVERSION     = 1.7.0
 
 .PHONY: help clean html dirhtml pickle json htmlhelp qthelp latex changes linkcheck doctest dojo all deploy moindata
 
@@ -32,13 +32,21 @@ help:
 	@echo "  all       to run a clean Dojo build and clean html export"
 	@echo "  deploy    to make a tar ball"
 
-deploy: clean js data html package
+deploy: clean dojo data html package
 	@echo "Packaging dojo-release-$(DOJOVERSION)-docs"
-	@$(PACKAGEDOJO) $(DOJOVERSION)
+
+package:
+	@echo "archiving tree"
+	@mkdir dojo-release-$(DOJOVERSION)
+	@mv $(BUILDDIR)/html dojo-release-$(DOJOVERSION)
+	@mv dojo-release-$(DOJOVERSION)/html dojo-release-$(DOJOVERSION)/reference-guide
+	@tar -czvf dojo-release-$(DOJOVERSION)-docs.tar.gz dojo-release-$(DOJOVERSION)/
 
 clean:
 	@echo "Cleaning"
 	-rm -rf $(BUILDDIR)/*
+	-rm -rf dojo-release-$(DOJOVERSION)
+	-rm -rf source && git checkout -- source
 
 dojo:
 	@echo "Installing a Dojo in _static/js"
@@ -49,7 +57,7 @@ data:
 	@echo "Copying dojodocs"
 	@cp -r ../dojodocs/* source 
 
-all: dojo html
+all: deploy
 	@echo "Creating the world. Cross your fingers."
 
 js:

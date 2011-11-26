@@ -132,6 +132,7 @@ class DojoApiInline(Directive):
                 print "not found. caching", target_url
                 data = urllib.urlopen(target_url).read()
                 dojo_api_inline_cache[target_url] = json.loads(data)
+                print data
             
             info = dojo_api_inline_cache[target_url]
 
@@ -220,33 +221,40 @@ class DojoApiInline(Directive):
                         
                 out += "\n"
 
-        if showproperties and "properties" in info:
-            if ":showproperties:" in arguments:
-                only = arguments[":showproperties:"]
-                print only
-            
-            if showtitles:
-                """
-                out += "Properties\n----------\n\n"
-                """
-                
-            for prop in info["properties"]:
-                """"""
-                print "%s \n %s \n" % (prop, info["properties"][prop])
-
-
-        if showmethods and "methods" in info:
-            
-            if showtitles:
-                """
-                out += "Methods\n-------\n\n"
-                """
-            
-            for method in info["methods"]:
-                """"""
-                print "%s \n %s \n" % (method, info["methods"][method])
-                
-
+#        if showproperties and "properties" in info:
+#            if ":showproperties:" in arguments:
+#                only = arguments[":showproperties:"]
+#                print only
+#            
+#            if showtitles:
+#                out += "Properties\n----------\n\n"
+#                
+#            for prop in info["properties"]:
+#                """"""
+#                propinfo = info["properties"][prop]
+#                defines = propinfo.get("defines", [])
+#
+#                print "property: %s - %s \n" % (prop, propinfo)                
+#                if apidotted in defines:
+#                    print "displaying"
+#                    out += ":%s:\t%s\n\n" % (prop, propinfo.get("summary", ""))
+#
+#            out += "\n"
+#
+#        if showmethods and "methods" in info:
+#            
+#            if showtitles:
+#                out += "Methods\n-------\n\n"
+#            
+#            for method in info["methods"]:
+#                """"""
+#                infos = info["methods"][method]
+#                if apidotted in infos.get("defines", []):
+#                    print "methods: %s \n %s \n" % (method, infos)
+#                    out += ":**%s**:\t%s\n\n" % (method, infos.get("summary", ""))
+#                
+#            out += "\n"
+#
         #out += "</pre>"
         
         #print out;
