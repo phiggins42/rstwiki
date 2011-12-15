@@ -11,8 +11,7 @@ define([
         scriptopen = "<scr" + "ipt>",
         scriptclose = "</" + "scri" + "pt>",
         masterviewer, dialog;
-    ;
-    
+
     dojo.declare("docs.MiniGlass", dijit._Widget, {
         
         djconfig:"",
@@ -31,7 +30,7 @@ define([
         },
         
         postCreate: function(){
-            // all we do it put a button in our self to run outself. We don't process the content at all
+            // all we do it put a button in our self to run ourself. We don't process the content at all
             this.closer = dojo.place("<a href='#' title='Collapse Example Code' class='CodeGlassMiniCollapser'><span class='a11y'>collapse</span></a>", this.domNode, "first");
             this.button = dojo.place("<a href='#' title='Run Example' class='CodeGlassMiniRunner'><span class='a11y'>run</span></a>", this.domNode, "first");
             this.connect(this.button, "onclick", "_run");
@@ -95,10 +94,13 @@ define([
         template: CodeGlassTemplate,
         _buildTemplate: function(){
             
-            this.lazyScripts = [];
-            var templateParts = {
+		   var args = this.pluginargs;
+
+           var templateParts = {
                 javascript:"<scr" + "ipt src='" + 
-                    this.baseUrl + "dojo/dojo.js'>" + scriptclose,
+                    this.baseUrl + "dojo/dojo.js'" +
+					(args.djConfig ? " data-dojo-config='" + args.djConfig + "'": "") +
+					">" + scriptclose,
                 
                 htmlcode:"", 
                 
@@ -114,14 +116,14 @@ define([
                 // 
                 head:""
                 
-            }
+            };
             
             var cgMiniRe = /\{\{\s?([^\}]+)\s?\}\}/g,
                 locals = {
                     dataUrl: this.baseUrl,
                     baseUrl: this.baseUrl,
                     theme: this.themename
-                }
+                };
             
             for(var i in this.parts){
                 dojo.forEach(this.parts[i], function(item){
@@ -129,8 +131,8 @@ define([
                     var processed = dojo.replace(item, locals, cgMiniRe);
                     switch(i){
                         case "javascript":
-                            this.lazyScripts.push(processed);
-                            break
+                            templateParts.javascript += scriptopen + processed + scriptclose;
+                            break;
                         case "html":
                             templateParts['htmlcode'] += processed;
                             break;
@@ -141,15 +143,7 @@ define([
             }
                         
             // do the master template/html, then the {{codeGlass}} double ones:
-            var args = this.pluginargs;
-            if(args.djConfig){
-                this.djConfig = dojo.fromJson("{" + args.djConfig + "}");
-            }
-            
-            if(this.djConfig.parseOnLoad){
-                this.lazyScripts.push("require(['dojo/parser','dojo/domReady!'], function(p){ p.parse(); })");
-            }
-            
+
             this.renderedTemplate = dojo.replace(this.template, templateParts);
         },
         
@@ -163,25 +157,6 @@ define([
         }
                 
     });
-    
-    function addscripttext(doc, code){
-        
-        var e = doc.createElement("script"),
-            how = "text" in e ? "text" :
-                "textContent" in e ? "textContent" :
-                "innerHTML" in e ? "innerHTML" :
-                "appendChild"
-        ;
-            
-        if(how == "appendChild"){
-            e[how](dojo.doc.createTextNode(code));
-        }else{
-            e[how] = code;
-        }
-            
-        doc.getElementsByTagName("body")[0].appendChild(e);
-
-    }
     
     var loadingMessage = "<p>Preparing Example....</p>";
     dojo.declare("docs.CodeGlassViewerMini", null, {
@@ -199,7 +174,6 @@ define([
             
             dialog.show();
             console.warn(who.renderedTemplate);
-            console.log(who.lazyScripts);
             setTimeout(dojo.hitch(this, function(){
 
                 var frame = this.iframe = dojo.create("iframe", {
@@ -218,16 +192,7 @@ define([
 
                 doc.write(who.renderedTemplate);
 
-                var scripts = who.lazyScripts, errors = [],
-                    inject = function(){
-                        
-                        
-                        dojo.forEach(scripts, function(s){ 
-                            console.log("adding script content", s);
-
-                            addscripttext(doc, s);
-                        });
-                        
+                function display(){
                         dojo.style(frame, {
                             "visibility": "visible",
                             opacity: 0
@@ -235,13 +200,12 @@ define([
                         
                         dojo.anim(frame, { opacity:1 });
                     }
-                ;
-                
+
                 var e;
                 if(frame.addEventListener){
-                    e = frame.addEventListener("load", inject, false)
+                    e = frame.addEventListener("load", display, false)
                 }else if(frame.attachEvent){
-                    e = frame.attachEvent("onload", inject);
+                    e = frame.attachEvent("onload", display);
                 }
                 
                 setTimeout(function(){ doc.close(); }, 50);
