@@ -55,7 +55,7 @@ dojo:
 
 data:
 	@echo "Copying dojodocs"
-	@cp -r ../dojodocs/* source 
+	@cp -r ../../docs/* source 
 
 all: deploy
 	@echo "Creating the world. Cross your fingers."
