@@ -5,6 +5,10 @@
 """
 
 import os, os.path,sys,cherrypy
+
+# this code is path sensitive, so make sure we have the correct one
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 from auth import AuthController
 from docserver import Wiki
