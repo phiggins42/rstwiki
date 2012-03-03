@@ -64,7 +64,7 @@ class DojoApi(Directive):
         
         # insert code here to generate some markup for `api` ... ttrenka might already have these cached
         # as part of the api doc generation.
-        markup = "<p class='apiref'>API Rerence: <a target='_api' href='http://dojotoolkit.org/api/%s'>%s</a></p>" % ( apislashed, apidotted )
+        markup = "<p class='apiref'>API Reference: <a target='_api' href='http://dojotoolkit.org/api/%s'>%s</a></p>" % ( apislashed, apidotted )
             
         return [nodes.raw('', markup, format='html')]
 
