@@ -199,12 +199,19 @@ textarea {
 .CodeGlassMini {
     padding:0 0 5px 0;
     position:relative;
-    border-top:1px dashed #666;
+    border:1px solid #999;
+	padding: 10px;
 }
 
 .CodeGlassMini.closed {
    background:#f8f8f8;
 }
+
+.CodeGlassMiniInner {
+	/* holds the javascript, HTML, and CSS code blocks */
+	margin-top: 10px;
+}
+
 .closed .CodeGlassMiniInner {
     display:none;
 }
@@ -216,6 +223,10 @@ textarea {
     margin-top:15px;
 }
 
+/***
+    Icon like a tree to expand/collapse the inlined example text.
+***/
+/*
 .CodeGlassMiniCollapser {
     position:absolute;
     top:-8px;
@@ -237,7 +248,12 @@ textarea {
 .closed .CodeGlassMiniCollapser:hover {
     background-position:-18px 0;
 }
+.***/
 
+/***
+    Icon to run examples.   It's an arrow pointing to the right.
+***/
+/*
 .CodeGlassMiniRunner {
     position:absolute;
     left:-20px;
@@ -251,6 +267,12 @@ textarea {
 
 .CodeGlassMiniRunner:hover {
     background-position:-91px 0;
+}
+*/
+
+.CodeGlassMini > a {
+	/* spacing between the buttons */
+	margin: 0px 10px 10px 0px;
 }
 
 /* the wrap stuff is hackish */
