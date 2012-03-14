@@ -173,33 +173,35 @@ define([
             });
             
             dialog.show();
-            console.warn(who.renderedTemplate);
+
+			// Write the full HTML to the console.
+			// TODO: should have button to display full HTML
+            console.log(who.renderedTemplate);
+
             setTimeout(dojo.hitch(this, function(){
 
-                var frame = this.iframe = dojo.create("iframe", {
-                        style:{
-                            height: who.height + "px",
-                            width: who.width + "px",
-                            border:"none",
-                            visibility:"hidden"
-                        }
-                    });
-                
-                dialog.set("content", frame);
-                
-                var doc = frame.contentDocument || frame.contentWindow.document;                
-                doc.open();
+               var frame = this.iframe = dojo.create("iframe", {
+					style:{
+						height: who.height + "px",
+						width: who.width + "px",
+						border:"none",
+						visibility:"hidden"
+					}
+				});
 
-                doc.write(who.renderedTemplate);
+				dialog.set("content", frame);
+
+				frame.setAttribute("src", "javascript: '" +
+					who.renderedTemplate.replace(/\\/g, "\\\\").replace(/'/g, "\\'") + "'");
 
                 function display(){
-                        dojo.style(frame, {
-                            "visibility": "visible",
-                            opacity: 0
-                        });
-                        
-                        dojo.anim(frame, { opacity:1 });
-                    }
+					dojo.style(frame, {
+						"visibility": "visible",
+						opacity: 0
+					});
+
+					dojo.anim(frame, { opacity:1 });
+				}
 
                 var e;
                 if(frame.addEventListener){
@@ -208,8 +210,7 @@ define([
                     e = frame.attachEvent("onload", display);
                 }
                 
-                setTimeout(function(){ doc.close(); }, 50);
-                
+
             }), dialog.duration + 450);            
 
         }
