@@ -213,9 +213,8 @@ define([
 				});
 
 				dialog.set("content", frame);
-
 				frame.setAttribute("src", "javascript: '" +
-					who.renderedTemplate.replace(/\\/g, "\\\\").replace(/'/g, "\\'") + "'");
+					who.renderedTemplate.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/\n/g, "\\n") + "'");
 
 				function display(){
 					dojo.style(frame, {
