@@ -260,7 +260,7 @@ define([
 
 				var base = 'http://dojotoolkit.org/reference-guide/';
 
-				var str = "Try <a href='{href}'>the last static version</a> of this doc (if it exists).";
+				var str = "<a href='{href}'>Read the release version of this documentation instead</a> (if it exists).";
 				var data = {
 					href: (function(){
 
