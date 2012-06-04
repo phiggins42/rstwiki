@@ -204,6 +204,8 @@ define([
 			setTimeout(dojo.hitch(this, function(){
 
 				var frame = this.iframe = dojo.create("iframe", {
+					src: "javascript: '" +
+						who.renderedTemplate.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/\n/g, "\\n") + "'",
 					style:{
 						height: who.height + "px",
 						width: who.width + "px",
@@ -213,8 +215,6 @@ define([
 				});
 
 				dialog.set("content", frame);
-				frame.setAttribute("src", "javascript: '" +
-					who.renderedTemplate.replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/\n/g, "\\n") + "'");
 
 				function display(){
 					dojo.style(frame, {
