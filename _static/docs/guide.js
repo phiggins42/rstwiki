@@ -1,3 +1,7 @@
-define(["dojo/ready", "dojo/parser", "docs/doctools", "docs/searchtools", "docs/wiki"], function(ready, parser){
-	
-})
+require([
+	"dojo/ready", 
+	"dojo/parser", 
+	"docs/doctools", 
+	"docs/searchtools", 
+	"docs/wiki"
+]);

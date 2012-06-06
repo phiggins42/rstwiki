@@ -9,8 +9,7 @@ require([
 	"dojo/ready", // ready
 	"docs/CodeGlassViewerMini",
 	"dijit/Dialog",
-	"docs/MiniGlass",
-	"dojo/domReady!"
+	"docs/MiniGlass"
 ], function(lang, dom, domConst, domClass, on, parser, query, ready, CodeGlassViewerMini, Dialog){
 
 	ready(function(){
@@ -58,6 +57,5 @@ require([
 
 		}
 	});
-	
 	
 });
