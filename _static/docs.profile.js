@@ -6,6 +6,7 @@ var profile = {
 	mini: false,
 	cssOptimize: "comments.keepLines",
 	optimize: "",
+	layerOptimize: "",
 
 	packages:[{
 		name: "dojo",
@@ -28,6 +29,12 @@ var profile = {
 		"docs/guide": {
 			include: []
 		}
+	},
+	
+	staticHasFeatures: {
+		"dojo-firebug": false,
+		"dom-addeventlistener": true,
+		"host-browser": true
 	}
 };
 
