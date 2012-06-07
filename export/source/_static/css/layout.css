@@ -348,7 +348,8 @@ a.toc-backref:link, a.toc-backref:hover, a.toc-backref:visited {
 }
 
 .section p,
-.section ul {
+.section ul,
+.section dl {
 	color:#333333;
 	line-height:1.5em;
 	font-size:14px;

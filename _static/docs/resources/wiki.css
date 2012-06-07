@@ -278,7 +278,6 @@ textarea {
 /* the wrap stuff is hackish */
 .CodeGlassMini pre {
     overflow:auto;
-    width:100%;
     white-space: pre-wrap;
     white-space: -moz-pre-wrap;
     white-space: -pre-wrap;
