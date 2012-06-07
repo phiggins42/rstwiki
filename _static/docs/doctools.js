@@ -9,7 +9,7 @@ define([
 	"dojo/query", // query
 	"dojo/ready", // ready
 	"dojo/sniff" // has("mozilla")
-], function(array, NodeList, domAttr, domClass, domConst, style, ready, has){
+], function(array, NodeList, domAttr, domClass, domConst, style, on, query, ready, has){
 	
 // ported from Sphinx basic theme doctools.js to use Dojo
 
