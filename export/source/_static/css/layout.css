@@ -349,7 +349,9 @@ a.toc-backref:link, a.toc-backref:hover, a.toc-backref:visited {
 
 .section p,
 .section ul,
-.section dl {
+.section dl,
+.section ol,
+.section div {
 	color:#333333;
 	line-height:1.5em;
 	font-size:14px;
@@ -365,6 +367,11 @@ a.toc-backref:link, a.toc-backref:hover, a.toc-backref:visited {
 	font-family:"Consolas","Bitstream Vera Sans Mono","Courier New",Courier,monospace;
 	font-size:14px;
 	padding:10px;
+}
+
+.section .footnote-reference {
+	vertical-align: super;
+	font-size: 90%;
 }
 
 .highlight-javascript {
@@ -441,7 +448,6 @@ ul.simple li {
 
 .simple li {
 	padding:0.25em 0;
-	list-style-type:disc !important;
 }
 
 .sidebar #searchbox h3 {
@@ -450,12 +456,13 @@ ul.simple li {
 	margin:5px 0;
 }
 
+.sidebar #searchbox form {
+	margin-left:15px;
+}
+
 .sidebar #searchbox .searchtip {
 	margin-top:10px;
 }
-
-
-
 
 #resultbox {
 	border: 3px solid #999;
