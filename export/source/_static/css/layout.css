@@ -312,7 +312,8 @@ a.toc-backref:link, a.toc-backref:hover, a.toc-backref:visited {
 .section h2,
 .section h3,
 .section h4,
-.section h5 {
+.section h5,
+.section h6 {
 	color:#27221F;
 	font-family:Helvetica,Arial,Sans-Serif;
 	letter-spacing:-1px;
@@ -345,6 +346,10 @@ a.toc-backref:link, a.toc-backref:hover, a.toc-backref:visited {
 
 .section h5 {
 	font-size:18px;
+}
+
+.section h6 {
+	font-size:16px;
 }
 
 .section p,
