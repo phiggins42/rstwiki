@@ -25,8 +25,13 @@
 {% block extrahead %}
 
     <link rel="stylesheet" href="{{ pathto('_static/js/docs/resources/guide.css', 1) }}">
-    <script src="{{ pathto('_static/js/dojo/dojo.js', 1) }}"></script>
-
+	<script type="text/javascript">
+		dojoConfig = {
+			async: true
+		};
+	</script>
+    <script type="text/javascript" src="{{ pathto('_static/js/dojo/dojo.js', 1) }}"></script>
+    <script type="text/javascript" src="{{ pathto('_static/js/docs/guide.js', 1 )}}"></script>
 {% endblock %}
 
 {%- block document %}
@@ -101,7 +106,6 @@
                 </div>
             </div>  
         </div>
-        <script src="{{ pathto('_static/js/docs/guide.js', 1 )}}"></script>
         <script src="http://www.google.com/jsapi?key=ABQIAAAAbTW5DVaTIHKHQe5Q75sB0BSaOaO_TgJ5c3mtQFnk5JO2zD5dZBSGHlRJ8HAPlCQCEO_FxSmyNAHSLw" type="text/javascript"></script>
         <script type="text/javascript">
             dojo.ready(function(){ 
