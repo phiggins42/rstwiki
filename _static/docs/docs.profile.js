@@ -4,7 +4,7 @@ var profile = (function(){
 			"docs/docs.profile":1,
 			"docs/package.json":1
 		};
-		return (mid in list) || (/^docs\/resources\//.test(mid));
+		return (mid in list) || (/^docs\/resources\//.test(mid) && !/\.(css|html)$/.test(filename)) || /(png|jpg|jpeg|gif|tiff)$/.test(filename);
 	};
 
 	return {
