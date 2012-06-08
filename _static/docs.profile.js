@@ -7,7 +7,7 @@ var profile = {
 	cssOptimize: "comments.keepLines",
 	optimize: "",
 	layerOptimize: "",
-	selector: "acme",
+	selectorEngine: "acme",
 
 	packages:[{
 		name: "dojo",
