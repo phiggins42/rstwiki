@@ -373,7 +373,7 @@ window.Search = {
 			// ensure that none of the excluded terms is in the
 			// search result.
 			for(var i = 0; i < excluded.length; i++){
-				if(terms[excluded[i]] == file || $.contains(terms[excluded[i]] || [], file)){
+				if(terms[excluded[i]] == file || ~array.indexOf(file, terms[excluded[i]] || [])){
 					valid = false;
 					break;
 				}
