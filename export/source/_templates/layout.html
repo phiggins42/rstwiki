@@ -76,6 +76,12 @@
                     </div>
                     <div class="sidebar unit size1of4 lastUnit">
                         <h4>Reference Guide</h4>
+						<label for="refver">Dojo Version</label>
+						<select id="refver" name="refver">
+							<option value="16">1.6</option>
+							<option value="17">1.7</option>
+							<option value="18">1.8</option>
+						</select>
                         <ul>
                             <li><a href="{{ pathto("index") }}">Startpage</a></li>
                             <li><a href="{{ pathto("dojo/index") }}">Dojo</a></li>
@@ -108,10 +114,12 @@
         </div>
         <script src="http://www.google.com/jsapi?key=ABQIAAAAbTW5DVaTIHKHQe5Q75sB0BSaOaO_TgJ5c3mtQFnk5JO2zD5dZBSGHlRJ8HAPlCQCEO_FxSmyNAHSLw" type="text/javascript"></script>
         <script type="text/javascript">
-			require(["dojo/ready", "dojo/dom-class", "dojo/dom-style", "dojo/_base/window"], 
-			function(ready, domClass, style, win){
+			require(["dojo/ready", "dojo/dom", "dojo/dom-class", "dojo/dom-style", "dojo/_base/window"], 
+			function(ready, dom, domClass, style, win){
 				domClass.add(win.body(), "refguide claro");
-				style.set("searchbox", "display", "block");
+				if(dom.byId("searchbox")){
+					style.set("searchbox", "display", "block");
+				}
 			});
         </script>
     </div>
