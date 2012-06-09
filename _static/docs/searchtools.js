@@ -97,8 +97,11 @@ window.PorterStemmer = function(){
 		// Step 1a
 		re = /^(.+?)(ss|i)es$/;
 		re2 = /^(.+?)([^s])s$/;
-		if(re.test(w)) w = w.replace(re,"$1$2")
-		else if(re2.test(w)) w = w.replace(re2,"$1$2");
+		if(re.test(w)){
+			w = w.replace(re,"$1$2");
+		}else if(re2.test(w)){
+			w = w.replace(re2,"$1$2");
+		}
 
 		// Step 1b
 		re = /^(.+?)eed$/;
@@ -206,11 +209,11 @@ window.Search = {
 	init : function(){
 		var params = doctools.getQueryParameters();
 		if(params.q){
-			var query = params.q[0];
+			var q = params.q[0];
 			query('input[name="q"]').forEach(function(node){
-				node.value = query;
+				node.value = q;
 			});
-			this.performSearch(query);
+			this.performSearch(q);
 		}
 	},
 
@@ -269,7 +272,11 @@ window.Search = {
 		dom.byId('search-progress').innerHTML = 'Preparing search...';
 		this.startPulse();
 		// index already loaded, the browser was quick!
-		if(this.hasIndex()) this.query(inQuery);elsethis.deferQuery(inQuery);
+		if(this.hasIndex()){
+			this.query(inQuery);
+		}else{
+			this.deferQuery(inQuery);
+		}
 	},
 
 	query : function(inQuery){
@@ -350,8 +357,11 @@ window.Search = {
 			// create the mapping
 			for(var j = 0; j < files.length; j++){
 				var file = files[j];
-				if(file in fileMap) fileMap[file].push(word);
-			elsefileMap[file] = [word];
+				if(file in fileMap){
+					fileMap[file].push(word);
+				}else{
+					fileMap[file] = [word];
+				}
 			}
 		}
 		
@@ -434,8 +444,11 @@ window.Search = {
 				Search.stopPulse();
 				Search.title.innerHTML = 'Search Results';
 				var status = Search.status;
-				if(!resultCount) status.innerHTML = 'Your search did not match any documents. Please make sure that all words are spelled correctly and that you\'ve selected enough categories.';
-			elsestatus.innerHTML = 'Search finished, found %s page(s) matching the search query.'.replace('%s', resultCount);
+				if(!resultCount){
+					status.innerHTML = 'Your search did not match any documents. Please make sure that all words are spelled correctly and that you\'ve selected enough categories.';
+				}else{
+					status.innerHTML = 'Search finished, found %s page(s) matching the search query.'.replace('%s', resultCount);
+				}
 				style.set(status, {
 					display: 'block',
 					opacity: 0
@@ -449,7 +462,7 @@ window.Search = {
 };
 
 ready(function(){
-	Search.init()
+	Search.init();
 });
 
 return searchtools;
