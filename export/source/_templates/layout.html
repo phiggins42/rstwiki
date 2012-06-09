@@ -76,12 +76,14 @@
                     </div>
                     <div class="sidebar unit size1of4 lastUnit">
                         <h4>Reference Guide</h4>
-						<label for="refver">Dojo Version</label>
-						<select id="refver" name="refver">
-							<option value="16">1.6</option>
-							<option value="17">1.7</option>
-							<option value="18">1.8</option>
-						</select>
+						<div id="dtkVersion">
+							<label for="refver">Dojo Version</label>
+							<select id="refver" name="refver">
+								<option value="16">1.6</option>
+								<option value="17">1.7</option>
+								<option value="18" selected>1.8</option>
+							</select>
+						</div>
                         <ul>
                             <li><a href="{{ pathto("index") }}">Startpage</a></li>
                             <li><a href="{{ pathto("dojo/index") }}">Dojo</a></li>

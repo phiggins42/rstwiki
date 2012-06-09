@@ -308,6 +308,12 @@ a.toc-backref:link, a.toc-backref:hover, a.toc-backref:visited {
 	padding-left:20px;
 }
 
+#dtkVersion {
+	margin: 20px 0 5px;
+	padding-left: 15px;
+	padding-top: 1em;
+}
+
 .section h1,
 .section h2,
 .section h3,
