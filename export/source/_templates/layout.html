@@ -90,7 +90,7 @@
         <hr class="hide" />
         <div id="foot">
             <div class="innerBox">
-                <script>document.write('<a href="https://docs.google.com/spreadsheet/viewform?hl=en_US&amp;formkey=dFlDcHEyaHMwbEd4MFBObkNrX0E1MFE6MQ&amp;entry_0=' + encodeURIComponent(window.location.href) + '">Error in the documentation? Can’t find what you are looking for? Let us know!</a>');</script>
+                <script type="text/javascript">document.write('<a href="https://docs.google.com/spreadsheet/viewform?hl=en_US&amp;formkey=dFlDcHEyaHMwbEd4MFBObkNrX0E1MFE6MQ&amp;entry_0=' + encodeURIComponent(window.location.href) + '">Error in the documentation? Can’t find what you are looking for? Let us know!</a>');</script>
                 <div class="footer">
                     {%- if hasdoc('copyright') %}
                       {% trans path=pathto('copyright'), copyright=copyright|e %}&copy; <a href="{{ path }}">Copyright</a> {{ copyright }}.{% endtrans %}
@@ -108,10 +108,11 @@
         </div>
         <script src="http://www.google.com/jsapi?key=ABQIAAAAbTW5DVaTIHKHQe5Q75sB0BSaOaO_TgJ5c3mtQFnk5JO2zD5dZBSGHlRJ8HAPlCQCEO_FxSmyNAHSLw" type="text/javascript"></script>
         <script type="text/javascript">
-            dojo.ready(function(){ 
-                dojo.addClass(dojo.body(), "refguide claro");
-                dojo.style("searchbox", "display", "block"); 
-            });
+			require(["dojo/ready", "dojo/dom-class", "dojo/dom-style", "dojo/_base/window"], 
+			function(ready, domClass, style, win){
+				domClass.add(win.body(), "refguide claro");
+				style.set("searchbox", "display", "block");
+			});
         </script>
     </div>
 {%- endblock %}
