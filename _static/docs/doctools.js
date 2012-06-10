@@ -286,7 +286,7 @@ ready(function(){
 	if(sb){
 		style.set(sb, "display", "block");
 	}
-}
+});
 
 return doctools;
 
