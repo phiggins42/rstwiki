@@ -1,15 +1,17 @@
 define([
 	"dojo/_base/array", // array.indexOf, array.forEach
 	"dojo/_base/NodeList", // NodeList.prototype
+	"dojo/_base/window", // win.global
+	"dojo/dom", // dom.byId
 	"dojo/dom-attr", // domAttr.get
-	"dojo/dom-class", // domClass.contains
+	"dojo/dom-class", // domClass.contains, domClass.add
 	"dojo/dom-construct", // domConst.toDom
 	"dojo/dom-style", // style.set
 	"dojo/on", // on
 	"dojo/query", // query
 	"dojo/ready", // ready
 	"dojo/sniff" // has("mozilla")
-], function(array, NodeList, domAttr, domClass, domConst, style, on, query, ready, has){
+], function(array, NodeList, win, dom, domAttr, domClass, domConst, style, on, query, ready, has){
 	
 // ported from Sphinx basic theme doctools.js to use Dojo
 
@@ -259,7 +261,32 @@ window.Documentation = {
 // quick alias for translations
 _ = Documentation.gettext;
 
-ready(Documentation, "init");
+ready(function(){	
+	var vn = dom.byId("refver");
+	if(vn){
+		// Set change event on version to navigate to other version of the docs
+		on(vn, "change", function(e){
+			var v = e.target.value;
+			win.global.location.href = win.global.location.href.replace(/\/[12]\.[0-9]\//i, "/" + v + "/");
+		});
+	
+		// Ensure the drop down version list has the right value
+		var vmatch = /\/([12]\.[0-9])\//i.exec(win.global.location.href);
+		if (vmatch){
+			vn.value = vmatch[1];
+		}
+	}
+	
+	// Init the sphynx Documentation object
+	Documentation.init();
+	
+	// Do some dynamic styling
+	domClass.add(win.body(), "refguide claro");
+	var sb = dom.byId("searchbox");
+	if(sb){
+		style.set(sb, "display", "block");
+	}
+}
 
 return doctools;
 

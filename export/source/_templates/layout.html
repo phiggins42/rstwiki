@@ -79,9 +79,9 @@
 						<div id="dtkVersion">
 							<label for="refver">Dojo Version</label>
 							<select id="refver" name="refver">
-								<option value="16">1.6</option>
-								<option value="17">1.7</option>
-								<option value="18" selected>1.8</option>
+								<option value="1.6">1.6</option>
+								<option value="1.7">1.7</option>
+								<option value="1.8" selected="selected">1.8</option>
 							</select>
 						</div>
                         <ul>
@@ -115,15 +115,6 @@
             </div>  
         </div>
         <script src="http://www.google.com/jsapi?key=ABQIAAAAbTW5DVaTIHKHQe5Q75sB0BSaOaO_TgJ5c3mtQFnk5JO2zD5dZBSGHlRJ8HAPlCQCEO_FxSmyNAHSLw" type="text/javascript"></script>
-        <script type="text/javascript">
-			require(["dojo/ready", "dojo/dom", "dojo/dom-class", "dojo/dom-style", "dojo/_base/window"], 
-			function(ready, dom, domClass, style, win){
-				domClass.add(win.body(), "refguide claro");
-				if(dom.byId("searchbox")){
-					style.set("searchbox", "display", "block");
-				}
-			});
-        </script>
     </div>
 {%- endblock %}
 
