@@ -24,17 +24,16 @@ var profile = {
 	}],
 
 	layers: {
-		// "docs/wiki": {
-		// 	include: []
-		// },
-		// "docs/guide": {
-		// 	include: []
-		// }
+		"docs/wiki": {
+			include: []
+		},
+		"docs/guide": {
+			include: []
+		}
 	},
 	
 	staticHasFeatures: {
 		"dojo-firebug": false,
-		"dom-addeventlistener": true,
 		"host-browser": true
 	}
 };
