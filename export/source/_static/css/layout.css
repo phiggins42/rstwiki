@@ -472,6 +472,12 @@ ul.simple li {
 	text-shadow: 0 -1px 0 rgba(0,0,0,.5);
 }
 
+.section .CodeGlassMiniRunner:hover,
+.section .CodeGlassMiniRawHtml:hover,
+.section .CodeGlassMiniCollapser:hover {
+	text-decoration: none;
+}
+
 .codeGlass .show {
 	margin-top:20px;
 	margin-bottom:10px;
