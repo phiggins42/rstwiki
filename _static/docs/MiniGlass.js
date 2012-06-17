@@ -68,7 +68,7 @@ define([
 			e && e.preventDefault();
 			this._generateTemplate();
 			var dialog = new Dialog({
-				title: "Raw HTML",
+				title: "Source",
 				content: domConst.create("textarea", {
 					value: this.renderedTemplate,
 					spellcheck: false,
