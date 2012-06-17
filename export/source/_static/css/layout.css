@@ -375,7 +375,7 @@ a.toc-backref:link, a.toc-backref:hover, a.toc-backref:visited {
 .section .highlight pre{
 	background-color:#F7F7F7;
 	font-family:"Consolas","Bitstream Vera Sans Mono","Courier New",Courier,monospace;
-	font-size:14px;
+	font-size:13px;
 	padding:10px;
 }
 
