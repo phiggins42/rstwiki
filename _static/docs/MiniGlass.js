@@ -34,9 +34,9 @@ define([
 		
 		postCreate: function(){
 			// all we do it put a button in our self to run ourself. We don't process the content at all
-			this.closer = domConst.place("<a href='#' title='Collapse Example Code' class='CodeGlassMiniCollapser'><span class='a11y'>collapse</span></a>", this.domNode, "first");
-			this.showcode = domConst.place("<a href='#' title='Show Raw HTML' class='CodeGlassMiniRawHtml'><span class='a11y'>raw html</span></a>", this.domNode, "first");
-			this.button = domConst.place("<a href='#' title='Run Example' class='CodeGlassMiniRunner'><span class='a11y'>run</span></a>", this.domNode, "first");
+			this.closer = domConst.place("<a href='#' title='Collapse Example Code' class='CodeGlassMiniCollapser'><span class='a11y'>Collapse</span></a>", this.domNode, "first");
+			this.showcode = domConst.place("<a href='#' title='Show Raw HTML' class='CodeGlassMiniRawHtml'><span class='a11y'>Raw HTML</span></a>", this.domNode, "first");
+			this.button = domConst.place("<a href='#' title='Run Example' class='CodeGlassMiniRunner'><span class='a11y'>Run</span></a>", this.domNode, "first");
 			this.connect(this.button, "onclick", "_run");
 			this.connect(this.showcode, "onclick", "_showCode");
 			this.connect(this.closer, "onclick", "_toggle");

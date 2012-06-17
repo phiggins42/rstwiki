@@ -1,9 +1,10 @@
 define([
 	"dojo/_base/declare", // declare
 	"dojo/_base/fx", // baseFx.anim
+	"dojo/_base/lang", // lang.hitch
 	"dojo/dom-construct", // domConst.destory, domConst.create
 	"dojo/dom-style" // style.set
-], function(declare, baseFx, domConst, style){
+], function(declare, baseFx, lang, domConst, style){
 	return declare("docs.CodeGlassViewerMini", null, {
 		
 		dialog: null,
@@ -27,7 +28,7 @@ define([
 			
 			this.dialog.show();
 
-			setTimeout(dojo.hitch(this, function(){
+			setTimeout(lang.hitch(this, function(){
 
 				var frame = this.iframe = domConst.create("iframe", {
 					src: "javascript: '" +

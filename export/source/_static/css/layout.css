@@ -451,6 +451,21 @@ ul.simple li {
 	padding: 2px;
 }
 
+/* Code Glass */
+
+.section .CodeGlassMiniRunner,
+.section .CodeGlassMiniRawHtml,
+.section .CodeGlassMiniCollapser {
+	background-color: #5BAED5;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(0, 176, 216)), to(rgb(0, 136, 196)));
+    background-image: -webkit-linear-gradient(top, rgb(0, 176, 216), rgb(0, 136, 196));
+    background-image: -moz-linear-gradient(top, rgb(0, 176, 216), rgb(0, 136, 196));
+    background-image: -o-linear-gradient(top, rgb(0, 176, 216), rgb(0, 136, 196));
+    background-image: -ms-linear-gradient(top, rgb(0, 176, 216), rgb(0, 136, 196));
+    background-image: linear-gradient(top, rgb(0, 176, 216), rgb(0, 136, 196));
+	border: 1px solid #64D0E7;
+}
+
 .codeGlass .show {
 	margin-top:20px;
 	margin-bottom:10px;

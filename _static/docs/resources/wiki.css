@@ -7,10 +7,16 @@ body, html {
 }
 
 body.wikidocs {
-    font-size:small;
-    font-family:verdana,sans-serif;
+    font-size: 14px;
+    font-family:Helvetica,Arial,Sans-Serif;
     font-voice:inherit;
     line-height:1.3em;
+}
+
+.wikidocs code,
+.wikidocs pre,
+.wikidocs tt {
+	font-family:"Consolas","Bitstream Vera Sans Mono","Courier New",Courier,monospace;
 }
 
 .wikidocs .wrap {
@@ -270,9 +276,42 @@ textarea {
 }
 */
 
-.CodeGlassMini > a {
-	/* spacing between the buttons */
+.CodeGlassMiniRunner,
+.CodeGlassMiniRawHtml,
+.CodeGlassMiniCollapser {
+	border: 1px solid #AAAAAA;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+	border-radius: 4px;
 	margin: 0px 10px 10px 0px;
+	padding: 4px;
+	text-decoration: none;
+	color: #000000;
+	background-color: #EEEEEE;
+    background-image: url("images/buttonEnabled.png");
+    background-repeat: repeat-x;
+    background-image: -moz-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
+    background-image: -webkit-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
+    background-image: -o-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
+    background-image: -ms-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
+    _background-image: none;
+}
+
+.CodeGlassMiniRunner > span,
+.CodeGlassMiniRawHtml > span,
+.CodeGlassMiniCollapser > span {
+	padding: 6px 6px 6px 23px;
+}
+
+.CodeGlassMiniRawHtml > span {
+	background: url("source.png") no-repeat 3px center;
+}
+
+.CodeGlassMiniRunner > span {
+	background: url("play.png") no-repeat 3px center;
+}
+
+.CodeGlassMiniCollapser > span {
+	background: url("collapse.png") no-repeat 3px center;
 }
 
 /* the wrap stuff is hackish */
