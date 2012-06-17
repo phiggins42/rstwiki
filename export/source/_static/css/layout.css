@@ -463,7 +463,13 @@ ul.simple li {
     background-image: -o-linear-gradient(top, rgb(0, 176, 216), rgb(0, 136, 196));
     background-image: -ms-linear-gradient(top, rgb(0, 176, 216), rgb(0, 136, 196));
     background-image: linear-gradient(top, rgb(0, 176, 216), rgb(0, 136, 196));
+	border-radius: 3px;
 	border: 1px solid #64D0E7;
+	font-size: 13px;
+	font-weight: bold;
+	color: #fff;
+	letter-spacing: -0.0035em;
+	text-shadow: 0 -1px 0 rgba(0,0,0,.5);
 }
 
 .codeGlass .show {
