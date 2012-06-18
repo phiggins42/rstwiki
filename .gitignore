@@ -5,3 +5,4 @@
 _cache/*
 /_templates
 /wiki.conf
+.tm_properties

@@ -1,0 +1,21 @@
+{
+	"name": "docs",
+	"version": "1.8.0dev",
+	"main": "guide",
+	"dependencies": {
+		"dojo": "current",
+		"dijit": "current"
+	},
+	"description": "Modules used by rstwiki",
+	"licenses": [
+                 {
+                                 "type": "AFLv2.1",
+                                 "url": "http://trac.dojotoolkit.org/browser/dojo/trunk/LICENSE#L43"
+                 },
+                 {
+                                 "type": "BSD",
+                                 "url": "http://trac.dojotoolkit.org/browser/dojo/trunk/LICENSE#L13"
+                 }
+        ],
+	"dojoBuild": "docs.profile.js"
+}

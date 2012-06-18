@@ -11,8 +11,14 @@
         $action $req.path_info
     </title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link rel="stylesheet" href="${static}docs/wiki.css">
-    <script src="${static}dojo/dojo.js"></script>
+    <link rel="stylesheet" href="${static}docs/resources/wiki.css">
+	<script type="text/javascript">
+		dojoConfig = {
+			async: true,
+			deps: ["docs/wiki"]
+		}
+	</script>
+    <script type="text/javascript" src="${static}dojo/dojo.js"></script>
 </head>
 <body class='claro wikidocs'>
 
@@ -59,7 +65,6 @@
         </div>
         #end if        
     </div>
-    <script>dojo.require("docs/wiki");</script>
     
 </body>
 </html>

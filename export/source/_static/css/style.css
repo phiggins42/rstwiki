@@ -132,6 +132,31 @@ input {
 	padding:0 10px;
 }
 
+table.docutils {
+	border-collapse:collapse;
+}
+
+table.docutils th {
+	text-align:center;
+	font-size:14px;
+	padding:3px;
+}
+
+table.docutils td {
+	font-size:14px;
+	padding:3px;
+}
+
+table.docutils .first {
+	font-weight: normal;
+	margin-top: 0;
+}
+
+.field-list th {
+	text-align:right !important;
+	padding:3px 12px 3px !important;
+}
+
 /* icons */
 
 .star {
