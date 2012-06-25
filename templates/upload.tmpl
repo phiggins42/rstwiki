@@ -4,7 +4,7 @@
 
 #block contentBlock
 <div class="loginbox">
-    <form action="${req.path_info}" enctype="multipart/form-data" method="POST">
+    <form id="rstwiki-upload" action="${req.path_info}" enctype="multipart/form-data" method="POST">
         <h2>Upload File(s)</h2>
         
         <p>Destination is: ${$req.path_info}</p>
@@ -28,7 +28,9 @@
 
     </form>
     
-    <script src="${req.script_name}${static}docs/upload.js"></script>
+    <script type="text/javascript">
+		require(["docs/upload"]);
+	</script>
         
 </div>
 #end block

@@ -16,7 +16,7 @@ define([
 ],function(declare, Deferred, event, baseFx, kernel, lang, xhr, dom, style, on, _WidgetBase, _HasDropDown, TextBox,
 		Button){
 
-	return declare("docs.RstEditor", [_Widget, _HasDropDown],{
+	return declare(null, [_WidgetBase, _HasDropDown],{
 		toggleButtonId: "rstwiki-editActionButton",
 		saveButtonId: "rstwiki-saveButton",
 		previewPanelId: "rstwiki-previewPanel",

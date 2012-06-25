@@ -9,10 +9,12 @@ require([
 	"dojo/ready", // ready
 	"docs/CodeGlassViewerMini",
 	"dijit/Dialog",
-	"docs/MiniGlass"
-], function(lang, dom, domConst, domClass, on, parser, query, ready, CodeGlassViewerMini, Dialog){
+	"docs/MiniGlass",
+	"docs/RstEditor"
+], function(lang, dom, domConst, domClass, on, parser, query, ready, CodeGlassViewerMini, Dialog, RstEditor){
 
 	ready(function(){
+		lang.setObject("docs.RstEditor", RstEditor);
 		parser.parse();
 		
 		var dialog = new Dialog({ title:"CodeGlass" });

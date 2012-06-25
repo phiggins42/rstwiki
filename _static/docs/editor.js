@@ -6,55 +6,57 @@ require([
 	"dojo/dom-style", // style.get
 	"dojo/on", // on
 	"dojo/query", // query
-	"dojo/domReady!"
-], function(lang, baseUnload, xhr, dom, style, query){
+	"dojo/ready" // ready
+], function(lang, baseUnload, xhr, dom, style, query, ready){
 	
 	var path = window.location.pathname.replace("/edit", ""),
 		unlock = lang.partial(xhr.get, { url:"/unlock" + path });
 
-	// if they click cancel, go back to non edit page and unlock
-	query("#rstwiki-canceler").onclick(function(){
-		unlock();
-		window.location.href = path
-	});
-	
-	query("#rstwiki-editorhandle")
-		.forEach(function(n){
-			
-			var target = dom.byId("rstwiki-editor");
-			var cury = 0;
-			function mover(e){
-				var nowy = e.pageY,
-					diff = nowy - cury,
-					curheight = style.get(target, "height");
-
-				cury = e.pageY;	
-				style.set(target, "height", (curheight + diff) + "px");
-			}
-			
-			var connects = [], listener;
-			function startdrag(){
-				if(!listener){
-					listener = on(window, "mousemove", mover)
-				}
-			}
-			
-			function stopdrag(){
-				listener && listener.remove();
-				listener = null;
-			}
-			
-			on(n, "mousedown", function(e){
-				cury = e.pageY;
-				startdrag();
-			});
-			
-			on(window, "mouseup", stopdrag)
-			
+	ready(function(){
+		// if they click cancel, go back to non edit page and unlock
+		dom.byId("rstwiki-canceler", "click", function(){
+			unlock();
+			window.location.href = path;
 		});
+	
+		query("#rstwiki-editorhandle")
+			.forEach(function(n){
+			
+				var target = dom.byId("rstwiki-editor");
+				var cury = 0;
+				function mover(e){
+					var nowy = e.pageY,
+						diff = nowy - cury,
+						curheight = style.get(target, "height");
+
+					cury = e.pageY;	
+					style.set(target, "height", (curheight + diff) + "px");
+				}
+			
+				var connects = [], listener;
+				function startdrag(){
+					if(!listener){
+						listener = on(window, "mousemove", mover)
+					}
+				}
+			
+				function stopdrag(){
+					listener && listener.remove();
+					listener = null;
+				}
+			
+				on(n, "mousedown", function(e){
+					cury = e.pageY;
+					startdrag();
+				});
+			
+				on(window, "mouseup", stopdrag)
+			
+			});
 		
-	// always attempt to unlock the edited file when they leave
-	baseUnload.addOnUnload(unlock);
+		// always attempt to unlock the edited file when they leave
+		baseUnload.addOnUnload(unlock);
+	});
 
 //	CodeMirror.fromTextArea('editor', {
 //		height: '520px',
