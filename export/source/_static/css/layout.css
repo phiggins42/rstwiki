@@ -372,7 +372,8 @@ a.toc-backref:link, a.toc-backref:hover, a.toc-backref:visited {
 	list-style-type:disc;
 }
 
-.section .highlight pre{
+.section .highlight pre,
+.section .highlight-python pre{
 	background-color:#F7F7F7;
 	font-family:"Consolas","Bitstream Vera Sans Mono","Courier New",Courier,monospace;
 	font-size:13px;

@@ -17,10 +17,11 @@
         </div>
         
         <button type='submit'>Save</button> 
-        <button type='reset' id='canceler'>Cancel</button>
+        <button type='reset' id='rstwiki-canceler'>Cancel</button>
     
     </div>
 </form>
-<script src='${req.script_name}/_static/CodeMirror/js/codemirror.js'></script>
-<script src='${req.script_name}/_static/docs/editor.js'></script>
+<script type="text/javascript">
+	require(["docs/editor"]);
+</script>
 #end block
