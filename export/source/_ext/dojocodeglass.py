@@ -11,6 +11,7 @@ import docutils
 
 from sphinx.writers.html import SmartyPantsHTMLTranslator
 
+
 class DojoHTMLTranslator(SmartyPantsHTMLTranslator):
     """
     Dojo-specific reST for the codeviewer stuff.
@@ -20,14 +21,14 @@ class DojoHTMLTranslator(SmartyPantsHTMLTranslator):
         self.body.append('<div label="%s" lang="%s"><pre>' % (node['label'], node['lang']))
         self.no_smarty += 1
         #SmartyPantsHTMLTranslator.visit_literal_block(self, node)
-    
+
     def depart_codeviewer(self, node):
         #SmartyPantsHTMLTranslator.depart_literal_block(self, node)
         self.no_smarty -= 1
         self.body.append('</pre></div>')
-        
+
     def visit_codeviewer_compound(self, node):
-        self.body.append('<div dojoType="CodeGlass.base" type="%s" pluginArgs="{djConfig:\'%s\', version:\'%s\'}" width="%s" height="%s" toolbar="%s">' % (
+        self.body.append('<div data-dojo-type="CodeGlass.base" type="%s" pluginArgs="{dojoConfig:\'%s\', version:\'%s\'}" width="%s" height="%s" toolbar="%s">' % (
             node['type'].lower(),
             node['djconfig'],
             node['version'],
@@ -38,24 +39,39 @@ class DojoHTMLTranslator(SmartyPantsHTMLTranslator):
 
     def depart_codeviewer_compound(self, node):
         self.body.append('</div>')
-        
+
     # Don't apply smartypants to literal blocks
     def visit_literal_block(self, node):
         self.no_smarty += 1
         SmartyPantsHTMLTranslator.visit_literal_block(self, node)
-    
+
     def depart_literal_block(self, node):
         SmartyPantsHTMLTranslator.depart_literal_block(self, node)
         self.no_smarty -= 1
 
-class codeviewer(TextElement): pass
-class codeviewer_js(TextElement): pass
-class codeviewer_css(TextElement): pass
-class codeviewer_html(TextElement): pass
-class codeviewer_compound(General, Element): pass
+
+class codeviewer(TextElement):
+    pass
+
+
+class codeviewer_js(TextElement):
+    pass
+
+
+class codeviewer_css(TextElement):
+    pass
+
+
+class codeviewer_html(TextElement):
+    pass
+
+
+class codeviewer_compound(General, Element):
+    pass
+
 
 # Additional directive to output an example/source viewer
-def _codeviewer(name, arguments, options, content, lineno, 
+def _codeviewer(name, arguments, options, content, lineno,
                content_offset, block_text, state, state_machine):
     code = u'\n'.join(content)
     language = "html"
@@ -71,20 +87,24 @@ def _codeviewer(name, arguments, options, content, lineno,
     mycode['label'] = label
     return [mycode]
 
-def _codeviewer_js(name, arguments, options, content, lineno, 
+
+def _codeviewer_js(name, arguments, options, content, lineno,
                content_offset, block_text, state, state_machine):
-    return _codeviewer(name, ['js'], options, content, lineno, 
+    return _codeviewer(name, ['js'], options, content, lineno,
                content_offset, block_text, state, state_machine)
 
-def _codeviewer_css(name, arguments, options, content, lineno, 
+
+def _codeviewer_css(name, arguments, options, content, lineno,
                content_offset, block_text, state, state_machine):
-    return _codeviewer(name, ['css'], options, content, lineno, 
+    return _codeviewer(name, ['css'], options, content, lineno,
                content_offset, block_text, state, state_machine)
 
-def _codeviewer_html(name, arguments, options, content, lineno, 
+
+def _codeviewer_html(name, arguments, options, content, lineno,
                content_offset, block_text, state, state_machine):
-    return _codeviewer(name, ['html'], options, content, lineno, 
+    return _codeviewer(name, ['html'], options, content, lineno,
                content_offset, block_text, state, state_machine)
+
 
 # a more complex compounded component (so we can separate our code-blocks)
 def _codeviewer_compound(name, arguments, options, content, lineno,
@@ -123,6 +143,7 @@ def _codeviewer_compound(name, arguments, options, content, lineno,
     state.nested_parse(content, content_offset, node)
     return [node]
 
+
 def setup(app):
 
     app.add_node(codeviewer)
@@ -136,9 +157,9 @@ def setup(app):
     app.add_directive('html', _codeviewer_html,
                       1, (0, 1, 0), label=lambda x: x)
     app.add_directive('cv', _codeviewer,
-                      1, (0, 1, 0), label=lambda x: x) #deprecated
-    app.add_directive('codeviewer', _codeviewer, 
-                      1, (0, 1, 0), label=lambda x: x) #deprecated  #deprecated
+                      1, (0, 1, 0), label=lambda x: x)  # deprecated
+    app.add_directive('codeviewer', _codeviewer,
+                      1, (0, 1, 0), label=lambda x: x)  # deprecated  # deprecated
     app.add_directive('code-example', _codeviewer_compound, 1, (0, 0, 0))
-    app.add_directive('codeviewer-compound', _codeviewer_compound, 1, (0, 0, 0)) # deprecated
-    app.add_directive('cv-compound', _codeviewer_compound, 1, (0, 0, 0)) # deprecated
+    app.add_directive('codeviewer-compound', _codeviewer_compound, 1, (0, 0, 0))  # deprecated
+    app.add_directive('cv-compound', _codeviewer_compound, 1, (0, 0, 0))  # deprecated
