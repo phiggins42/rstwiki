@@ -103,6 +103,8 @@ class DojoApiDoc(Directive):
     optional_arguments = 25
     has_content = True
 
+    base_url = "http://api/rpc/1.8/"
+
     def run(self):
 
         def genSigTable(parameters):
@@ -235,7 +237,10 @@ class DojoApiDoc(Directive):
         apislashed = api.replace(".", "/")
         out = ""
 
-        api_config = cherrypy.request.app.config.get("api")
+        try:
+            api_config = cherrypy.request.app.config.get("api")
+        except:
+            api_config = {"base_url": self.base_url}
 
         target_url = api_config["base_url"] + apislashed
 
@@ -417,7 +422,7 @@ class DojoApiInline(Directive):
     has_content = False
 
     # Location of the Dojo API
-    base_url = "http://api/rpc/"
+    base_url = "http://api/rpc/1.8/"
 
     def run(self):
 
@@ -446,7 +451,7 @@ class DojoApiInline(Directive):
 
             if not target_url in dojo_api_inline_cache:
                 # maybe add a local caching mechaism here too. eg, save the read() stream to a local fs
-                print "not found. caching", target_url
+                print "Not in local cache, fetching: ", target_url
                 data = urllib.urlopen(target_url).read()
                 dojo_api_inline_cache[target_url] = json.loads(data)
                 # print data

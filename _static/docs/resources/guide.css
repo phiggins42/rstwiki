@@ -80,16 +80,35 @@
 	font-weight: bold;
 }
 
-.section .highlight pre{
+.section pre{
 	background-color:#F7F7F7;
-	box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 4px 4px -3px rgba(0, 0, 0, 0.5);
 	font-family:"Consolas","Bitstream Vera Sans Mono","Courier New",Courier,monospace;
 	font-size:13px;
 	padding:10px;
 }
 
+.section tt,
+.section p > code{
+	font-family:"Consolas","Bitstream Vera Sans Mono","Courier New",Courier,monospace;
+	border: 1px solid #CCCCCC;
+	background-color: #F7F7F7;
+	padding: 1px;
+	font-size: 0.95em;
+	height: 1em;
+}
+
+.section .required {
+	font-weight: bold;
+}
+
+.section .optional {
+	font-size: 1em;
+	font-style: italic;;
+}
+
 .section .footnote-reference {
-    font-size: 90%;
+	font-size: 90%;
 }
 
 /* Reference Guide Tables */
@@ -102,18 +121,43 @@ table.docutils {
 table.docutils th {
 	text-align:center;
 	font-size:14px;
-	padding:3px;
+	padding:3px 6px;
 	background-color: #DDDDDD;
+	background: #fdfdfd; /* Old browsers */
+	background: -moz-linear-gradient(top, #fdfdfd 0%, #f0f0f0 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fdfdfd), color-stop(100%,#f0f0f0)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #fdfdfd 0%,#f0f0f0 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #fdfdfd 0%,#f0f0f0 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #fdfdfd 0%,#f0f0f0 100%); /* IE10+ */
+	background: linear-gradient(top, #fdfdfd 0%,#f0f0f0 100%); /* W3C */
+	border: 1px solid #E6E6E7;
+	color: #333333;
+	text-shadow: 0 1px 0 rgba(255,255,255,.9);
 }
 
 table.docutils td {
 	font-size:14px;
 	padding:3px;
+	vertical-align: top;
 }
 
 table.docutils .first {
 	font-weight: normal;
 	margin-top: 0;
+}
+
+/* Reference Guide Field List */
+
+table.field-list th {
+	text-align: left;
+	background-color: #f7f7f8;
+	background: #f7f7f8;
+	border-right: 2px solid #E6E6E7 !important;
+	padding-right: 6px;
+}
+
+table.field-list td {
+	padding-left: 6px;
 }
 
 /* Side Bar */
@@ -204,12 +248,12 @@ table.docutils .first {
 .section .CodeGlassMiniRawHtml,
 .section .CodeGlassMiniCollapser {
 	background-color: #5BAED5;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(0, 176, 216)), to(rgb(0, 136, 196)));
-    background-image: -webkit-linear-gradient(top, rgb(0, 176, 216), rgb(0, 136, 196));
-    background-image: -moz-linear-gradient(top, rgb(0, 176, 216), rgb(0, 136, 196));
-    background-image: -o-linear-gradient(top, rgb(0, 176, 216), rgb(0, 136, 196));
-    background-image: -ms-linear-gradient(top, rgb(0, 176, 216), rgb(0, 136, 196));
-    background-image: linear-gradient(top, rgb(0, 176, 216), rgb(0, 136, 196));
+	background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(0, 176, 216)), to(rgb(0, 136, 196)));
+	background-image: -webkit-linear-gradient(top, rgb(0, 176, 216), rgb(0, 136, 196));
+	background-image: -moz-linear-gradient(top, rgb(0, 176, 216), rgb(0, 136, 196));
+	background-image: -o-linear-gradient(top, rgb(0, 176, 216), rgb(0, 136, 196));
+	background-image: -ms-linear-gradient(top, rgb(0, 176, 216), rgb(0, 136, 196));
+	background-image: linear-gradient(top, rgb(0, 176, 216), rgb(0, 136, 196));
 	border-radius: 3px;
 	border: 1px solid #64D0E7;
 	font-size: 13px;
@@ -228,9 +272,9 @@ table.docutils .first {
 /* Code Glass Box Shadow */
 
 .CodeGlassMini {
-    box-shadow: 0 2px 4px -2px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 4px 4px -3px rgba(0, 0, 0, 0.5);
 }
 
 .CodeGlassMini pre {
-	box-shadow: none !important;
+	box-shadow: none;
 }
