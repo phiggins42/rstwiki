@@ -90,8 +90,9 @@ class DojoApiDoc(Directive):
             :properties: corge grault
             :events: onFoo onBar
             :no-headers:
-            :all:
             :no-inherited:
+            :no-base:
+            :extensions:
             :privates:
             :summary:
             :description:
@@ -100,7 +101,7 @@ class DojoApiDoc(Directive):
     """
 
     required_arguments = 1
-    optional_arguments = 25
+    optional_arguments = 30
     has_content = True
 
     base_url = "http://api/rpc/1.8/"
@@ -266,13 +267,14 @@ class DojoApiDoc(Directive):
         topfunc = ":topfunc:" in arguments
         methods = ":methods:" in arguments
         properties = ":properties:" in arguments
-        arg_all = ":all:" in arguments
-        inherited = ":no-inherited:" not in arguments
         events = ":events:" in arguments
         headers = ":no-headers:" not in arguments
         summary = ":summary:" in arguments
         description = ":description:" in arguments
         returns = ":returns:" in arguments
+        inherited = ":no-inherited:" not in arguments
+        base = ":no-base:" not in arguments
+        extensions = ":extensions:" in arguments
         privates = ":privates:" in arguments
         sig = ":sig:" in arguments
 
@@ -316,8 +318,9 @@ class DojoApiDoc(Directive):
                 for method in info["methods"]:
                     mthd = info["methods"][method]
                     if privates or (mthd["visibility"] != "private"):
-                        if arg_all or (mthd["from"] == title) or (inherited and mthd["inherited"]):
+                        if (inherited and mthd["inherited"]) or (extensions and mthd["extension"]) or (base and (mthd["from"] == title)):
                             methods_out.append(mthd)
+                methods_out = sorted(methods_out, key=lambda mthd: mthd["name"])
 
             if table:
                 out += genMethodTable(methods_out, summary, description)
@@ -349,8 +352,9 @@ class DojoApiDoc(Directive):
                 for prop in info["properties"]:
                     p = info["properties"][prop]
                     if privates or (p["visibility"] != "private"):
-                        if arg_all or (p["from"] == title) or (inherited and p["inherited"]):
+                        if (inherited and p["inherited"]) or (extensions and p["extension"]) or (base and (p["from"] == title)):
                             props_out.append(p)
+                props_out = sorted(props_out, key=lambda p: p["name"])
 
             if table:
                 out += genPropertyTable(props_out, summary, description)
@@ -382,8 +386,9 @@ class DojoApiDoc(Directive):
                 for event in info["events"]:
                     evt = info["events"][event]
                     if privates or (evt["visibility"] != "private"):
-                        if arg_all or (evt["from"] == title) or (inherited and evt["inherited"]):
+                        if (inherited and evt["inherited"]) or (extensions and evt["extension"]) or (base and (evt["from"] == title)):
                             events_out.append(evt)
+                events_out = sorted(events_out, key=lambda evt: evt["name"])
 
             if table:
                 out += genEventTable(events_out)
