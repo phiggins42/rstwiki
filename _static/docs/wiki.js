@@ -1,8 +1,11 @@
 require([
 	"dojo/_base/lang", // lang.trim, lang.replace
+	"dojo/_base/fx", // baseFx.fadeOut
+	"dojo/cookie", // cookie
 	"dojo/dom", // dom.byId
 	"dojo/dom-construct", // domConst.create, domConst.place
 	"dojo/dom-class", // domClass.toggle
+	"dojo/dom-style", // style.set
 	"dojo/on", // on
 	"dojo/parser", // parser.parse
 	"dojo/query", // query
@@ -11,7 +14,7 @@ require([
 	"dijit/Dialog",
 	"docs/MiniGlass",
 	"docs/RstEditor"
-], function(lang, dom, domConst, domClass, on, parser, query, ready, CodeGlassViewerMini, Dialog, RstEditor){
+], function(lang, baseFx, cookie, dom, domConst, domClass, style, on, parser, query, ready, CodeGlassViewerMini, Dialog, RstEditor){
 
 	ready(function(){
 		lang.setObject("docs.RstEditor", RstEditor);
@@ -23,13 +26,31 @@ require([
 			var link = domConst.place("<a href='#' title='Example Code'><span class='a11y'>?</span></a>", n, "first");
 			var data = query(".closed", n)[0];
 			on(link, "click", function(e){
-				e && e.preventDefault();
+				if(e) e.preventDefault();
 				domClass.toggle(data, "closed");
 			});
 		});
 		
 		var linknode = dom.byId("redirectlink");
 		if(linknode){
+
+			var hideWarning = cookie("hideWarning");
+
+			if(!hideWarning){
+				style.set(linknode, "display", "inline");
+				on(dom.byId("closer"), "click", function(e){
+					e.preventDefault();
+					style.set(linknode, "opacity", "1");
+					var fade = baseFx.fadeOut({
+						node: linknode
+					});
+					on(fade, "End", function(){
+						style.set(linknode, "display", "none");
+						cookie("hideWarning", true, { expires: 7 });
+					});
+					fade.play();
+				});
+			}
 
 			// redirect a/b/c to dtk.org/ref-guide/a/b/c.html
 
@@ -44,10 +65,10 @@ require([
 					var hrefparts = dojo.filter(parts, function(p){
 						return lang.trim(p).length;
 					});
-					console.log(hrefparts.length, "!!!");
+
 					if(!hrefparts.length){
 						console.warn(hrefparts);
-						hrefparts.push("index");	
+						hrefparts.push("index");
 					}
 
 					return base + hrefparts.join("/") + ".html";

@@ -21,7 +21,6 @@
     <script type="text/javascript" src="${static}dojo/dojo.js"></script>
 </head>
 <body class='claro wikidocs'>
-
     <div id="rstwiki-head" class="head">    
         <div class="wrap">
             <div id="rstwiki-nav">
@@ -31,29 +30,17 @@
                 </span>
                 $nav()
             </div>
-        
             <div id="rstwiki-crumbs"><div class='crumbs'>$crumbs()</div></div>
-
         </div>
-
-        #if $getVar('user',None) is not None and $rst.document:
-        <div class="wrap">
-            <textarea id="rstwiki-rstEditor" data-dojo-type="docs.RstEditor" class="rstEditor" style="height:0px;display:none">$encoded_rst</textarea>
-            <div id="rstwiki-noticenode" style="display:none">
-                <h3>Preview: <span id="rstwiki-editorMessage"></span></h3>
-            </div>
-        </div>
-        #end if        
-        
     </div>
     
-    <div id="rstwiki-previewPanel" class="wrap preview"></div>
     <div id="rstwiki-contentPanel" class="wrap">
-        #if $getVar('rst', None) is not None
+    #if $getVar('rst', None) is not None
         <div id="redirectlink">
+            <div id="closer"><a href="#">X</a></div>
             <span>WARNING:</span> This is <strong>WORK IN PROGRESS</strong> documentation for the <strong>NEXT</strong> version of Dojo.<br/>
         </div>
-        #end if
+    #end if
     #block contentBlock 
         $rst.render 
     #end block
@@ -64,8 +51,7 @@
             $foot()
         </div>
         #end if        
-    </div>
-    
+    </div>    
 </body>
 </html>
 
