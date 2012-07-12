@@ -427,7 +427,7 @@ class DojoApiInline(Directive):
     has_content = False
 
     # Location of the Dojo API
-    base_url = "http://api/rpc/1.8/"
+    base_url = "http://dojotoolkit.org/api/rpc/"
 
     def run(self):
 
