@@ -4,12 +4,12 @@ body, html {
     margin:0; padding:0;
     width:100%;
     height:100%;
+    font-family: Arial,Helvetica,"Liberation Sans",FreeSans,sans-serif;
 }
 
 body.wikidocs {
     font-size: 14px;
     font-family:Helvetica,Arial,Sans-Serif;
-    font-voice:inherit;
     line-height:1.3em;
 }
 
@@ -21,7 +21,7 @@ body.wikidocs {
 
 .wikidocs .wrap {
     width:960px;
-    margin:0 auto;   
+    margin: 0 auto;
 }
 
 .wikidocs #contents {
@@ -192,7 +192,9 @@ textarea {
 }
 
 .wikidocs .resp label,
-.wikidocs #files label { display:block; }
+.wikidocs #files label {
+    display:block;
+}
 
 .wikidocs .bloc { margin:0.7em 0; }
 
@@ -203,10 +205,9 @@ textarea {
 }
 
 .CodeGlassMini {
-    padding:0 0 5px 0;
+    padding:10px;
     position:relative;
     border:1px solid #999;
-	padding: 10px;
 }
 
 .CodeGlassMini.closed {
@@ -229,71 +230,25 @@ textarea {
     margin-top:15px;
 }
 
-/***
-    Icon like a tree to expand/collapse the inlined example text.
-***/
-/*
-.CodeGlassMiniCollapser {
-    position:absolute;
-    top:-8px;
-    left:-36px;
-    width:18px;
-    height:18px;
-    text-indent:-999px;
-    background:url("../dijit/themes/claro/images/treeExpandImages8bit.png") no-repeat -36px 0;
-}
-
-.CodeGlassMiniCollapser:hover {
-    background-position:-54px 0;
-}
-
-.closed .CodeGlassMiniCollapser {
-    background-position:0 0
-}
-
-.closed .CodeGlassMiniCollapser:hover {
-    background-position:-18px 0;
-}
-.***/
-
-/***
-    Icon to run examples.   It's an arrow pointing to the right.
-***/
-/*
-.CodeGlassMiniRunner {
-    position:absolute;
-    left:-20px;
-    top:-8px;
-    width:18px;
-    height:18px;
-    text-indent:-999px;
-    background:url("../dijit/themes/claro/images/calendarArrows8bit.png") no-repeat -18px 0;
-    overflow:hidden;
-}
-
-.CodeGlassMiniRunner:hover {
-    background-position:-91px 0;
-}
-*/
-
 .CodeGlassMiniRunner,
 .CodeGlassMiniRawHtml,
 .CodeGlassMiniCollapser {
 	border: 1px solid #AAAAAA;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
 	border-radius: 4px;
-	margin: 0px 10px 10px 0px;
+	margin: 0 10px 10px 0;
 	padding: 4px;
 	text-decoration: none;
 	color: #000000;
 	background-color: #EEEEEE;
     background-image: url("images/buttonEnabled.png");
     background-repeat: repeat-x;
-    background-image: -moz-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
-    background-image: -webkit-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
-    background-image: -o-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
-    background-image: -ms-linear-gradient(#ffffff 0px, rgba(255, 255, 255, 0) 3px, rgba(255, 255, 255, 0.75) 100%);
-    _background-image: none;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(240, 240, 240)), to(rgb(216, 216, 216)));
+    background-image: -webkit-linear-gradient(top, rgb(240, 240, 240), rgb(216, 216, 216));
+    background-image: -moz-linear-gradient(top, rgb(240, 240, 240), rgb(216, 216, 216));
+    background-image: -o-linear-gradient(top, rgb(240, 240, 240), rgb(216, 216, 216));
+    background-image: -ms-linear-gradient(top, rgb(240, 240, 240), rgb(216, 216, 216));
+    background-image: linear-gradient(top, rgb(240, 240, 240), rgb(216, 216, 216));
 }
 
 .CodeGlassMiniRunner > span,
@@ -377,19 +332,62 @@ textarea {
 }
 
 /* message at top pointing to released version of documentation */
-#redirectlink { 
-    margin-top:7px;
+#redirectlink {
+    position: fixed;
+    display: none;
+    bottom: 0;
+    z-index: 999;
+    width: 930px;
     margin-left: auto;
     margin-right: auto;
     padding: 1em;
-    border: 2px black solid;
+    border-top: 2px #333333 solid;
+    border-left: 2px #333333 solid;
+    border-right: 2px #333333 solid;
     text-align: center;
-    background-color: #FCFFC7
+    background-color: #FCFFC7;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 0 8px #999999;
 }
+
+.dj_ie6 #redirectlink {
+    position: relative;
+}
+
 #redirectlink span {
     color:red;
     font-weight: bold;
 }
+
 #redirectlink em {
 	font-weight: bold;
+}
+
+#closer {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.dj_ie6 #closer{
+    display: none;
+}
+
+#closer a {
+    text-decoration: none;
+    color: #999999;
+    text-shadow: 0 -1px 0 rgba(0,0,0,.5);
+}
+
+#rstwiki-contentPanel {
+    margin-top: 54px;
+    margin-bottom: 66px;
+}
+
+#rstwiki-head {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 999;
+    box-shadow: 0 2px 2px #999999;
 }
