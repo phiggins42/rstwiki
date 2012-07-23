@@ -92,7 +92,19 @@ body.wikidocs {
 
 .wikidocs .highlight .hll { background-color: #ffffcc }
 
-.wikidocs .highlight { border:1px dashed #666; padding:5px 15px; background: #f8f8f8; }
+.wikidocs .highlight,
+.wikidocs .literal-block {
+    border:1px dashed #666;
+    padding:5px 15px;
+    background: #f8f8f8; 
+}
+
+.wikidocs .literal-block{
+    padding: 1.5em 15px;
+    overflow: auto;
+    font-size: 94.2%;
+}
+
 .wikidocs .highlight pre { width:100%; overflow:auto; font-size:94.2%; }
 .wikidocs .highlight .c { color: #408080; font-style: italic } /* Comment */
 .wikidocs .highlight .err { /* border: 1px solid #FF0000 */ } /* Error */
@@ -390,4 +402,12 @@ textarea {
     width: 100%;
     z-index: 999;
     box-shadow: 0 2px 2px #999999;
+}
+
+.toc-backref:before {
+    content: " ";
+    display: block;
+    height: 54px;
+    margin-top: -54px;
+    visibility: hidden;
 }
