@@ -253,7 +253,6 @@ textarea {
 	text-decoration: none;
 	color: #000000;
 	background-color: #EEEEEE;
-    background-image: url("images/buttonEnabled.png");
     background-repeat: repeat-x;
     background-image: -webkit-gradient(linear, left top, left bottom, from(rgb(240, 240, 240)), to(rgb(216, 216, 216)));
     background-image: -webkit-linear-gradient(top, rgb(240, 240, 240), rgb(216, 216, 216));
