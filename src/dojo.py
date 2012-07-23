@@ -133,7 +133,7 @@ class DojoApiDoc(Directive):
 
             else:
                 return_types += "<code>%s</code>" % (returns[0]["type"])
-            return "<p><code>%s::%s()</code> returns %s</p>" % (mid, method, return_types)
+            return "<p><code>%s::%s()</code> returns %s.</p>" % (mid, method, return_types)
 
         def genReturnsTop(mid, returns):
             return_types = ""
@@ -145,7 +145,7 @@ class DojoApiDoc(Directive):
 
             else:
                 return_types += "<code>%s</code>" % (returns[0]["type"])
-            return "<p><code>%s()</code> returns %s</p>" % (mid, return_types)
+            return "<p><code>%s()</code> returns %s.</p>" % (mid, return_types)
 
         def genReturnsInline(returns):
             return_list = []
