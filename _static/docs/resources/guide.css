@@ -48,9 +48,21 @@
 }
 
 .section blockquote {
-	color: #222222;
-	font-family: Arial,Helvetica,"Liberation Sans",FreeSans,sans-serif;
-	font-size: 14px;
+    color: #222222;
+    font-family: Arial,Helvetica,"Liberation Sans",FreeSans,sans-serif;
+    font-size: 14px;
+    line-height: 14px;
+    font-style: normal;
+}
+
+.section blockquote p:before {
+    content: '';
+    margin-left: 0;
+}
+
+.section blockquote p:after {
+    content: '';
+    height: 0;
 }
 
 .section h1 {
