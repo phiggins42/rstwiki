@@ -124,12 +124,13 @@ define([
 		template: template,
 		_buildTemplate: function(){
 			
-			var args = this.pluginArgs;
+			var args = this.pluginArgs,
+				dojoConfig = args.dojoConfig || args.djConfig;
 
 			var templateParts = {
 				javascript:"<scr" + "ipt src='" + 
 					this.baseUrl + "dojo/dojo.js'" +
-					(args.djConfig ? " data-dojo-config='" + args.djConfig + "'": "") +
+					(dojoConfig ? " data-dojo-config='" + dojoConfig + "'": "") +
 					">" + scriptclose,
 				
 				htmlcode:"", 
