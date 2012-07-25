@@ -159,7 +159,6 @@ class DocServer():
                 try:
                     if cherrypy.request.app.vcs is not None:
 
-                        # need to check doc.isNew here, and vcs.add() ? it?
                         user = cherrypy.session.get("user", None)
                         _user = user.get("uname", "")
                         _email = user.get("mail", "")
@@ -167,6 +166,8 @@ class DocServer():
                         author = "%s <%s>" % (_user, _email)
                         print "Send Commit to VCS system"
                         print "   Message: %s" % (message)
+                        # Should be able to just cheat and always add
+                        cherrypy.request.app.vcs.add(cherrypy.request.resourceFilePath)
                         cherrypy.request.app.vcs.commit(cherrypy.request.resourceFilePath, message=message, author=author)
                 except Exception, err:
                     print "Error committing to VCS: %s" % err
