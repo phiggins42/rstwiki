@@ -51,7 +51,7 @@
     color: #222222;
     font-family: Arial,Helvetica,"Liberation Sans",FreeSans,sans-serif;
     font-size: 14px;
-    line-height: 14px;
+    line-height: 125%;
     font-style: normal;
 }
 
@@ -101,7 +101,7 @@
 
 .section tt,
 .section p > code{
-	font-family:"Consolas","Bitstream Vera Sans Mono","Courier New",Courier,monospace;
+	font-family:"Consolas","Bitstream Vera Sans Mono","Courier New",Courier,monospace !important;
 	border: 1px solid #CCCCCC;
 	background-color: #F7F7F7;
 	padding: 1px;
