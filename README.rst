@@ -78,6 +78,10 @@ wiki.conf
   repo - The address of the repository used to store and retrieve wiki data.
   push.enabled - Whether or not to push to upstream when a commit is made to
                  the local repository.
+  [api]
+  base_url - The root URL for looking up api-doc directives.  *Note* that 
+    there is an issue where when building the docs, this option is ignored
+    and you currently have to manually set it in ``src/dojo.py``.
 
 License
 -------

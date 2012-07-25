@@ -7,7 +7,9 @@
 	  <div id="fallback" class="admonition warning">
 	  <script type="text/javascript">
 	  	require(["dojo/ready", "dojo/dom-style"], function(ready, style){
-	  		style.set("fallback", "display", "none");
+	  		ready(function(){
+	  			style.set("fallback", "display", "none");
+	  		});
 	  	});
 	  </script>
 	  <p>

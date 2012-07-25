@@ -114,7 +114,12 @@ class DojoApiDoc(Directive):
                 required = "optional"
                 if param["usage"] == "required":
                     required = "required"
-                table_html += "<tr><td>%s</td><td class='%s'>%s</td><td>%s</td></tr>" % (param["name"], required, param["type"], param["summary"])
+                summary = ""
+                if "summary" in param:
+                    summary += param["summary"]
+                if "description" in param:
+                    summary += param["description"]
+                table_html += "<tr><td>%s</td><td class='%s'>%s</td><td>%s</td></tr>" % (param["name"], required, param["type"], summary)
             table_html += "</tbody></table>"
             return table_html
 
@@ -128,11 +133,11 @@ class DojoApiDoc(Directive):
 
             else:
                 return_types += "<code>%s</code>" % (returns[0]["type"])
-            return "<p><code>%s::%s()</code> returns %s</p>" % (mid, method, return_types)
+            return "<p><code>%s::%s()</code> returns %s.</p>" % (mid, method, return_types)
 
         def genReturnsTop(mid, returns):
             return_types = ""
-            if(len(returns) > 1):
+            if len(returns) > 1:
                 return_list = []
                 for return_type in returns:
                     return_list.append(return_type["type"])
@@ -140,7 +145,7 @@ class DojoApiDoc(Directive):
 
             else:
                 return_types += "<code>%s</code>" % (returns[0]["type"])
-            return "<p><code>%s()</code> returns %s</p>" % (mid, return_types)
+            return "<p><code>%s()</code> returns %s.</p>" % (mid, return_types)
 
         def genReturnsInline(returns):
             return_list = []
