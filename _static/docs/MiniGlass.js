@@ -3,14 +3,16 @@ define([
 	"dojo/_base/config", // config.baseUrl
 	"dojo/_base/declare", // declare
 	"dojo/_base/lang", // lang.trim
+	"dojo/_base/sniff", // has
 	"dojo/dom-attr", // domAttr.get
 	"dojo/dom-class", // domClass.toggle
 	"dojo/dom-construct", // domConst.place
+	"dojo/json", // JSON
 	"dojo/query", // query
 	"dijit/_WidgetBase",
 	"dijit/Dialog",
 	"dojo/text!./resources/CodeGlassMini.html"
-], function(array, config, declare, lang, domAttr, domClass, domConst, query, _WidgetBase, Dialog, template){
+], function(array, config, declare, lang, has, domAttr, domClass, domConst, JSON, query, _WidgetBase, Dialog, template){
 	
 	var scriptopen = "<scr" + "ipt>",
 		scriptclose = "</" + "scri" + "pt>";
@@ -101,7 +103,7 @@ define([
 		
 		_processPart: function(type, content){
 			if(!this.parts[type]){
-				this.parts[type] = []
+				this.parts[type] = [];
 			}
 			
 			var orig = content;
@@ -125,13 +127,15 @@ define([
 		_buildTemplate: function(){
 			
 			var args = this.pluginArgs,
-				dojoConfig = args.dojoConfig || args.djConfig;
+				dojoConfig = args.dojoConfig || args.djConfig,
+				uri = document.createElement('a');
+
+			uri.href = this.domNode.ownerDocument.URL;
 
 			var templateParts = {
-				javascript:"<scr" + "ipt src='" + 
-					this.baseUrl + "dojo/dojo.js'" +
-					(dojoConfig ? " data-dojo-config='" + dojoConfig + "'": "") +
-					">" + scriptclose,
+				javascript: (dojoConfig ? scriptopen + "dojoConfig = {" + dojoConfig + "}" + scriptclose : "") +
+					"<scr" + "ipt src='" + (has("ie") ? config.cdn ? config.cdn + "dojo/" : config.baseUrl : config.baseUrl) +
+					"dojo.js'>" + scriptclose,
 				
 				htmlcode:"", 
 				

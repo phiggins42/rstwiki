@@ -6,7 +6,7 @@ var profile = {
 	mini: false,
 	cssOptimize: "comments.keepLines",
 	optimize: "",
-	layerOptimize: "",
+	layerOptimize: "closure",
 	selectorEngine: "acme",
 
 	packages:[{
@@ -23,6 +23,17 @@ var profile = {
 		location: "../docs"
 	}],
 
+	defaultConfig: {
+		cdn: "//ajax.googleapis.com/ajax/libs/dojo/1.8.0/",
+		hasCache:{
+			"dojo-built": 1,
+			"dojo-loader": 1,
+			"dom": 1,
+			"host-browser": 1,
+			"config-selectorEngine": "acme"
+		}
+	},
+
 	layers: {
 		"docs/wiki": {
 			include: []
@@ -33,8 +44,7 @@ var profile = {
 	},
 	
 	staticHasFeatures: {
-		"dojo-firebug": false,
-		"host-browser": true
+		"dojo-firebug": 0,
+		"host-browser": 1
 	}
 };
-
