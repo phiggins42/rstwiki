@@ -41,6 +41,14 @@ define([
 					}
 				});
 
+				// After the iframe finishes loading, then make it visible.   Setup listener early, before adding
+				// the iframe to the DOM; otherwise we might miss the load event.
+				if(frame.addEventListener){
+					frame.addEventListener("load", display, false)
+				}else if(frame.attachEvent){
+					frame.attachEvent("onload", display);
+				}
+
 				this.dialog.set("content", frame);
 
 				function display(){
@@ -50,13 +58,6 @@ define([
 					});
 
 					baseFx.anim(frame, { opacity:1 });
-				}
-
-				var e;
-				if(frame.addEventListener){
-					e = frame.addEventListener("load", display, false)
-				}else if(frame.attachEvent){
-					e = frame.attachEvent("onload", display);
 				}
 
 			}), this.dialog.duration + 450);			
