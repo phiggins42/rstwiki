@@ -3,8 +3,9 @@ define([
 	"dojo/_base/fx", // baseFx.anim
 	"dojo/_base/lang", // lang.hitch
 	"dojo/dom-construct", // domConst.destory, domConst.create
-	"dojo/dom-style" // style.set
-], function(declare, baseFx, lang, domConst, style){
+	"dojo/dom-style", // style.set
+	"dijit/focus"
+], function(declare, baseFx, lang, domConst, style, focus){
 	return declare("docs.CodeGlassViewerMini", null, {
 		
 		dialog: null,
@@ -41,17 +42,23 @@ define([
 					}
 				});
 
+
 				// After the iframe finishes loading, then make it visible.   Setup listener early, before adding
 				// the iframe to the DOM; otherwise we might miss the load event.
 				if(frame.addEventListener){
-					frame.addEventListener("load", display, false)
+					frame.addEventListener("load", onLoad, false)
 				}else if(frame.attachEvent){
-					frame.attachEvent("onload", display);
+					frame.attachEvent("onload", onLoad);
 				}
 
 				this.dialog.set("content", frame);
 
-				function display(){
+				function onLoad(){
+					// Need to register the iframe or otherwise can't click an element to focus it, because the focus
+					// manager thinks the click came from outside the Dialog, so the Dialog tries to move focus back
+					// to itself.
+					focus.registerIframe(frame);
+
 					style.set(frame, {
 						"visibility": "visible",
 						opacity: 0
