@@ -116,7 +116,7 @@ define([
 					.replace(/[\s+]?<\/script>/g, "")
 				;
 			}else if(type == "css" && openswith != "<"){
-				orig = '<style type="text/css">' + orig + '</style>';
+				orig = '<style type="text/css">\n' + orig + '\n\t</style>';
 			}
 
 			this.parts[type].push(orig)
@@ -133,20 +133,26 @@ define([
 			uri.href = this.domNode.ownerDocument.URL;
 
 			var templateParts = {
-				javascript: (dojoConfig ? scriptopen + "dojoConfig = {" + dojoConfig + "}" + scriptclose : "") +
-					"<scr" + "ipt src='" + (has("ie") ? config.cdn ? config.cdn + "dojo/" : config.baseUrl : config.baseUrl) +
-					"dojo.js'>" + scriptclose,
+				javascript: (dojoConfig ? "\t" + scriptopen + "dojoConfig = {" + dojoConfig + "}" + scriptclose + "\n" : "") +
+					"\t<scr" + "ipt src='" + (has("ie") ? config.cdn ? config.cdn + "dojo/" : config.baseUrl : config.baseUrl) +
+					"dojo.js'>" + scriptclose + "\n\t",
 				
 				htmlcode:"", 
 				
 				// if we have a theme set include a link to {baseUrl}/dijit/themes/{themename}/{themename}.css first
-				css:'\t<link rel="stylesheet" href="' + this.baseUrl + 'dijit/themes/' + this.themename + '/' + this.themename + '.css">\n\t',
+				// For the Dojo Mobile case, in Dojo 1.8+, if the specified theme is "deviceTheme" generate
+				// a script tag to import deviceTheme.js.
+				css: this.themename == "deviceTheme" ?
+					'\t<script type="text/javascript" src="' + this.baseUrl + 'dojox/mobile/deviceTheme.js"></script>\n\t' :
+					'\t<link rel="stylesheet" href="' + this.baseUrl + 'dijit/themes/' + this.themename + '/' + this.themename + '.css">\n\t',
 				
 				// if we've set RTL include dir="rtl" i guess?
 				htmlargs:"",
 				
 				// if we have a theme set, include class="{themename}"
-				bodyargs:'class="' + this.themename + '"',
+				bodyargs: this.themename == "deviceTheme" ? 
+					'style=\"visibility:hidden;\"' :
+					'class="' + this.themename + '"',
 				
 				// 
 				head:""
@@ -166,7 +172,7 @@ define([
 					var processed = lang.replace(item, locals, cgMiniRe);
 					switch(i){
 						case "javascript":
-							templateParts.javascript += scriptopen + processed + scriptclose;
+							templateParts.javascript += "\n\t" + scriptopen + "\n" + processed + "\n\t" + scriptclose;
 							break;
 						case "html":
 							templateParts['htmlcode'] += processed;
