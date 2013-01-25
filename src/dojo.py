@@ -639,13 +639,14 @@ class DojoHTMLTranslator(HTMLTranslator):
 
     def visit_codeviewer_compound(self, node):
         # testing. switch to CodeGlass.base and require() it for backwards compat for now
-        self.body.append('<div data-dojo-type="docs.MiniGlass" class="CodeGlassMini" data-dojo-props="type: \'%s\', pluginArgs:{ djConfig: \'%s\', version:\'%s\' }, width:\'%s\', height:\'%s\', toolbar:\'%s\'"><div class="CodeGlassMiniInner">' % (
+        self.body.append('<div data-dojo-type="docs.MiniGlass" class="CodeGlassMini" data-dojo-props="type: \'%s\', pluginArgs:{ djConfig: \'%s\', version:\'%s\' }, width:\'%s\', height:\'%s\', toolbar:\'%s\', themename:\'%s\'"><div class="CodeGlassMiniInner">' % (
             node['type'].lower(),
             node['djconfig'],
             node['version'],
             node['width'],
             node['height'],
-            node['toolbar'])
+            node['toolbar'],
+            node['theme'])
         )
 
     def depart_codeviewer_compound(self, node):
@@ -766,6 +767,10 @@ def _codeviewer_compound(name, arguments, options, content, lineno,
     if 'toolbar' in options:
         toolbar = options['toolbar']
     node['toolbar'] = toolbar
+    theme = "claro"
+    if 'theme' in options:
+        theme = options['theme']
+    node['theme'] = theme
     state.nested_parse(content, content_offset, node)
     return [node]
 
