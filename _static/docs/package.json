@@ -1,6 +1,6 @@
 {
 	"name": "docs",
-	"version": "1.8.0dev",
+	"version": "1.9.0dev",
 	"main": "guide",
 	"dependencies": {
 		"dojo": "current",
