@@ -2,7 +2,7 @@ var profile = {
 	action: "release",
 	basePath: "_static",
 	releaseName: "trunk",
-	copyTests: false,
+	copyTests: true,
 	mini: false,
 	cssOptimize: "comments.keepLines",
 	optimize: "",
