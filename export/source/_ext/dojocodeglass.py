@@ -28,13 +28,14 @@ class DojoHTMLTranslator(SmartyPantsHTMLTranslator):
         self.body.append('</pre></div>')
 
     def visit_codeviewer_compound(self, node):
-        self.body.append('<div data-dojo-type="CodeGlass.base" type="%s" pluginArgs="{dojoConfig:\'%s\', version:\'%s\'}" width="%s" height="%s" toolbar="%s">' % (
+        self.body.append('<div data-dojo-type="CodeGlass.base" data-dojo-props="type: \'%s\', pluginArgs:{ dojoConfig: \'%s\', version:\'%s\' }, width:\'%s\', height:\'%s\', toolbar:\'%s\', themename:\'%s\'">' % (
             node['type'].lower(),
             node['djconfig'],
             node['version'],
             node['width'],
             node['height'],
-            node['toolbar'])
+            node['toolbar'],
+            node['theme'])
         )
 
     def depart_codeviewer_compound(self, node):
@@ -140,6 +141,10 @@ def _codeviewer_compound(name, arguments, options, content, lineno,
     if 'toolbar' in options:
         toolbar = options['toolbar']
     node['toolbar'] = toolbar
+    theme = "claro"
+    if 'theme' in options:
+        theme = options['theme']
+    node['theme'] = theme
     state.nested_parse(content, content_offset, node)
     return [node]
 

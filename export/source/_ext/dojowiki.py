@@ -33,13 +33,14 @@ class DojoHTMLTranslator(SmartyPantsHTMLTranslator):
         self.body.append('</textarea></div>')
 
     def visit_codeviewer_compound(self, node):
-        self.body.append('<div data-dojo-type="docs.MiniGlass" class="CodeGlassMini" type="%s" pluginArgs="{dojoConfig:\'%s\', version:\'%s\'}" width="%s" height="%s" toolbar="%s"><div class="CodeGlassMiniInner">' % (
+        self.body.append('<div data-dojo-type="docs.MiniGlass" class="CodeGlassMini" data-dojo-props="type: \'%s\', pluginArgs:{ dojoConfig: \'%s\', version:\'%s\' }, width:\'%s\', height:\'%s\', toolbar:\'%s\', themename:\'%s\'"><div class="CodeGlassMiniInner">' % (
             node['type'].lower(),
             node['djconfig'],
             node['version'],
             node['width'],
             node['height'],
-            node['toolbar'])
+            node['toolbar'],
+            node['theme'])
         )
 
     def depart_codeviewer_compound(self, node):
