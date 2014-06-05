@@ -261,17 +261,17 @@ window.Documentation = {
 // quick alias for translations
 _ = Documentation.gettext;
 
-ready(function(){	
+ready(function(){
 	var vn = dom.byId("refver");
 	if(vn){
 		// Set change event on version to navigate to other version of the docs
 		on(vn, "change", function(e){
 			var v = e.target.value;
-			win.global.location.href = win.global.location.href.replace(/\/[12]\.[0-9]\//i, "/" + v + "/");
+			win.global.location.href = win.global.location.href.replace(/\/[12]\.[0-9]+\//i, "/" + v + "/");
 		});
 	
 		// Ensure the drop down version list has the right value
-		var vmatch = /\/([12]\.[0-9])\//i.exec(win.global.location.href);
+		var vmatch = /\/([12]\.[0-9]+)\//i.exec(win.global.location.href);
 		if (vmatch){
 			vn.value = vmatch[1];
 		}
